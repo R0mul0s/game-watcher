@@ -144,6 +144,7 @@ je jediná cesta, jak ji neztratit.
 | Skript | Obsah | Nasazeno |
 |---|---|---|
 | `migrations-2026-10-11-init.sql` | výchozí schéma (users, cache, cache_locks, migrations); opakovatelný, pustit **před** prvním nahráním kódu | |
+| `migrations-2026-10-11-katalog.sql` | katalog her a seznam sledovaných (etapa 2): tabulky `games`, `watchlist_items` — prázdné; opakovatelný, pustit **po** init a **před** nahráním kódu | |
 
 ## Nasazené verze
 

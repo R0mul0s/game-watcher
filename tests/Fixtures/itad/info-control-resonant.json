@@ -1,0 +1,82 @@
+{
+    "id": "019b1065-1cb5-734b-86a1-a67493dbc0c4",
+    "slug": "control-resonant",
+    "title": "CONTROL Resonant",
+    "type": "game",
+    "mature": false,
+    "assets": {
+        "boxart": "https://assets.isthereanydeal.com/019b1065-1cb5-734b-86a1-a67493dbc0c4/boxart.jpg?t=1791045920",
+        "banner145": "https://assets.isthereanydeal.com/019b1065-1cb5-734b-86a1-a67493dbc0c4/banner145.jpg?t=1791045920",
+        "banner300": "https://assets.isthereanydeal.com/019b1065-1cb5-734b-86a1-a67493dbc0c4/banner300.jpg?t=1791045920",
+        "banner400": "https://assets.isthereanydeal.com/019b1065-1cb5-734b-86a1-a67493dbc0c4/banner400.jpg?t=1791045920",
+        "banner600": "https://assets.isthereanydeal.com/019b1065-1cb5-734b-86a1-a67493dbc0c4/banner600.jpg?t=1791045920"
+    },
+    "earlyAccess": false,
+    "achievements": true,
+    "tradingCards": true,
+    "appid": 3669870,
+    "tags": [
+        "Hack and Slash",
+        "Story Rich",
+        "Action RPG",
+        "Lore-Rich",
+        "Supernatural"
+    ],
+    "releaseDate": "2026-09-24",
+    "developers": [
+        {
+            "id": 508,
+            "name": "Remedy Entertainment"
+        }
+    ],
+    "publishers": [
+        {
+            "id": 508,
+            "name": "Remedy Entertainment"
+        },
+        {
+            "id": 150303,
+            "name": "GMG Label Limited"
+        }
+    ],
+    "reviews": [
+        {
+            "score": 90,
+            "source": "Steam",
+            "count": 8194,
+            "url": "https://store.steampowered.com/app/3669870/"
+        },
+        {
+            "score": 83,
+            "source": "Metascore",
+            "count": 48,
+            "url": "https://metacritic.com/game/control-resonant/critic-reviews/?platform=pc"
+        },
+        {
+            "score": 89,
+            "source": "Metacritic User Score",
+            "count": 1054,
+            "url": "https://metacritic.com/game/control-resonant/user-reviews/?platform=pc"
+        },
+        {
+            "score": 83,
+            "source": "OpenCritic",
+            "count": 123,
+            "url": "https://opencritic.com/game/20766/control-resonant"
+        }
+    ],
+    "stats": {
+        "rank": 471,
+        "waitlisted": 17522,
+        "collected": 1896
+    },
+    "players": {
+        "recent": 11462,
+        "day": 14534,
+        "week": 17300,
+        "peak": 42799
+    },
+    "urls": {
+        "game": "https://isthereanydeal.com/game/control-resonant/"
+    }
+}

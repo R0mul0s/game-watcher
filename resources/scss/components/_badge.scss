@@ -1,0 +1,29 @@
+// _badge.scss
+// Štítky — druh hry, obsah pro dospělé (GameBadges.vue).
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.badges {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+}
+
+.badge {
+    display: inline-block;
+    padding: 0 var(--space-2);
+    border: var(--border-width) solid var(--color-neon-magenta);
+    color: var(--color-neon-magenta);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    letter-spacing: var(--letter-spacing-caps);
+    text-transform: uppercase;
+
+    &--warning {
+        border-color: var(--color-neon-amber);
+        color: var(--color-neon-amber);
+    }
+}

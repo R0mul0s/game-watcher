@@ -29,7 +29,14 @@ v [PLAN.md](PLAN.md); větší celky se z toho stávají etapou.
 
 ## Katalog a seznam her
 
-**Odkud:** etapa 2 v PLAN.md.
+**Odkud:** etapa 2 v PLAN.md, R15, R16.
+
+- **obnova údajů her** — `info_refreshed_at` je připravené; cron (etapa 3) by obnovil snímek
+  starší než např. 30 dní (datum vydání neohlášených her, hodnocení, obrázky). Pozor na limit ITAD
+  (R15) — po pár hrách za běh
+- hledání i podle **odkazu na IsThereAnyDeal** (`isthereanydeal.com/game/<slug>/`) — ITAD nemá
+  lookup podle slugu; šlo by přes `games/search` se slugem jako názvem
+- řazení a filtr přehledu (podle názvu, data vydání, později slevy)
 
 - **import Steam wishlistu** (ITAD umí synchronizaci wishlistu i „waitlist“ — přes OAuth uživatele;
   zatím zbytečné, pár her se přidá ručně)

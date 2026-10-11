@@ -1,0 +1,98 @@
+// _search.scss
+// Hledání hry k přidání — formulář a seznam výsledků (Games/Search.vue).
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.search {
+    margin-bottom: var(--space-4);
+
+    // Na mobilu tlačítko pod polem, od md vedle
+    &__row {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+
+        @include from-md {
+            flex-direction: row;
+        }
+    }
+
+    &__input {
+        flex: 1;
+    }
+}
+
+.search-results {
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    &__empty {
+        color: var(--color-text-muted);
+    }
+}
+
+.search-result {
+    display: grid;
+    grid-template-columns: var(--thumbnail-width) 1fr;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    padding: var(--space-2);
+    background: var(--color-panel);
+    border: var(--border-width) solid var(--color-border);
+
+    // Od md akce v řádku vpravo, na mobilu pod názvem přes celou šířku
+    @include from-md {
+        grid-template-columns: var(--thumbnail-width) 1fr auto;
+    }
+
+    &__image {
+        width: 100%;
+        aspect-ratio: var(--thumbnail-aspect);
+        object-fit: cover;
+
+        &--empty {
+            background: var(--color-accent-soft);
+        }
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-1);
+    }
+
+    &__title {
+        font-family: var(--font-display);
+        font-weight: var(--font-weight-display);
+    }
+
+    &__actions {
+        display: flex;
+        grid-column: 1 / -1;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--space-2);
+
+        @include from-md {
+            grid-column: auto;
+        }
+    }
+
+    &__status {
+        color: var(--color-neon-green);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+        letter-spacing: var(--letter-spacing-caps);
+        text-transform: uppercase;
+    }
+}

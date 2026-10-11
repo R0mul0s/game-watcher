@@ -28,6 +28,18 @@ return [
         'password_required' => 'Vyplň heslo.',
     ],
 
+    // Katalog her z ITAD — hlášky ze serveru (validace, flash), proto mimo skupinu `ui`
+    'catalog' => [
+        'query_too_long' => 'Hledaný text může mít nejvýš :max znaků.',
+        'game_not_found' => 'Tuhle hru se nepodařilo najít v katalogu IsThereAnyDeal.',
+        'unavailable' => 'Katalog IsThereAnyDeal teď neodpovídá. Zkus to za chvíli.',
+    ],
+
+    'watchlist' => [
+        'added' => '„:title“ je na tvém seznamu.',
+        'removed' => '„:title“ už nesleduješ.',
+    ],
+
     // Zakládání účtů (games:create-user) — jen konzole
     'users' => [
         'password_prompt' => 'Heslo',
@@ -48,6 +60,11 @@ return [
         'nav' => [
             'label' => 'Hlavní navigace',
             'dashboard' => 'Přehled',
+            'add_game' => 'Přidat hru',
+        ],
+
+        'flash' => [
+            'dismiss' => 'Zavřít hlášku',
         ],
 
         'auth' => [
@@ -62,8 +79,50 @@ return [
 
         'dashboard' => [
             'title' => 'Přehled',
+            'subtitle' => 'Sleduješ :count hru|Sleduješ :count hry|Sleduješ :count her',
+            'add_game' => 'Přidat hru',
             'empty_title' => 'Zatím nic nesleduješ',
-            'empty_text' => 'Přidávání her a hlídání cen se připravuje.',
+            'empty_text' => 'Najdi hru podle názvu nebo odkazu na Steam a přidej si ji na seznam.',
+        ],
+
+        'search' => [
+            'title' => 'Přidat hru',
+            'label' => 'Hra',
+            'placeholder' => 'Název, Steam App ID nebo odkaz na Steam',
+            'hint' => 'Katalog je z IsThereAnyDeal. Přesnou hru najdeš podle odkazu na Steam nebo jejího čísla (App ID).',
+            'submit' => 'Hledat',
+            'results' => 'Výsledky',
+            'no_results' => 'Nic jsme nenašli. Zkus jiný název nebo odkaz na Steam.',
+            'unavailable' => 'Katalog IsThereAnyDeal teď neodpovídá. Zkus to za chvíli.',
+            'watch' => 'Sledovat',
+            'watching' => 'Sleduješ',
+            'detail' => 'Detail',
+        ],
+
+        'game' => [
+            // Druhy her z ITAD; neznámý druh se ukáže tak, jak ho ITAD pošle
+            'types' => [
+                'game' => 'Hra',
+                'dlc' => 'DLC',
+                'package' => 'Balíček',
+            ],
+            'mature' => '18+',
+            'release_date' => 'Vydání',
+            'unreleased' => 'Datum vydání neznámé',
+            'developers' => 'Vývojář',
+            'publishers' => 'Vydavatel',
+            'tags' => 'Štítky',
+            'reviews' => 'Hodnocení',
+            'reviews_count' => ':count hodnocení',
+            'links' => 'Odkazy',
+            'steam' => 'Steam',
+            'itad' => 'IsThereAnyDeal',
+            'watch' => 'Sledovat',
+            'unwatch' => 'Přestat sledovat',
+            'watching' => 'Sleduješ',
+            'prices_title' => 'Ceny',
+            'prices_soon' => 'Stahování cen z obchodů se připravuje.',
+            'source' => 'Údaje o hře: :source',
         ],
     ],
 

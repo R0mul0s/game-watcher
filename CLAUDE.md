@@ -95,6 +95,10 @@ Zdroje cen: IsThereAnyDeal API, gg.deals API, přímo PlayStation Store, Kinguin
 9. **Vzhled je jen tmavý** (R6) a vše jde přes tokeny — neon, záře i délky animací; animace jen v mixinu `with-motion`
 10. **Session je v cookie** (R5) — tabulka `sessions` neexistuje, `SESSION_DRIVER=database` by na produkci spadl
 11. **Nepřidávej závislost, kterou hosting nemá** — Redis, frontu, démona, headless prohlížeč (R2, R8)
+12. **Limit ITAD je 100 požadavků za 5 minut pro celý klíč** — nic nesmí volat ITAD v cyklu po hrách, když jde dávka (prices až 200 her), a hledání jde přes cache (R15)
+13. **Cache neumí objekty** (`cache.serializable_classes = false`) — do cache jen pole (`ItadGame::toArray()`), jinak se vrátí `__PHP_Incomplete_Class`
+14. **Hlášky po akci přes `Inertia::flash()`** a ve Vue `page.flash` (komponenta `FlashMessage` v `AppLayout`), ne `session()->flash()` (R16)
+15. **V testech `Http::fake()` nepřebije dřívější podvrh** — výpadek ITAD přes `fakeItadFailure()`; vlastní funkce se nesmí jmenovat `fixture()` (má ji Pest)
 
 ## Jazyk
 

@@ -6,6 +6,7 @@
 -->
 <script setup>
 import BrandLogo from '@/Components/BrandLogo.vue';
+import FlashMessage from '@/Components/FlashMessage.vue';
 import { useTranslations } from '@/lib/i18n';
 import { Link, usePage } from '@inertiajs/vue3';
 
@@ -46,6 +47,7 @@ const page = usePage();
 
     <!-- tabindex -1: po odkazu „Přeskočit na obsah" dostane fokus i hlavní obsah -->
     <main id="main" class="page" tabindex="-1">
+        <FlashMessage />
         <slot />
     </main>
 </template>

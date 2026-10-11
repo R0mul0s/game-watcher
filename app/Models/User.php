@@ -14,6 +14,8 @@ namespace App\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
@@ -55,5 +57,36 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Osobní seznam sledovaných her (R11).
+     *
+     * @return HasMany<WatchlistItem, $this>
+     */
+    public function watchlistItems(): HasMany
+    {
+        return $this->hasMany(WatchlistItem::class);
+    }
+
+    /**
+     * Sledované hry, naposledy přidané první.
+     *
+     * @return BelongsToMany<Game, $this>
+     */
+    public function watchedGames(): BelongsToMany
+    {
+        return $this->belongsToMany(Game::class, 'watchlist_items')
+            ->withTimestamps()
+            ->orderByPivot('created_at', 'desc')
+            ->orderByPivot('id', 'desc');
+    }
+
+    /**
+     * Sleduje uživatel tuhle hru?
+     */
+    public function isWatching(Game $game): bool
+    {
+        return $this->watchlistItems()->where('game_id', $game->id)->exists();
     }
 }

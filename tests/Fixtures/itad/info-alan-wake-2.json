@@ -1,0 +1,49 @@
+{
+    "id": "018d937f-7598-73d1-9435-6d3358dd5f98",
+    "slug": "alan-wake-2",
+    "title": "Alan Wake 2",
+    "type": "game",
+    "mature": false,
+    "assets": {
+        "boxart": "https://assets.isthereanydeal.com/018d937f-7598-73d1-9435-6d3358dd5f98/boxart.jpg?t=1772813444",
+        "banner145": "https://assets.isthereanydeal.com/018d937f-7598-73d1-9435-6d3358dd5f98/banner145.jpg?t=1772813444",
+        "banner300": "https://assets.isthereanydeal.com/018d937f-7598-73d1-9435-6d3358dd5f98/banner300.jpg?t=1772813444",
+        "banner400": "https://assets.isthereanydeal.com/018d937f-7598-73d1-9435-6d3358dd5f98/banner400.jpg?t=1772813444",
+        "banner600": "https://assets.isthereanydeal.com/018d937f-7598-73d1-9435-6d3358dd5f98/banner600.jpg?t=1772813444"
+    },
+    "earlyAccess": false,
+    "achievements": true,
+    "tradingCards": false,
+    "appid": null,
+    "tags": [],
+    "releaseDate": "2023-10-27",
+    "developers": [
+        {
+            "id": 508,
+            "name": "Remedy Entertainment"
+        }
+    ],
+    "publishers": [
+        {
+            "id": 8279,
+            "name": "Epic Games Publishing"
+        }
+    ],
+    "reviews": [
+        {
+            "score": 89,
+            "source": "OpenCritic",
+            "count": 176,
+            "url": "https://opencritic.com/game/15022/alan-wake-2"
+        }
+    ],
+    "stats": {
+        "rank": 2663,
+        "waitlisted": 3261,
+        "collected": 984
+    },
+    "players": null,
+    "urls": {
+        "game": "https://isthereanydeal.com/game/alan-wake-2/"
+    }
+}

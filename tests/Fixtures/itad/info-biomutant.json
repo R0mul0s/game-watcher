@@ -1,0 +1,86 @@
+{
+    "id": "018d937f-2e7e-7025-89c4-5e9e7becf198",
+    "slug": "biomutant",
+    "title": "BIOMUTANT",
+    "type": "game",
+    "mature": false,
+    "assets": {
+        "boxart": "https://assets.isthereanydeal.com/018d937f-2e7e-7025-89c4-5e9e7becf198/boxart.jpg?t=1786133752",
+        "banner145": "https://assets.isthereanydeal.com/018d937f-2e7e-7025-89c4-5e9e7becf198/banner145.jpg?t=1786133752",
+        "banner300": "https://assets.isthereanydeal.com/018d937f-2e7e-7025-89c4-5e9e7becf198/banner300.jpg?t=1786133753",
+        "banner400": "https://assets.isthereanydeal.com/018d937f-2e7e-7025-89c4-5e9e7becf198/banner400.jpg?t=1786133753",
+        "banner600": "https://assets.isthereanydeal.com/018d937f-2e7e-7025-89c4-5e9e7becf198/banner600.jpg?t=1786133753"
+    },
+    "earlyAccess": false,
+    "achievements": true,
+    "tradingCards": true,
+    "appid": 597820,
+    "tags": [
+        "Open World",
+        "Action",
+        "Singleplayer",
+        "RPG",
+        "Adventure"
+    ],
+    "releaseDate": "2021-05-25",
+    "developers": [
+        {
+            "id": 1684,
+            "name": "Experiment 101"
+        }
+    ],
+    "publishers": [
+        {
+            "id": 9,
+            "name": "THQ Nordic"
+        },
+        {
+            "id": 47,
+            "name": "THQ Nordic GmbH"
+        },
+        {
+            "id": 126003,
+            "name": "680"
+        }
+    ],
+    "reviews": [
+        {
+            "score": 67,
+            "source": "Steam",
+            "count": 13178,
+            "url": "https://store.steampowered.com/app/597820/"
+        },
+        {
+            "score": 66,
+            "source": "Metascore",
+            "count": 63,
+            "url": "https://metacritic.com/game/biomutant/critic-reviews/?platform=pc"
+        },
+        {
+            "score": 60,
+            "source": "Metacritic User Score",
+            "count": 648,
+            "url": "https://metacritic.com/game/biomutant/user-reviews/?platform=pc"
+        },
+        {
+            "score": 67,
+            "source": "OpenCritic",
+            "count": 221,
+            "url": "https://opencritic.com/game/11380/biomutant"
+        }
+    ],
+    "stats": {
+        "rank": 819,
+        "waitlisted": 7720,
+        "collected": 13375
+    },
+    "players": {
+        "recent": 77,
+        "day": 78,
+        "week": 84,
+        "peak": 52924
+    },
+    "urls": {
+        "game": "https://isthereanydeal.com/game/biomutant/"
+    }
+}

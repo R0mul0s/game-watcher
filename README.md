@@ -64,6 +64,8 @@ volume (`docker compose down -v`).
 | `GAMES_GGDEALS_API_KEY` | od etapy 3 | klíč gg.deals API — nejnižší cena obchodů s klíči (nastavení účtu → API; data se zobrazují s odkazem na gg.deals) |
 | `GAMES_ITAD_URL`, `GAMES_GGDEALS_URL` | ne | adresy API, jen když se mají měnit výchozí |
 
+Bez platného `GAMES_ITAD_API_KEY` přidávání her hlásí, že katalog neodpovídá (podrobnost v `storage/logs`).
+
 Ostatní konstanty (limit pokusů o přihlášení, minimální délka hesla, země a region
 cen, barva lišty prohlížeče) jsou v `config/games.php`.
 
@@ -88,8 +90,11 @@ docker compose exec app php artisan games:create-user <e-mail> --sql   # SQL pro
 app/
   Console/Commands/ artisan příkazy — obálky nad akcemi (games:create-user)
   Domain/Accounts/  účty — CreateUser
+  Domain/Itad/      klient IsThereAnyDeal API (katalog, později ceny)
+  Domain/Catalog/   katalog her — hledání, převzetí hry z ITAD, data pro stránky
+  Domain/Watchlist/ osobní seznam sledovaných her
   Http/             tenké kontrolery, Form Requesty (LoginRequest), sdílená data Inertie
-config/games.php    konstanty projektu a zdroje cen
+config/games.php    konstanty projektu, katalog (limity hledání) a zdroje cen
 database/           migrace
 deploy/             build skript, SQL skripty a návod pro nasazení
 docker/             PHP, nginx a MariaDB pro vývoj; tools/ = pomocné skripty (ikony)

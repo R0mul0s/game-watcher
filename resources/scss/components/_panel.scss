@@ -49,4 +49,8 @@
         font-weight: var(--font-weight-display);
         color: var(--color-text);
     }
+
+    &__text {
+        color: var(--color-text-muted);
+    }
 }

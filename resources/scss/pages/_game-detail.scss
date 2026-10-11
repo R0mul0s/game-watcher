@@ -1,0 +1,187 @@
+// _game-detail.scss
+// Detail hry (Games/Show.vue) — obal a údaje nahoře, panely pod nimi.
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.game-detail {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+
+    // Na mobilu obal nad údaji, od md vedle sebe
+    &__hero {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+
+        @include from-md {
+            flex-direction: row;
+            align-items: flex-start;
+        }
+    }
+
+    &__boxart {
+        width: var(--boxart-width);
+        aspect-ratio: var(--boxart-aspect);
+        object-fit: cover;
+        border: var(--border-width) solid var(--color-accent);
+        box-shadow: var(--glow-accent);
+    }
+
+    &__banner {
+        width: 100%;
+        aspect-ratio: var(--banner-aspect);
+        object-fit: cover;
+        border: var(--border-width) solid var(--color-accent);
+
+        @include from-md {
+            width: auto;
+            max-width: 50%;
+        }
+    }
+
+    &__heading {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+
+    &__title {
+        @include display-caps;
+
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-display);
+        line-height: var(--line-height-tight);
+        text-shadow: var(--text-glow-accent);
+        overflow-wrap: anywhere;
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-3);
+    }
+
+    &__status {
+        color: var(--color-neon-green);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+        letter-spacing: var(--letter-spacing-caps);
+        text-transform: uppercase;
+    }
+
+    &__panels {
+        display: grid;
+        gap: var(--space-4);
+
+        @include from-md {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    &__source {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+    }
+}
+
+// Údaje o hře — popisek a hodnota v řádku
+.facts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin: 0;
+
+    &__item {
+        display: flex;
+        gap: var(--space-3);
+    }
+
+    &__label {
+        flex: 0 0 var(--facts-label-width);
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+        text-transform: uppercase;
+    }
+
+    &__value {
+        margin: 0;
+    }
+}
+
+.reviews {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+
+    &__score {
+        min-width: var(--control-size);
+        padding: var(--space-1);
+        border: var(--border-width) solid currentcolor;
+        font-family: var(--font-mono);
+        font-weight: var(--font-weight-strong);
+        text-align: center;
+
+        &--good {
+            color: var(--color-neon-green);
+        }
+
+        &--mixed {
+            color: var(--color-neon-amber);
+        }
+
+        &--bad {
+            color: var(--color-danger);
+        }
+    }
+
+    &__source {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__count {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+    }
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    &__item {
+        padding: 0 var(--space-2);
+        border: var(--border-width) solid var(--color-border);
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+    }
+}
+
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}

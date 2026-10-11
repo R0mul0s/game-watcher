@@ -12,20 +12,30 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Domain\Catalog\GamePresenter;
+use App\Models\Game;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * Úvodní stránka po přihlášení. Seznam sledovaných her a jejich cen přibude
- * s etapami 2 a 3 (docs/PLAN.md) — zatím jen prázdný stav.
+ * Úvodní stránka po přihlášení — osobní seznam sledovaných her (R11),
+ * naposledy přidané první. Ceny přibudou s etapou 3.
  */
 class DashboardController extends Controller
 {
     /**
      * Vykreslí přehled.
      */
-    public function __invoke(): Response
+    public function __invoke(Request $request, GamePresenter $presenter): Response
     {
-        return Inertia::render('Dashboard');
+        $user = $request->user();
+        $games = $user instanceof User ? $user->watchedGames()->get() : collect();
+
+        return Inertia::render('Dashboard', [
+            'games' => $games->map(fn (Game $game): array => $presenter->card($game))->values()->all(),
+            'searchUrl' => route('games.search', absolute: false),
+        ]);
     }
 }

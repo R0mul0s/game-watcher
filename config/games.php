@@ -32,6 +32,20 @@ return [
     ],
 
     /*
+    | Katalog her z IsThereAnyDeal (etapa 2, R10). ITAD povoluje 100 požadavků
+    | za 5 minut na klíč — hledá se jen po odeslání formuláře, výsledek se drží
+    | v cache a počet hledání na účet je omezený.
+    */
+    'catalog' => [
+        'search_results' => 12,
+        'search_cache_seconds' => 3600,
+        'max_searches_per_minute' => 20,
+        // Nejdelší hledaný text — název hry nebo odkaz na Steam
+        'max_query_length' => 200,
+        'steam_store_url' => 'https://store.steampowered.com/app/%d/',
+    ],
+
+    /*
     | Zdroje cen (R9). Klíče jsou tajemství a patří do .env; adresy se mění jen
     | výjimečně. Používat je začne etapa 2 a 3 (docs/PLAN.md).
     |
@@ -43,8 +57,11 @@ return [
     'sources' => [
         'itad' => [
             'url' => env('GAMES_ITAD_URL', 'https://api.isthereanydeal.com'),
+            // Posílá se v hlavičce ITAD-API-Key, ne v URL — adresa požadavku
+            // se objevuje v chybách a logu
             'key' => env('GAMES_ITAD_API_KEY'),
             'country' => 'CZ',
+            'timeout_seconds' => 10,
         ],
         'ggdeals' => [
             'url' => env('GAMES_GGDEALS_URL', 'https://api.gg.deals/v1'),

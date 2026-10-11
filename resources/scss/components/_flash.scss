@@ -1,0 +1,57 @@
+// _flash.scss
+// Jednorázová hláška po akci (FlashMessage.vue) — pruh s neonovou levou hranou.
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.flash {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+    border: var(--border-width) solid var(--color-border);
+    border-left-width: var(--hud-corner-width);
+
+    &--success {
+        background: var(--color-success-soft);
+        border-left-color: var(--color-neon-green);
+    }
+
+    &--error {
+        background: var(--color-danger-soft);
+        border-left-color: var(--color-danger);
+    }
+
+    &__close {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: var(--control-size-small);
+        height: var(--control-size-small);
+        padding: 0;
+        background: none;
+        border: var(--border-width) solid transparent;
+        color: var(--color-text-muted);
+        cursor: pointer;
+
+        &:hover {
+            color: var(--color-text);
+        }
+
+        @include neon-focus;
+    }
+
+    &__icon {
+        width: var(--font-size-md);
+        height: var(--font-size-md);
+        fill: none;
+        stroke: currentcolor;
+        stroke-width: var(--svg-stroke-logo);
+        stroke-linecap: round;
+    }
+}

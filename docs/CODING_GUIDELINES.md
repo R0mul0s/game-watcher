@@ -104,9 +104,10 @@ Eloquent model                 ← perzistence
 | Složka | Obsah |
 |---|---|
 | `app/Domain/Accounts` | účty (`Actions/CreateUser`) |
-| `app/Domain/Catalog` | *(etapa 2)* katalog her z ITAD — vyhledání, převzetí modelu hry |
-| `app/Domain/Pricing` | *(etapa 3, 5)* stahování a ukládání cen; klient každého zdroje zvlášť (`Sources/Itad`, `Sources/GgDeals`, `Sources/PlayStation`, `Sources/Kinguin`, `Sources/Eneba`) |
-| `app/Domain/Watchlist` | *(etapa 2, 6)* osobní seznam sledovaných her a upozornění |
+| `app/Domain/Itad` | HTTP klient IsThereAnyDeal (`ItadClient`) a jeho datové třídy (`ItadGame`, `ItadGameInfo`) — katalog teď, ceny oficiálních obchodů v etapě 3 |
+| `app/Domain/Catalog` | katalog her — dotaz (`GameQuery`), hledání (`Actions/SearchGames`), převzetí hry (`Actions/ImportGame`), data pro stránky (`GamePresenter`) |
+| `app/Domain/Watchlist` | osobní seznam sledovaných her (`Actions/WatchGame`, `Actions/UnwatchGame`); upozornění v etapě 6 |
+| `app/Domain/Pricing` | *(etapa 3, 5)* stahování a ukládání cen; klient každého zdroje zvlášť (`Sources/GgDeals`, `Sources/PlayStation`, `Sources/Kinguin`, `Sources/Eneba`), ITAD přes `app/Domain/Itad` |
 | `app/Enums` | výčty (zdroj ceny, obchod) |
 | `app/Http/Controllers` | tenké kontrolery |
 | `app/Http/Requests` | Form Requesty (včetně `LoginRequest`) |
@@ -152,6 +153,7 @@ Eloquent model                 ← perzistence
 - Testy běží proti MariaDB `games_test`, ne SQLite — stejně jako produkce
 - **Žádný test nevolá skutečné API ani obchod** — `Http::preventStrayRequests()` v `TestCase`. Odpovědi zdrojů jsou **skutečné, zachycené odpovědi** uložené v `tests/Fixtures/<zdroj>/` (zkrácené, bez klíčů) — nové testy je používají, nevymýšlí vlastní tvar dat
 - Účty v testech přes `user()` z `tests/Pest.php`, heslo `UserFactory::PASSWORD`
+- Zachycené odpovědi načítá `jsonFixture('itad/…')` (nad `fixture()` z Pestu — vlastní funkce se tak jmenovat nesmí); ITAD podvrhne `fakeItad()`, výpadek `fakeItadFailure()`. Další `Http::fake()` v testu dřívější podvrhy **nepřebije** (vyhraje první shoda), proto `fakeItadFailure()` vymění celý HTTP klient
 
 ### Error handling
 - Doménové výjimky jako vlastní třídy, ne holé `\Exception`
@@ -307,7 +309,7 @@ a s omezeným pohybem.
 - **Žádná registrace ani obnova hesla** — účty jen příkazem `games:create-user`; heslo nikdy jako parametr příkazu, nikdy v repu ani v logu (R4)
 - Tajemství v `.env`, nikdy v repu — `.env.example` má prázdné hodnoty
 - CSRF všude kromě cron URL (ta je jen GET a mimo `web`)
-- **CSP bez cizích domén** pro skripty a písma; obrázky her z CDN ITAD se do `img-src` přidají jmenovitě (etapa 2)
+- **CSP bez cizích domén** pro skripty a písma; jedinou výjimkou jsou obrázky her z CDN ITAD (`img-src https://assets.isthereanydeal.com`) — nový zdroj obrázků se přidává jmenovitě
 - **SSRF:** server volá jen adresy zdrojů z konfigurace a URL produktů s povoleným hostitelem (sekce 3)
 
 ---

@@ -1,0 +1,17 @@
+{
+    "found": true,
+    "game": {
+        "id": "018d937f-2e7e-7025-89c4-5e9e7becf198",
+        "slug": "biomutant",
+        "title": "BIOMUTANT",
+        "type": "game",
+        "mature": false,
+        "assets": {
+            "boxart": "https://assets.isthereanydeal.com/018d937f-2e7e-7025-89c4-5e9e7becf198/boxart.jpg?t=1786133752",
+            "banner145": "https://assets.isthereanydeal.com/018d937f-2e7e-7025-89c4-5e9e7becf198/banner145.jpg?t=1786133752",
+            "banner300": "https://assets.isthereanydeal.com/018d937f-2e7e-7025-89c4-5e9e7becf198/banner300.jpg?t=1786133753",
+            "banner400": "https://assets.isthereanydeal.com/018d937f-2e7e-7025-89c4-5e9e7becf198/banner400.jpg?t=1786133753",
+            "banner600": "https://assets.isthereanydeal.com/018d937f-2e7e-7025-89c4-5e9e7becf198/banner600.jpg?t=1786133753"
+        }
+    }
+}

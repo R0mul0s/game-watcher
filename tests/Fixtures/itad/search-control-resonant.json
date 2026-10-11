@@ -1,0 +1,43 @@
+[
+    {
+        "id": "019b1065-1cb5-734b-86a1-a67493dbc0c4",
+        "slug": "control-resonant",
+        "title": "CONTROL Resonant",
+        "type": "game",
+        "mature": false,
+        "assets": {
+            "banner145": "https://assets.isthereanydeal.com/019b1065-1cb5-734b-86a1-a67493dbc0c4/banner145.jpg?t=1791045920",
+            "banner300": "https://assets.isthereanydeal.com/019b1065-1cb5-734b-86a1-a67493dbc0c4/banner300.jpg?t=1791045920",
+            "banner400": "https://assets.isthereanydeal.com/019b1065-1cb5-734b-86a1-a67493dbc0c4/banner400.jpg?t=1791045920",
+            "banner600": "https://assets.isthereanydeal.com/019b1065-1cb5-734b-86a1-a67493dbc0c4/banner600.jpg?t=1791045920",
+            "boxart": "https://assets.isthereanydeal.com/019b1065-1cb5-734b-86a1-a67493dbc0c4/boxart.jpg?t=1791045920"
+        }
+    },
+    {
+        "id": "019e8a4c-7ad2-7245-a9b4-b507e61d605c",
+        "slug": "control-resonant-digital-deluxe-edition",
+        "title": "CONTROL Resonant Digital Deluxe Edition",
+        "type": "game",
+        "mature": false,
+        "assets": {
+            "banner145": "https://assets.isthereanydeal.com/019e8a4c-7ad2-7245-a9b4-b507e61d605c/banner145.jpg?t=1788897026",
+            "banner300": "https://assets.isthereanydeal.com/019e8a4c-7ad2-7245-a9b4-b507e61d605c/banner300.jpg?t=1788897026",
+            "banner400": "https://assets.isthereanydeal.com/019e8a4c-7ad2-7245-a9b4-b507e61d605c/banner400.jpg?t=1788897026",
+            "banner600": "https://assets.isthereanydeal.com/019e8a4c-7ad2-7245-a9b4-b507e61d605c/banner600.jpg?t=1788897026",
+            "boxart": "https://assets.isthereanydeal.com/019e8a4c-7ad2-7245-a9b4-b507e61d605c/boxart.png?t=1788897026"
+        }
+    },
+    {
+        "id": "01a0d3e0-e0ab-736f-aaa7-43975224f87d",
+        "slug": "control-resonant-digital-deluxe-upgrade",
+        "title": "CONTROL Resonant Digital Deluxe Upgrade",
+        "type": "dlc",
+        "mature": false,
+        "assets": {
+            "banner145": "https://assets.isthereanydeal.com/01a0d3e0-e0ab-736f-aaa7-43975224f87d/banner145.jpg?t=1790271918",
+            "banner300": "https://assets.isthereanydeal.com/01a0d3e0-e0ab-736f-aaa7-43975224f87d/banner300.jpg?t=1790271918",
+            "banner400": "https://assets.isthereanydeal.com/01a0d3e0-e0ab-736f-aaa7-43975224f87d/banner400.jpg?t=1790271918",
+            "banner600": "https://assets.isthereanydeal.com/01a0d3e0-e0ab-736f-aaa7-43975224f87d/banner600.jpg?t=1790271919"
+        }
+    }
+]

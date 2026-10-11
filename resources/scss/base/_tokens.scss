@@ -30,6 +30,8 @@
 
     --color-accent: var(--color-neon-cyan);
     --color-accent-soft: rgb(0 229 255 / 12%);
+    --color-success-soft: rgb(57 255 143 / 10%);
+    --color-danger-soft: rgb(255 77 109 / 12%);
     --color-on-accent: #021016;
 
     // Mřížka pozadí a podlahy přihlášení
@@ -74,6 +76,14 @@
     --logo-size: 2.5rem;
     --logo-size-large: 4.5rem;
     --radar-size: 7rem;
+    // Obrázky her z ITAD: banner600 je 600 × 344, banner300 300 × 140, obal 300 × 450
+    --banner-aspect: 600 / 344;
+    --thumbnail-aspect: 300 / 140;
+    --thumbnail-width: 7.5rem;
+    --boxart-aspect: 300 / 450;
+    --boxart-width: 12rem;
+    --game-card-min-width: 16rem;
+    --facts-label-width: 7rem;
     // Tloušťka čar loga v jednotkách viewBoxu (48 × 48), ne v pixelech
     --svg-stroke-logo: 2;
 
@@ -99,6 +109,8 @@
     --font-body: 'Chakra Petch', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Mono', monospace;
     --line-height-base: 1.55;
+    // Velké nadpisy přes víc řádků (dlouhé názvy her)
+    --line-height-tight: 1.1;
     --letter-spacing-display: 0.12em;
     --letter-spacing-caps: 0.08em;
     --font-weight-display: 600;

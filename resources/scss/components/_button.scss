@@ -21,6 +21,8 @@
     color: var(--color-accent);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-display);
+    // Tlačítko bývá i odkaz (<Link class="button">)
+    text-decoration: none;
     cursor: pointer;
     transition:
         background-color var(--duration-fast),

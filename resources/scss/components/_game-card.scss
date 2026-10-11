@@ -1,0 +1,74 @@
+// _game-card.scss
+// Mřížka sledovaných her a karta hry (GameCard.vue) — při najetí se rám rozsvítí.
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--game-card-min-width), 1fr));
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.game-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--color-panel);
+    border: var(--border-width) solid var(--color-border);
+    color: var(--color-text);
+    text-decoration: none;
+    transition:
+        border-color var(--duration-fast),
+        box-shadow var(--duration-fast);
+
+    &:hover {
+        border-color: var(--color-accent);
+        box-shadow: var(--glow-accent);
+    }
+
+    @include neon-focus;
+
+    &__image {
+        display: block;
+        width: 100%;
+        aspect-ratio: var(--banner-aspect);
+        object-fit: cover;
+        border-bottom: var(--border-width) solid var(--color-border);
+
+        // Hra bez obrázku — jen mřížka
+        &--empty {
+            background-image:
+                linear-gradient(var(--grid-line-strong) var(--border-width), transparent var(--border-width)),
+                linear-gradient(90deg, var(--grid-line-strong) var(--border-width), transparent var(--border-width));
+            background-size: var(--grid-cell) var(--grid-cell);
+        }
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        padding: var(--space-3);
+    }
+
+    &__title {
+        font-family: var(--font-display);
+        font-weight: var(--font-weight-display);
+    }
+
+    &__meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+    }
+}
