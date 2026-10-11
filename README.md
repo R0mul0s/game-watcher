@@ -71,8 +71,7 @@ cen, barva lišty prohlížeče) jsou v `config/games.php`.
 
 ## Běžné příkazy
 
-Kontrola kvality před commitem — viz [CODING_GUIDELINES.md, sekce 9](docs/CODING_GUIDELINES.md#9-nástroje-a-kvalita);
-totéž po push spouští GitHub Actions.
+Kontrola kvality před commitem (ručně, CI není — R17) — viz [CODING_GUIDELINES.md, sekce 9](docs/CODING_GUIDELINES.md#9-nástroje-a-kvalita).
 
 ```bash
 # assety

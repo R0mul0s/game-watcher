@@ -294,8 +294,7 @@ docker compose exec app ./vendor/bin/phpstan analyse --memory-limit=1G
 docker compose exec app npm run build          # při změně JS, Vue nebo SCSS
 ```
 
-Totéž po každém push do `main` spouští GitHub Actions (`.github/workflows/ci.yml`,
-MariaDB 11.4 jako služba). CI je pojistka, ne náhrada ručních kontrol.
+CI na GitHubu není (R17) — ruční kontroly jsou jediná pojistka, proto je pouštěj vždy.
 
 Změnu vzhledu ověř v prohlížeči na desktopu i na šířce telefonu (390 px)
 a s omezeným pohybem.

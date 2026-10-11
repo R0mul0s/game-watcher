@@ -15,7 +15,7 @@ return [
     /*
     | Stránky jsou v resources/js/Pages (velké P), balíček je čeká v js/pages.
     | Lokálně to nevadí — Docker na Windows sdílí složku bez rozlišení velikosti
-    | písmen — ale na Linuxu (CI, GitHub Actions) testy stránky nenajdou.
+    | písmen — ale na Linuxu testy stránky nenajdou.
     | Konfigurace balíčku se slučuje jen na nejvyšší úrovni, proto celá sekce.
     */
     'pages' => [
