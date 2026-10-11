@@ -1,0 +1,3 @@
+# Soukromá aplikace (R3 v docs/PLAN.md) — nic k indexování
+User-agent: *
+Disallow: /

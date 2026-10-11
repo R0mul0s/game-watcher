@@ -1,0 +1,10 @@
+# Neverzovat sestavený balíček, dumpy s daty ani produkční .env.
+# SQL skripty se změnami schématu (migrations-*.sql) a opravami dat (data-*.sql) se verzují;
+# velké dumpy (.sql.gz) ne.
+upload/
+*.sql
+!migrations-*.sql
+*.sql.gz
+*.zip
+.env.production
+!data-*.sql

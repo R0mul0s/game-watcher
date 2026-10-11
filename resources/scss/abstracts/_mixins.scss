@@ -1,0 +1,66 @@
+// _mixins.scss
+// Sdílené mixiny. Negeneruje žádné CSS.
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use 'variables' as *;
+
+/// Styly od středně širokého displeje výš.
+@mixin from-md {
+    @media (min-width: $breakpoint-md) {
+        @content;
+    }
+}
+
+/// Styly od širokého displeje výš.
+@mixin from-lg {
+    @media (min-width: $breakpoint-lg) {
+        @content;
+    }
+}
+
+/// Animace jen pro toho, kdo nemá v systému omezený pohyb (R6).
+@mixin with-motion {
+    @media (prefers-reduced-motion: no-preference) {
+        @content;
+    }
+}
+
+/// Skryje prvek vizuálně, čtečka obrazovky ho dál přečte.
+@mixin visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/// Zruší visually-hidden (prvek skrytý jen na mobilu).
+@mixin visually-shown {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+}
+
+/// Nadpisové písmo verzálkami s prostrkáním — typografie „terminálu" (R6).
+@mixin display-caps {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-display);
+}
+
+/// Neonová záře prvku v barvě akcentu — při najetí a fokusu.
+@mixin neon-focus {
+    &:focus-visible {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: var(--glow-accent);
+    }
+}

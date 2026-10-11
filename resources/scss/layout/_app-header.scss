@@ -1,0 +1,107 @@
+// _app-header.scss
+// Hlavička aplikace — logo, navigace, přihlášený uživatel. Spodní hrana je
+// neonová linka z azurové do purpurové (R6).
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.app-header {
+    position: relative;
+    z-index: var(--z-content);
+    background: var(--color-surface);
+
+    &::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: var(--border-width);
+        background: linear-gradient(90deg, var(--color-neon-cyan), var(--color-neon-magenta));
+        box-shadow: var(--glow-accent);
+    }
+
+    // Na mobilu dva řádky: logo a uživatel nahoře, navigace pod nimi
+    &__inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-2) var(--space-3);
+        max-width: var(--content-max-width);
+        margin: 0 auto;
+        padding: var(--space-2) var(--space-3);
+
+        @include from-md {
+            flex-wrap: nowrap;
+        }
+    }
+
+    &__nav {
+        display: flex;
+        flex: 1 0 100%;
+        order: 1;
+        gap: var(--space-1);
+
+        @include from-md {
+            flex: 1;
+            order: 0;
+            justify-content: flex-end;
+        }
+    }
+
+    &__link {
+        @include display-caps;
+
+        position: relative;
+        padding: var(--space-2) var(--space-3);
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+        text-decoration: none;
+        transition: color var(--duration-fast);
+
+        &:hover {
+            color: var(--color-text);
+        }
+
+        @include neon-focus;
+
+        // Aktivní položka: svítící podtržení
+        &--active {
+            color: var(--color-accent);
+            text-shadow: var(--text-glow-accent);
+
+            &::after {
+                content: '';
+                position: absolute;
+                right: var(--space-3);
+                bottom: 0;
+                left: var(--space-3);
+                height: var(--hud-corner-width);
+                background: var(--color-accent);
+                box-shadow: var(--glow-accent);
+            }
+        }
+    }
+
+    &__user {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+
+    // Na mobilu jen tlačítko — jméno by se vedle loga nevešlo
+    &__user-name {
+        @include visually-hidden;
+
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+
+        @include from-md {
+            @include visually-shown;
+        }
+    }
+}

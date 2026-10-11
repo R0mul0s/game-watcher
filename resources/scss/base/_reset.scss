@@ -1,0 +1,65 @@
+// _reset.scss
+// Základní styly dokumentu a kulisa celé aplikace — mřížka a řádkování obrazovky (R6).
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background-color: var(--color-bg);
+    // Jemná mřížka „herní plochy" pod veškerým obsahem
+    background-image:
+        linear-gradient(var(--grid-line) var(--border-width), transparent var(--border-width)),
+        linear-gradient(90deg, var(--grid-line) var(--border-width), transparent var(--border-width));
+    background-size: var(--grid-cell) var(--grid-cell);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-base);
+
+    // Řádkování CRT obrazovky — nad obsahem, ale neruší klikání
+    &::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: var(--z-overlay);
+        background: repeating-linear-gradient(
+            to bottom,
+            var(--scanline) 0,
+            var(--scanline) var(--border-width),
+            transparent var(--border-width),
+            transparent var(--scanline-gap)
+        );
+        pointer-events: none;
+    }
+}
+
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+}
+
+a {
+    color: var(--color-accent);
+}
+
+::selection {
+    background: var(--color-neon-magenta);
+    color: var(--color-on-accent);
+}
+
+// Text jen pro čtečky obrazovky (např. popisky ikonových tlačítek)
+.visually-hidden {
+    @include visually-hidden;
+}

@@ -1,0 +1,59 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Přesměrování na HTTPS. TLS končí na proxy hostingu, schéma požadavku je
+    # jen v X-Forwarded-Proto; bez hlavičky se nepřesměrovává nic. Cílová adresa
+    # podle THE_REQUEST (původní řádek požadavku), ne REQUEST_URI — ten při
+    # kořenovém .htaccess (deploy/root-htaccess-fallback) obsahuje navíc /public.
+    # %1 je jen cesta (už zakódovaná, proto NE) — query string připojí Apache sám.
+    RewriteCond %{HTTP:X-Forwarded-Proto} =http
+    RewriteCond %{THE_REQUEST} ^[A-Z]+\ (/[^?\ ]*)
+    RewriteRule ^ https://%{HTTP_HOST}%1 [L,R=301,NE]
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Handle X-XSRF-Token Header
+    RewriteCond %{HTTP:x-xsrf-token} .
+    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Bezpečnostní hlavičky — stejné má pro vývoj docker/nginx/default.conf.
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    # Soukromá aplikace — ani soubory mimo HTML (ikony, assety) do vyhledávačů (R3)
+    Header always set X-Robots-Tag "noindex, nofollow"
+    # Skripty i písma jen z vlastní domény (žádný inline skript v šablonách není,
+    # písma jsou ve buildu, R6). Inline styly potřebuje indikátor načítání Inertie.
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+
+    # HSTS jen na HTTPS odpovědi; max-age = 1 rok.
+    <If "req('X-Forwarded-Proto') == 'https'">
+        Header always set Strict-Transport-Security "max-age=31536000"
+    </If>
+
+    # Sestavené assety mají v názvu hash obsahu (Vite: „app-B9u7YS45.js") — můžou
+    # ležet v cache napořád. Podle jména souboru — URI se při kořenovém .htaccess
+    # liší (/public/build/…). Jen pro 200: chybějící soubor (404) se na rok
+    # ukládat nesmí.
+    <FilesMatch "-[A-Za-z0-9_-]{8}\.(js|css|svg|png|woff2?)$">
+        Header always set Cache-Control "public, max-age=31536000, immutable" "expr=%{REQUEST_STATUS} == 200"
+    </FilesMatch>
+</IfModule>

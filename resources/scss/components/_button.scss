@@ -1,0 +1,71 @@
+// _button.scss
+// Tlačítka — neonový obrys, při najetí rozsvícení (R6).
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.button {
+    @include display-caps;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: var(--control-size);
+    padding: 0 var(--space-4);
+    background: transparent;
+    border: var(--border-width) solid var(--color-accent);
+    border-radius: var(--radius-sm);
+    color: var(--color-accent);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-display);
+    cursor: pointer;
+    transition:
+        background-color var(--duration-fast),
+        box-shadow var(--duration-fast),
+        color var(--duration-fast);
+
+    &:hover:not(:disabled) {
+        box-shadow: var(--glow-accent);
+    }
+
+    @include neon-focus;
+
+    &:disabled {
+        opacity: var(--opacity-disabled);
+        cursor: default;
+    }
+
+    // Hlavní akce stránky — plná výplň akcentu
+    &--primary {
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+
+        &:hover:not(:disabled) {
+            box-shadow: var(--glow-accent-strong);
+        }
+    }
+
+    // Vedlejší akce (odhlášení) — tlumený obrys, akcent až při najetí
+    &--ghost {
+        border-color: var(--color-border);
+        color: var(--color-text-muted);
+
+        &:hover:not(:disabled) {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+    }
+
+    &--small {
+        min-height: var(--control-size-small);
+        padding: 0 var(--space-3);
+        font-size: var(--font-size-xs);
+    }
+
+    &--block {
+        width: 100%;
+    }
+}

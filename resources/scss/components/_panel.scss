@@ -1,0 +1,52 @@
+// _panel.scss
+// Panel obsahu — poloprůhledná plocha s rohovými lištami jako v HUD (R6).
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--color-panel);
+    border: var(--border-width) solid var(--color-border);
+    backdrop-filter: blur(var(--space-1));
+
+    // Svítící rohové lišty vlevo nahoře a vpravo dole
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        width: var(--hud-corner-size);
+        height: var(--hud-corner-size);
+        border: 0 solid var(--color-accent);
+        filter: var(--svg-glow-accent);
+        pointer-events: none;
+    }
+
+    &::before {
+        top: calc(-1 * var(--border-width));
+        left: calc(-1 * var(--border-width));
+        border-top-width: var(--hud-corner-width);
+        border-left-width: var(--hud-corner-width);
+    }
+
+    &::after {
+        right: calc(-1 * var(--border-width));
+        bottom: calc(-1 * var(--border-width));
+        border-right-width: var(--hud-corner-width);
+        border-bottom-width: var(--hud-corner-width);
+    }
+
+    &__title {
+        @include display-caps;
+
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-display);
+        color: var(--color-text);
+    }
+}

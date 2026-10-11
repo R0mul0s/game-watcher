@@ -1,0 +1,47 @@
+// _brand.scss
+// Logo a název aplikace v hlavičce (komponenta BrandLogo).
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text);
+    text-decoration: none;
+
+    @include neon-focus;
+
+    &__name {
+        @include display-caps;
+
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-display);
+        text-shadow: var(--text-glow-accent);
+    }
+}
+
+.brand-logo {
+    width: var(--logo-size);
+    height: var(--logo-size);
+    overflow: visible;
+    fill: none;
+    stroke-linejoin: round;
+
+    &__frame,
+    &__ticks {
+        stroke: var(--color-neon-cyan);
+        stroke-width: var(--svg-stroke-logo);
+        filter: var(--svg-glow-accent);
+    }
+
+    &__play {
+        fill: var(--color-accent-soft);
+        stroke: var(--color-neon-magenta);
+        stroke-width: var(--svg-stroke-logo);
+        filter: var(--svg-glow-magenta);
+    }
+}

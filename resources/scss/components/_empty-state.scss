@@ -1,0 +1,59 @@
+// _empty-state.scss
+// Prázdný seznam — kroužící „radar", který zatím nic nenašel (R6).
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.empty-state {
+    align-items: center;
+    padding: var(--space-6) var(--space-4);
+    text-align: center;
+
+    &__radar {
+        position: relative;
+        width: var(--radar-size);
+        height: var(--radar-size);
+        margin-bottom: var(--space-3);
+        border: var(--border-width) solid var(--grid-line-strong);
+        border-radius: 50%;
+        // Soustředné kruhy a kříž zaměřovače
+        background:
+            radial-gradient(circle, transparent 32%, var(--grid-line-strong) 33%, transparent 34%),
+            radial-gradient(circle, transparent 65%, var(--grid-line-strong) 66%, transparent 67%),
+            linear-gradient(var(--grid-line-strong), var(--grid-line-strong)) center / var(--border-width) 100% no-repeat,
+            linear-gradient(var(--grid-line-strong), var(--grid-line-strong)) center / 100% var(--border-width) no-repeat;
+        box-shadow: var(--glow-accent);
+
+        // Paprsek radaru
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--color-accent-soft), transparent 25%);
+
+            @include with-motion {
+                animation: radar-sweep var(--duration-radar) linear infinite;
+            }
+        }
+    }
+
+    &__title {
+        @include display-caps;
+
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-display);
+    }
+
+    &__text {
+        color: var(--color-text-muted);
+    }
+}
+
+@keyframes radar-sweep {
+    to {
+        transform: rotate(1turn);
+    }
+}
