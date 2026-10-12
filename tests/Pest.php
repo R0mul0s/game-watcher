@@ -105,6 +105,9 @@ function fakeApis(array $overrides = []): void
         'api.isthereanydeal.com/games/info/v2?id='.ALAN_WAKE_2_ID => Http::response(jsonFixture('itad/info-alan-wake-2')),
         'api.isthereanydeal.com/games/info/v2*' => apiError(404, 'Not Found'),
         // Zachycené ceny tří her — vrátí jen hry, na které se požadavek ptá, jako skutečné API
+        // Historie cen (R28) — zachycená za rok jen u BIOMUTANT, ostatní hry bez historie
+        'api.isthereanydeal.com/games/history/v2?id='.BIOMUTANT_ID.'*' => Http::response(jsonFixture('itad/history-biomutant')),
+        'api.isthereanydeal.com/games/history/v2*' => Http::response([]),
         'api.isthereanydeal.com/games/prices/v3*' => fn (Request $request): PromiseInterface => Http::response(array_values(array_filter(
             jsonFixture('itad/prices'),
             fn (array $game): bool => in_array($game['id'], $request->data(), true),

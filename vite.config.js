@@ -13,6 +13,11 @@ import { defineConfig } from 'vite';
 
 const DEV_SERVER_PORT = 5173;
 const DEV_SERVER_PUBLIC_PORT = 54732;
+/**
+ * Mez varování o velikosti bloku [kB]. Graf ceny (ECharts, ~550 kB, gzip ~190 kB)
+ * je samostatný blok načítaný jen na detailu hry (R28) — varování by jen šumělo.
+ */
+const CHUNK_SIZE_WARNING_KB = 600;
 
 export default defineConfig({
     plugins: [
@@ -29,6 +34,9 @@ export default defineConfig({
             },
         }),
     ],
+    build: {
+        chunkSizeWarningLimit: CHUNK_SIZE_WARNING_KB,
+    },
     server: {
         host: '0.0.0.0',
         port: DEV_SERVER_PORT,

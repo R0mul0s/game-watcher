@@ -112,6 +112,7 @@ Kurzy: ČNB (textový lístek bez klíče, R14).
 25. **Žánry a režimy jsou ze Steamu, počet hráčů z PS Store** (R25) — `games.genres` / `games.modes` plní jen `RefreshGameDetails` (přidání hry a cron, malé dávky kvůli limitu Steamu), `store_listings.local_players` připojení a obnova ceny PS. Režimy hry počítej přes `Game::playModes()` (Steam + PS Store, potřebuje načtené `storeListings`), filtr hráčů přes `PlayerFilter::matches()`
 26. **Upozornění vyhodnocuje jen `PriceWatch`** (cíl / historické minimum, cena včetně klíčů a s PS Plus podle účtu) a rozesílá `SendPriceAlerts` v cron URL — synchronně, `PriceAlertMail` nesmí implementovat `ShouldQueue`. Stav „už upozorněno“ je poslední upozorněná cena (`notified_amount`), mění se jen po doručení (R26). Při úpravě stavu v testech pozor na zastaralý model — změna na `null` u modelu, který `null` už měl, se neuloží
 27. **Ceny v textech mimo stránku jen přes `MoneyFormatter`** (bez Intl — data ICU pro češtinu na serveru chybět mohou). Odběry Web Push jen přes `PushEndpoint` (známé push služby, SSRF) a patří účtu; `/sw.js` a `/manifest.webmanifest` jsou bez přihlášení (R27)
+28. **Graf ceny počítá jen `PriceChart`** (R28) — historie ITAD (`games/history/v2`) přes cache, nikdy v cyklu po hrách; detail ji dostává jako odložený prop (`Inertia::defer`). ECharts registruj jen v `resources/js/lib/echarts.js` a komponentu grafu importuj asynchronně, ať knihovna není v hlavním bloku
 
 ## Jazyk
 

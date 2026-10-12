@@ -1,0 +1,4602 @@
+[
+    {
+        "timestamp": "2026-10-12T13:25:34+02:00",
+        "shop": {
+            "id": 76,
+            "name": "Gamesporium"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-10-08T19:38:29+02:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-10-07T09:21:04+02:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-10-05T09:56:01+02:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-09-28T09:56:35+02:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.9,
+                "amountInt": 990,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-09-24T19:23:54+02:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-09-24T14:31:47+02:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-09-17T18:21:51+02:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-09-07T00:25:22+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-09-03T19:06:17+02:00",
+        "shop": {
+            "id": 37,
+            "name": "Humble Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-09-03T18:16:06+02:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-09-01T09:25:18+02:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-08-31T11:47:32+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-08-21T01:06:58+02:00",
+        "shop": {
+            "id": 6,
+            "name": "Fanatical"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-08-17T09:25:08+02:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.9,
+                "amountInt": 990,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-08-14T19:18:50+02:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-08-13T19:07:03+02:00",
+        "shop": {
+            "id": 37,
+            "name": "Humble Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-08-12T17:46:34+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 27.99,
+                "amountInt": 2799,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 30
+        }
+    },
+    {
+        "timestamp": "2026-08-10T11:06:11+02:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-08-10T11:05:39+02:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-08-10T11:05:11+02:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 31.49,
+                "amountInt": 3149,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-08-10T10:47:08+02:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-08-07T19:16:29+02:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-08-03T10:07:29+02:00",
+        "shop": {
+            "id": 6,
+            "name": "Fanatical"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-08-03T10:03:53+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 29.99,
+                "amountInt": 2999,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 25
+        }
+    },
+    {
+        "timestamp": "2026-08-03T00:23:30+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-08-01T10:04:34+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-07-31T10:49:04+02:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.11,
+                "amountInt": 811,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-07-31T10:47:30+02:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.12,
+                "amountInt": 812,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-07-31T10:42:13+02:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.12,
+                "amountInt": 812,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-07-31T10:40:14+02:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 7.13,
+                "amountInt": 713,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-07-30T18:26:32+02:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-07-27T00:21:19+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-07-25T10:02:38+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 29.99,
+                "amountInt": 2999,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 25
+        }
+    },
+    {
+        "timestamp": "2026-07-17T02:15:43+02:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 37.59,
+                "amountInt": 3759,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 6
+        }
+    },
+    {
+        "timestamp": "2026-07-16T21:21:49+02:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-07-16T21:16:13+02:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-07-16T19:21:14+02:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-07-16T17:22:00+02:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-07-15T22:56:03+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 7.89,
+                "amountInt": 789,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-07-14T02:01:04+02:00",
+        "shop": {
+            "id": 42,
+            "name": "IndieGala Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 59.99,
+                "amountInt": 5999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 59.99,
+                "amountInt": 5999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-07-13T16:56:24+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.49,
+                "amountInt": 849,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2026-07-10T10:11:22+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-07-09T19:29:06+02:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-07-09T09:31:41+02:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-06-29T14:06:30+02:00",
+        "shop": {
+            "id": 42,
+            "name": "IndieGala Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 14.99,
+                "amountInt": 1499,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 59.99,
+                "amountInt": 5999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-06-26T10:00:48+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 29.99,
+                "amountInt": 2999,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 25
+        }
+    },
+    {
+        "timestamp": "2026-06-25T22:20:49+02:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-06-25T21:30:15+02:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-06-25T19:00:39+02:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-06-25T09:50:52+02:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-06-22T21:50:34+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-06-19T18:51:02+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 29.99,
+                "amountInt": 2999,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 25
+        }
+    },
+    {
+        "timestamp": "2026-06-18T19:21:07+02:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-06-17T14:41:26+02:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-06-15T10:13:08+02:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-06-15T10:12:53+02:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-06-15T10:12:36+02:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-06-15T10:12:20+02:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 31.49,
+                "amountInt": 3149,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-06-11T18:16:59+02:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-06-08T10:50:53+02:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.11,
+                "amountInt": 811,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-06-08T10:50:25+02:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 7.13,
+                "amountInt": 713,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-06-08T10:30:31+02:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.12,
+                "amountInt": 812,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-06-08T10:12:37+02:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.12,
+                "amountInt": 812,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-06-08T00:51:35+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-06-05T18:50:36+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 32.99,
+                "amountInt": 3299,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 18
+        }
+    },
+    {
+        "timestamp": "2026-06-02T01:11:43+02:00",
+        "shop": {
+            "id": 6,
+            "name": "Fanatical"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-06-01T01:06:36+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-05-28T19:17:13+02:00",
+        "shop": {
+            "id": 37,
+            "name": "Humble Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-05-23T10:09:05+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.88,
+                "amountInt": 988,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-05-22T15:15:37+02:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-05-18T10:18:28+02:00",
+        "shop": {
+            "id": 6,
+            "name": "Fanatical"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-05-14T17:41:43+02:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-05-12T09:36:11+02:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-05-11T00:30:50+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-05-08T19:51:02+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.49,
+                "amountInt": 849,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2026-05-08T09:52:07+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-05-07T19:06:32+02:00",
+        "shop": {
+            "id": 37,
+            "name": "Humble Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-05-07T03:30:23+02:00",
+        "shop": {
+            "id": 13,
+            "name": "DLGamer"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-05-07T02:12:39+02:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 37.99,
+                "amountInt": 3799,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 5
+        }
+    },
+    {
+        "timestamp": "2026-05-06T21:34:58+02:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-05-06T19:10:48+02:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-05-04T19:29:08+02:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-05-04T00:50:59+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-05-01T14:21:17+02:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-04-27T19:19:27+02:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-04-24T08:01:05+02:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.4,
+                "amountInt": 840,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2026-04-24T03:21:01+02:00",
+        "shop": {
+            "id": 13,
+            "name": "DLGamer"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-04-23T22:01:40+02:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-04-23T19:06:29+02:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-04-23T14:01:07+02:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-04-20T10:46:14+02:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-04-20T10:45:06+02:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-04-20T10:42:06+02:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-04-20T10:40:20+02:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 31.49,
+                "amountInt": 3149,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-04-13T17:13:06+02:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-04-10T11:20:45+02:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 7.13,
+                "amountInt": 713,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-04-10T10:52:07+02:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.12,
+                "amountInt": 812,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-04-10T10:47:13+02:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.12,
+                "amountInt": 812,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-04-10T10:45:19+02:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.11,
+                "amountInt": 811,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2026-04-06T00:41:08+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-04-03T09:35:50+02:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-04-01T03:06:30+02:00",
+        "shop": {
+            "id": 36,
+            "name": "GreenManGaming"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-03-30T18:06:53+02:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-03-30T00:42:58+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-03-27T14:11:32+01:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-03-27T01:21:38+01:00",
+        "shop": {
+            "id": 6,
+            "name": "Fanatical"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-03-26T18:30:19+01:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-03-26T09:00:45+01:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.88,
+                "amountInt": 988,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-03-19T14:51:30+01:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-03-18T03:15:55+01:00",
+        "shop": {
+            "id": 36,
+            "name": "GreenManGaming"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-03-17T13:02:42+01:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 33.59,
+                "amountInt": 3359,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 16
+        }
+    },
+    {
+        "timestamp": "2026-03-16T17:02:37+01:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.99,
+                "amountInt": 899,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 78
+        }
+    },
+    {
+        "timestamp": "2026-03-12T18:17:00+01:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-03-11T11:02:46+01:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-03-09T10:15:18+01:00",
+        "shop": {
+            "id": 6,
+            "name": "Fanatical"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-03-05T00:48:59+01:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-03-04T04:06:48+01:00",
+        "shop": {
+            "id": 13,
+            "name": "DLGamer"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-03-04T01:06:56+01:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 37.99,
+                "amountInt": 3799,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 5
+        }
+    },
+    {
+        "timestamp": "2026-03-04T00:27:02+01:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-03-03T19:07:42+01:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-02-26T19:06:28+01:00",
+        "shop": {
+            "id": 37,
+            "name": "Humble Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-02-26T00:31:13+01:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-02-23T17:52:13+01:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-02-18T05:20:44+01:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.4,
+                "amountInt": 840,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2026-02-18T04:01:05+01:00",
+        "shop": {
+            "id": 13,
+            "name": "DLGamer"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-02-17T20:16:20+01:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-02-17T19:44:37+01:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-02-16T10:38:11+01:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-02-16T10:37:35+01:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-02-16T10:16:29+01:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-02-16T10:15:30+01:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 31.49,
+                "amountInt": 3149,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-02-09T19:28:11+01:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-02-09T17:24:18+01:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-02-09T10:36:39+01:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.25,
+                "amountInt": 825,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2026-02-09T10:35:49+01:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.25,
+                "amountInt": 825,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2026-02-09T10:11:48+01:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.25,
+                "amountInt": 825,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2026-02-09T10:10:37+01:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 7.22,
+                "amountInt": 722,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2026-02-05T19:17:14+01:00",
+        "shop": {
+            "id": 37,
+            "name": "Humble Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-02-04T09:17:46+01:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-02-02T22:55:38+01:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 33.59,
+                "amountInt": 3359,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 16
+        }
+    },
+    {
+        "timestamp": "2026-01-26T19:19:16+01:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-01-26T00:31:53+01:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-01-23T15:02:01+01:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-01-19T00:28:03+01:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-01-10T03:36:46+01:00",
+        "shop": {
+            "id": 36,
+            "name": "GreenManGaming"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-01-08T17:51:51+01:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-01-06T09:56:27+01:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.88,
+                "amountInt": 988,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2026-01-06T03:55:34+01:00",
+        "shop": {
+            "id": 13,
+            "name": "DLGamer"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-01-06T01:17:56+01:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 37.99,
+                "amountInt": 3799,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 5
+        }
+    },
+    {
+        "timestamp": "2026-01-06T01:15:37+01:00",
+        "shop": {
+            "id": 42,
+            "name": "IndieGala Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 59.99,
+                "amountInt": 5999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 59.99,
+                "amountInt": 5999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-01-05T20:36:27+01:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-01-05T19:26:26+01:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-01-05T19:16:15+01:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-01-05T19:06:12+01:00",
+        "shop": {
+            "id": 37,
+            "name": "Humble Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-01-05T01:15:33+01:00",
+        "shop": {
+            "id": 6,
+            "name": "Fanatical"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-01-05T00:37:00+01:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-01-05T00:36:21+01:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-01-05T00:35:47+01:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 31.49,
+                "amountInt": 3149,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-01-05T00:16:37+01:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2026-01-03T09:41:19+01:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2026-01-02T16:16:09+01:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-29T00:35:51+01:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-12-22T10:34:22+01:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.25,
+                "amountInt": 825,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2025-12-22T10:33:35+01:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.25,
+                "amountInt": 825,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2025-12-22T10:32:12+01:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 7.22,
+                "amountInt": 722,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2025-12-22T10:11:03+01:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.25,
+                "amountInt": 825,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2025-12-22T08:46:59+01:00",
+        "shop": {
+            "id": 42,
+            "name": "IndieGala Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 14.99,
+                "amountInt": 1499,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 59.99,
+                "amountInt": 5999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-22T01:11:53+01:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-19T04:26:42+01:00",
+        "shop": {
+            "id": 13,
+            "name": "DLGamer"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-18T19:51:41+01:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-18T19:51:24+01:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-18T19:37:01+01:00",
+        "shop": {
+            "id": 37,
+            "name": "Humble Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-12T14:05:59+01:00",
+        "shop": {
+            "id": 36,
+            "name": "GreenManGaming"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-11T19:19:20+01:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-11T18:35:01+01:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-11T14:36:16+01:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-11T10:15:49+01:00",
+        "shop": {
+            "id": 6,
+            "name": "Fanatical"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-10T21:15:53+01:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-12-07T10:17:01+01:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.88,
+                "amountInt": 988,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-12-05T01:56:24+01:00",
+        "shop": {
+            "id": 36,
+            "name": "GreenManGaming"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-12-04T19:52:06+01:00",
+        "shop": {
+            "id": 37,
+            "name": "Humble Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-12-04T03:35:30+01:00",
+        "shop": {
+            "id": 13,
+            "name": "DLGamer"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2025-12-04T01:16:15+01:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 37.99,
+                "amountInt": 3799,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 5
+        }
+    },
+    {
+        "timestamp": "2025-12-03T21:35:27+01:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 33.99,
+                "amountInt": 3399,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 15
+        }
+    },
+    {
+        "timestamp": "2025-12-03T19:57:06+01:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-12-03T19:16:29+01:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-12-03T09:15:59+01:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-12-01T00:15:58+01:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-11-26T03:55:31+01:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 7.99,
+                "amountInt": 799,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2025-11-25T14:36:10+01:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-11-24T09:57:54+01:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-11-24T00:17:55+01:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-11-21T03:30:24+01:00",
+        "shop": {
+            "id": 13,
+            "name": "DLGamer"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-11-21T02:36:21+01:00",
+        "shop": {
+            "id": 36,
+            "name": "GreenManGaming"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-11-21T00:12:14+01:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-11-20T21:30:56+01:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 8.5,
+                "amountInt": 850,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 79
+        }
+    },
+    {
+        "timestamp": "2025-11-20T21:10:36+01:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-11-20T19:07:39+01:00",
+        "shop": {
+            "id": 37,
+            "name": "Humble Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-11-20T16:14:54+01:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 33.99,
+                "amountInt": 3399,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 15
+        }
+    },
+    {
+        "timestamp": "2025-11-18T01:10:37+01:00",
+        "shop": {
+            "id": 6,
+            "name": "Fanatical"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-11-10T19:16:23+01:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-11-04T03:51:33+01:00",
+        "shop": {
+            "id": 36,
+            "name": "GreenManGaming"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-11-03T19:18:37+01:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-11-03T18:11:22+01:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-11-03T10:22:05+01:00",
+        "shop": {
+            "id": 6,
+            "name": "Fanatical"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-10-27T11:46:15+01:00",
+        "shop": {
+            "id": 36,
+            "name": "GreenManGaming"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-10-20T17:29:10+02:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.99,
+                "amountInt": 999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-10-13T10:52:13+02:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2025-10-13T10:51:41+02:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2025-10-13T10:50:33+02:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 31.49,
+                "amountInt": 3149,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2025-10-13T10:05:34+02:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2025-10-13T00:49:41+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 61,
+            "name": "Steam"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 6,
+            "name": "Fanatical"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 2,
+            "name": "AllYouPlay"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 13,
+            "name": "DLGamer"
+        },
+        "deal": {
+            "price": {
+                "amount": 35.99,
+                "amountInt": 3599,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 10
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 16,
+            "name": "Epic Game Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 35,
+            "name": "GOG"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 64,
+            "name": "WinGameStore"
+        },
+        "deal": {
+            "price": {
+                "amount": 9.88,
+                "amountInt": 988,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 24,
+            "name": "GamersGate"
+        },
+        "deal": {
+            "price": {
+                "amount": 10,
+                "amountInt": 1000,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 75
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 42,
+            "name": "IndieGala Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 59.99,
+                "amountInt": 5999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 59.99,
+                "amountInt": 5999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 20,
+            "name": "GameBillet"
+        },
+        "deal": {
+            "price": {
+                "amount": 37.59,
+                "amountInt": 3759,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 6
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 37,
+            "name": "Humble Store"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 29,
+            "name": "GamesPlanet US"
+        },
+        "deal": {
+            "price": {
+                "amount": 7.99,
+                "amountInt": 799,
+                "currency": "USD"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "USD"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 36,
+            "name": "GreenManGaming"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 27,
+            "name": "GamesPlanet DE"
+        },
+        "deal": {
+            "price": {
+                "amount": 7.99,
+                "amountInt": 799,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 28,
+            "name": "GamesPlanet FR"
+        },
+        "deal": {
+            "price": {
+                "amount": 7.99,
+                "amountInt": 799,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 26,
+            "name": "GamesPlanet UK"
+        },
+        "deal": {
+            "price": {
+                "amount": 6.99,
+                "amountInt": 699,
+                "currency": "GBP"
+            },
+            "regular": {
+                "amount": 34.99,
+                "amountInt": 3499,
+                "currency": "GBP"
+            },
+            "cut": 80
+        }
+    },
+    {
+        "timestamp": "2025-10-12T02:00:00+02:00",
+        "shop": {
+            "id": 19,
+            "name": "2game"
+        },
+        "deal": {
+            "price": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "regular": {
+                "amount": 39.99,
+                "amountInt": 3999,
+                "currency": "EUR"
+            },
+            "cut": 0
+        }
+    }
+]

@@ -107,6 +107,19 @@ return [
     ],
 
     /*
+    | Graf vývoje ceny na detailu hry (etapa 7, R28). Obchody pro PC z historie
+    | ITAD (games/history/v2) za history_days dní, obchody s klíči a PS Store
+    | z vlastní price_history. Historie ITAD drží cache — detail hry tak ITAD
+    | volá nejvýš jednou za cache_seconds.
+    */
+    'chart' => [
+        'history_days' => 730,
+        'cache_seconds' => 21600,
+        // ID obchodu Steam v ITAD — vlastní čára v grafu
+        'steam_shop_id' => 61,
+    ],
+
+    /*
     | Upozornění na telefon (Web Push, R13) — převzato z Počasí. Klíče VAPID
     | vygeneruje games:push-keys; bez nich se upozornění na telefon nenabízí.
     */

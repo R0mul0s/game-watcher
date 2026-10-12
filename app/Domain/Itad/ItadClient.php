@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Domain\Itad;
 
 use App\Domain\Itad\Exceptions\ItadUnavailable;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
@@ -33,6 +34,8 @@ final class ItadClient
     private const INFO_PATH = '/games/info/v2';
 
     private const PRICES_PATH = '/games/prices/v3';
+
+    private const HISTORY_PATH = '/games/history/v2';
 
     /**
      * Hry podle názvu, v pořadí relevance podle ITAD.
@@ -108,6 +111,32 @@ final class ItadClient
         }
 
         return ItadGameInfo::fromApi($data) ?? throw $this->unexpectedShape(self::INFO_PATH);
+    }
+
+    /**
+     * Historie cen hry v obchodech od data (R28) — změny ceny po obchodech,
+     * první záznam obchodu je stav k začátku období. Hra bez historie = prázdný seznam.
+     *
+     * @return list<ItadPriceChange>
+     *
+     * @throws ItadUnavailable
+     */
+    public function history(string $itadId, CarbonImmutable $since): array
+    {
+        $data = $this->get(self::HISTORY_PATH, [
+            'id' => $itadId,
+            'country' => config('games.sources.itad.country'),
+            'since' => $since->utc()->toIso8601ZuluString(),
+        ], allowNotFound: true) ?? [];
+
+        if (! array_is_list($data)) {
+            throw $this->unexpectedShape(self::HISTORY_PATH);
+        }
+
+        return array_values(array_filter(array_map(
+            fn (mixed $item): ?ItadPriceChange => is_array($item) ? ItadPriceChange::fromApi($item) : null,
+            $data,
+        )));
     }
 
     /**

@@ -35,6 +35,15 @@
     --color-playstation-soft: rgb(61 139 255 / 14%);
     --glow-playstation: 0 0 0.5rem rgb(61 139 255 / 60%), 0 0 1.5rem rgb(61 139 255 / 25%);
     --color-plus: var(--color-neon-amber);
+
+    // Graf vývoje ceny (R28) — čáry podle zdroje; Steam tlumeně modrošedý
+    --chart-grid: var(--color-border);
+    --chart-official: var(--color-neon-cyan);
+    --chart-steam: #8fb3d1;
+    --chart-keyshops: var(--color-neon-magenta);
+    --chart-playstation: var(--color-playstation);
+    --chart-target: var(--color-neon-green);
+    --chart-height: 18rem;
     --color-success-soft: rgb(57 255 143 / 10%);
     --color-danger-soft: rgb(255 77 109 / 12%);
     --color-on-accent: #021016;

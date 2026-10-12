@@ -1,0 +1,30 @@
+// _price-chart.scss
+// Graf vývoje ceny na detailu hry (PriceChart.vue, R28).
+//
+// @author Roman Hlaváček
+// @created 2026-10-12
+
+.price-chart {
+    &__header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-2);
+    }
+
+    &__canvas {
+        width: 100%;
+        height: var(--chart-height);
+    }
+
+    &__note {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+    }
+
+    // Místo grafu, než dorazí data (odložený prop)
+    &--loading {
+        min-height: var(--chart-height);
+    }
+}

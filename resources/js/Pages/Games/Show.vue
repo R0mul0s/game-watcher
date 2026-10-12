@@ -2,7 +2,8 @@
     Detail hry z katalogu — údaje z IsThereAnyDeal (R10), sledování a odkazy.
     Ceny v měně účtu (R14) — panel PricePanel. U sledované hry jde zvolit,
     kde se hlídá (R24) — ceny ostatních platforem se ztlumí — a cílovou
-    cenu pro upozornění (etapa 6, R26).
+    cenu pro upozornění (etapa 6, R26). Graf vývoje ceny se dočte po zobrazení
+    stránky (odložený prop, etapa 7, R28).
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -14,12 +15,17 @@ import StoreListings from '@/Components/StoreListings.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { formatDate, formatInteger } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
-import { Head, router, useForm, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Deferred, Head, router, useForm, usePage } from '@inertiajs/vue3';
+import { defineAsyncComponent, ref } from 'vue';
+
+/** Graf s ECharts až když je potřeba — knihovna je velká, stránka se zobrazí bez ní. */
+const PriceChart = defineAsyncComponent(() => import('@/Components/PriceChart.vue'));
 
 const props = defineProps({
     game: { type: Object, required: true },
     watchUrl: { type: String, required: true },
+    /** Graf vývoje ceny — odložený prop (PriceChart na serveru). */
+    chart: { type: Object, default: null },
 });
 
 const t = useTranslations();
@@ -178,6 +184,15 @@ function toggleWatch() {
 
             <div class="game-detail__panels">
                 <PricePanel :prices="game.prices" :focus-platform="game.watchPlatform" class="game-detail__prices" />
+                <Deferred data="chart">
+                    <template #fallback>
+                        <section class="panel price-chart price-chart--loading game-detail__prices" aria-busy="true">
+                            <h2 class="panel__title">{{ t('chart.title') }}</h2>
+                            <p class="panel__text">{{ t('chart.loading') }}</p>
+                        </section>
+                    </template>
+                    <PriceChart v-if="chart" :chart="chart" :watch-platform="game.watchPlatform" class="game-detail__prices" />
+                </Deferred>
                 <StoreListings :listings="game.listings" :connect-url="game.connectUrl" class="game-detail__prices" />
 
                 <section v-if="game.reviews.length" class="panel">

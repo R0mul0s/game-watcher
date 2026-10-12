@@ -56,6 +56,7 @@ v [PLAN.md](PLAN.md); větší celky se z toho stávají etapou.
 ## Přehled a zobrazení
 
 - **PWA** — manifest a service worker pro upozornění jsou (R27); zkratky aplikace a odznak s počtem slev jako v Počasí zatím ne
+- **graf ceny**: historické kurzy ČNB (dnes se přepočítává dnešním kurzem, R28), historie obchodů s klíči odjinud než z vlastních záznamů, značky slev (začátek a konec akce)
 - porovnání regionů (stejná hra na PS Store v CZ vs. TR/AR) — zajímavé, ale na hranici pravidel obchodů
 
 ## Provoz

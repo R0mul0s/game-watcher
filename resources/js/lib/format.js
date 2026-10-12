@@ -30,6 +30,28 @@ function cachedFormatter(Formatter, locale, options) {
 }
 
 /**
+ * Měsíc a rok pro osu grafu („říj 2026") — den Y-m-d jako UTC jako formatDate.
+ *
+ * @param {string} value Y-m-d
+ * @param {string} locale
+ * @returns {string}
+ */
+export function formatMonth(value, locale) {
+    return cachedFormatter(Intl.DateTimeFormat, locale, { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`));
+}
+
+/**
+ * Den a měsíc pro osu grafu krátkého období („5. 9.") — den Y-m-d jako UTC.
+ *
+ * @param {string} value Y-m-d
+ * @param {string} locale
+ * @returns {string}
+ */
+export function formatDayMonth(value, locale) {
+    return cachedFormatter(Intl.DateTimeFormat, locale, { day: 'numeric', month: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`));
+}
+
+/**
  * Datum bez času („24. 9. 2026"); chybějící hodnotu jako pomlčku.
  *
  * Datum ze serveru je kalendářní den (Y-m-d) bez zóny — čte se i formátuje

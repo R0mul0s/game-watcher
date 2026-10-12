@@ -316,6 +316,28 @@ return [
             'source' => 'Údaje o hře: :source',
         ],
 
+        // Graf vývoje ceny na detailu hry (etapa 7, R28)
+        'chart' => [
+            'title' => 'Vývoj ceny',
+            'loading' => 'Načítám historii cen…',
+            'empty' => 'Historie cen zatím není.',
+            'range' => 'Období',
+            'ranges' => [
+                'months' => '3 měsíce',
+                'year' => 'Rok',
+                'all' => 'Vše',
+            ],
+            'series' => [
+                'official' => 'Nejlevněji (PC)',
+                'steam' => 'Steam',
+                'keyshops' => 'Obchody s klíči',
+            ],
+            'target' => 'cíl :price',
+            'note' => 'Nejnižší cena dne v měně účtu, přepočteno dnešním kurzem ČNB. Obchody pro PC podle historie IsThereAnyDeal.',
+            'own_since' => 'Obchody s klíči a PlayStation Store sledujeme od :date.',
+            'itad_unavailable' => 'Historie z IsThereAnyDeal teď není k dispozici.',
+        ],
+
         // Nastavení upozornění (etapa 6, R13, R26)
         'settings' => [
             'title' => 'Nastavení',
