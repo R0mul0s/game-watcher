@@ -13,12 +13,17 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Domain\Catalog\GameQuery;
+use App\Domain\Catalog\SearchFilters;
 use App\Domain\PlayStation\PlayStationUrl;
+use App\Enums\Platform;
+use App\Enums\SearchSort;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
- * Dotaz `q` — název, Steam App ID nebo odkaz na Steam. Bez dotazu stránka
- * ukáže jen formulář a ITAD se nevolá.
+ * Dotaz `q` — název, Steam App ID, odkaz na Steam, PS Store nebo ITAD. Bez
+ * dotazu stránka ukáže jen formulář a ITAD se nevolá. Filtry výsledků (druh,
+ * platforma, řazení, víc výsledků) jsou další parametry adresy (R30).
  */
 class GameSearchRequest extends FormRequest
 {
@@ -40,6 +45,27 @@ class GameSearchRequest extends FormRequest
         return [
             'q' => ['nullable', 'string', 'max:'.config('games.catalog.max_query_length')],
         ];
+    }
+
+    /**
+     * Platné filtry výsledků z adresy (R30); neplatné hodnoty vynechá — jako
+     * filtry přehledu, chyby se nevrací.
+     */
+    public function searchFilters(): SearchFilters
+    {
+        $valid = validator($this->query(), [
+            'type' => [Rule::in(SearchFilters::TYPES)],
+            'platform' => [Rule::enum(Platform::class)],
+            'sort' => [Rule::enum(SearchSort::class)],
+            'more' => ['boolean'],
+        ])->valid();
+
+        return new SearchFilters(
+            type: is_string($valid['type'] ?? null) ? $valid['type'] : null,
+            platform: Platform::tryFrom((string) ($valid['platform'] ?? '')),
+            sort: SearchSort::tryFrom((string) ($valid['sort'] ?? '')) ?? SearchSort::Relevance,
+            more: filter_var($valid['more'] ?? false, FILTER_VALIDATE_BOOLEAN),
+        );
     }
 
     /**

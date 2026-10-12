@@ -16,6 +16,7 @@ use App\Domain\Pricing\Money;
 use App\Domain\Pricing\PriceFilter;
 use App\Enums\Platform;
 use App\Enums\PlayerFilter;
+use App\Enums\PriceBasis;
 use App\Enums\WatchlistSort;
 
 /**
@@ -38,8 +39,9 @@ final readonly class WatchlistFilters
         public ?int $maxPriceCents = null,
         public ?int $minCut = null,
         public ?string $type = null,
-        public WatchlistSort $sort = WatchlistSort::Added,
+        public WatchlistSort $sort = WatchlistSort::DEFAULT,
         public bool $withPlus = false,
+        public PriceBasis $basis = PriceBasis::Official,
     ) {}
 
     /**
@@ -47,7 +49,7 @@ final readonly class WatchlistFilters
      */
     public function priceFilter(): PriceFilter
     {
-        return new PriceFilter($this->platform, $this->withPlus);
+        return new PriceFilter($this->platform, $this->withPlus, $this->basis);
     }
 
     /**
@@ -60,7 +62,7 @@ final readonly class WatchlistFilters
     }
 
     /**
-     * Je nějaký filtr zapnutý (kromě řazení a PS Plus)?
+     * Je nějaký filtr zapnutý (kromě řazení, PS Plus a zdroje ceny)?
      */
     public function isActive(): bool
     {
@@ -86,6 +88,7 @@ final readonly class WatchlistFilters
             'type' => $this->type,
             'sort' => $this->sort->value,
             'plus' => $this->withPlus,
+            'price' => $this->basis->value,
             'active' => $this->isActive(),
         ];
     }

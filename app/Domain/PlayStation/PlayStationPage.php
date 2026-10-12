@@ -84,6 +84,15 @@ final class PlayStationPage
     }
 
     /**
+     * Našla se v HTML data obchodu (JSON skripty env:*)? Stránka bez nich není
+     * „produkt neexistuje“, ale změněný formát (R29) — ceny se pak nesmí smazat.
+     */
+    public function hasData(): bool
+    {
+        return $this->cache !== [];
+    }
+
+    /**
      * Výchozí produkt konceptu (stránky hry) — ten, který PS Store ukazuje jako první.
      */
     public function defaultProductId(string $conceptId): ?string
@@ -129,6 +138,11 @@ final class PlayStationPage
         $media = is_array($product['media'] ?? null) ? $product['media'] : [];
         $releaseDate = $product['releaseDate'] ?? null;
         $publisher = $product['publisherName'] ?? null;
+        // Hodnocení hráčů (R33); produkt bez hodnocení má průměr 0 a počet 0
+        $stars = is_array($product['starRating'] ?? null) ? $product['starRating'] : [];
+        $ratingsCount = is_int($stars['totalRatingsCount'] ?? null) ? $stars['totalRatingsCount'] : null;
+        $rating = is_int($stars['averageRating'] ?? null) || is_float($stars['averageRating'] ?? null) ? (float) $stars['averageRating'] : null;
+        $rated = $rating !== null && $ratingsCount !== null && $ratingsCount > 0;
 
         return new PlayStationProduct(
             id: $productId,
@@ -149,6 +163,8 @@ final class PlayStationPage
             publisher: is_string($publisher) && trim($publisher) !== '' ? trim($publisher) : null,
             localPlayers: self::players($product, [self::LOCAL_PLAYERS_NOTICE]),
             onlinePlayers: self::players($product, self::ONLINE_PLAYERS_NOTICES),
+            starRating: $rated ? $rating : null,
+            starRatingsCount: $rated ? $ratingsCount : null,
         );
     }
 

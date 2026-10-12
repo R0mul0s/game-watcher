@@ -1,5 +1,5 @@
 // _badge.scss
-// Štítky — druh hry, obsah pro dospělé (GameBadges.vue).
+// Štítky — druh hry, obsah pro dospělé (GameBadges.vue), stav zdroje.
 //
 // @author Roman Hlaváček
 // @created 2026-10-11
@@ -25,5 +25,16 @@
     &--warning {
         border-color: var(--color-neon-amber);
         color: var(--color-neon-amber);
+    }
+
+    // Stav zdroje (Sources.vue, R29)
+    &--success {
+        border-color: var(--color-neon-green);
+        color: var(--color-neon-green);
+    }
+
+    &--danger {
+        border-color: var(--color-danger);
+        color: var(--color-danger);
     }
 }

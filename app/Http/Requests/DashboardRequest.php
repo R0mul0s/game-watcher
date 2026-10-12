@@ -16,6 +16,7 @@ use App\Domain\Pricing\Money;
 use App\Domain\Watchlist\WatchlistFilters;
 use App\Enums\Platform;
 use App\Enums\PlayerFilter;
+use App\Enums\PriceBasis;
 use App\Enums\WatchlistSort;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -74,6 +75,7 @@ class DashboardRequest extends FormRequest
             'type' => [Rule::in(self::TYPES)],
             'sort' => [Rule::enum(WatchlistSort::class)],
             'plus' => ['boolean'],
+            'price' => [Rule::enum(PriceBasis::class)],
         ]);
         $failed = $valid->errors()->keys();
         $value = fn (string $key): mixed => in_array($key, $failed, true) || collect($failed)->contains(fn (string $error): bool => str_starts_with($error, $key.'.'))
@@ -94,8 +96,9 @@ class DashboardRequest extends FormRequest
             maxPriceCents: is_numeric($maxPrice) ? (int) round((float) $maxPrice * Money::SUBUNITS) : null,
             minCut: is_numeric($minCut) ? (int) $minCut : null,
             type: is_string($type) ? $type : null,
-            sort: WatchlistSort::tryFrom((string) $value('sort')) ?? WatchlistSort::Added,
+            sort: WatchlistSort::tryFrom((string) $value('sort')) ?? WatchlistSort::DEFAULT,
             withPlus: filter_var($value('plus'), FILTER_VALIDATE_BOOLEAN),
+            basis: PriceBasis::tryFrom((string) $value('price')) ?? PriceBasis::Official,
         );
     }
 }

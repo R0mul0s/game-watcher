@@ -1,0 +1,81 @@
+// _sources.scss
+// Stav zdrojů cen (Sources.vue, R29) — karta na zdroj, výpadek s červeným rámem.
+//
+// @author Roman Hlaváček
+// @created 2026-10-12
+
+@use '../abstracts/mixins' as *;
+
+.sources {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @include from-md {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    &__item {
+        margin: 0;
+
+        &--down {
+            border-color: var(--color-danger);
+        }
+    }
+
+    &__head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-2);
+    }
+
+    &__name {
+        @include display-caps;
+
+        margin: 0;
+        font-size: var(--font-size-md);
+    }
+
+    &__hint {
+        display: block;
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+    }
+
+    &__facts {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-3);
+        margin: var(--space-3) 0 0;
+    }
+
+    &__fact--wide {
+        grid-column: 1 / -1;
+    }
+
+    &__label {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+        letter-spacing: var(--letter-spacing-caps);
+        text-transform: uppercase;
+    }
+
+    &__value {
+        margin: 0;
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+    }
+
+    &__error {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        margin: 0;
+        font-size: var(--font-size-sm);
+        overflow-wrap: anywhere;
+    }
+}

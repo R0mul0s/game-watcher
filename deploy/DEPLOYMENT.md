@@ -113,7 +113,7 @@ curl -I "https://game-watcher.rhsoft.cz/prihlaseni"
 
 ## Cron: stahování cen
 
-Kurzy ČNB, ceny sledovaných her, žánry ze Steamu, upozornění na ceny a úklid cache obstarává URL volaná cronem
+Kurzy ČNB, ceny sledovaných her, žánry ze Steamu, Metascore z Metacritic, upozornění na ceny a úklid cache obstarává URL volaná cronem
 ve WebAdminu (R19) — hosting nemá scheduler ani artisan.
 
 1. V `.env` na hostingu vyplň `GAMES_CRON_TOKEN` — náhodný řetězec:
@@ -125,6 +125,7 @@ ve WebAdminu (R19) — hosting nemá scheduler ani artisan.
    kurzy ČNB — uložen lístek z 9. 10. 2026
    ceny — ITAD her: 4, gg.deals her: 3, PlayStation Store produktů: 1
    žánry a režimy ze Steamu — her: 2
+   Metascore z Metacritic — her: 1
    upozornění — her: 1, e-mailů: 1, na zařízení: 1
    cache — smazáno prošlých záznamů: 6
    ```
@@ -138,6 +139,31 @@ vrátí **409** a nic neudělá; zámek po pádu PHP vyprší sám za 10 minut
 kurz ČNB jen tehdy, když uložený není dnešní (o víkendu platí páteční).
 Upozornění, které nedoručil žádný kanál (chyba SMTP i push), se v souhrnu
 ukáže jako „nedoručeno“, URL vrátí **500** a zkusí ho další běh (R26).
+
+Výsledek každého zdroje ukazuje stránka **Nastavení → Stav zdrojů** (`/stav-zdroju`,
+R29): kdy se který zdroj naposledy povedl, kolik toho stáhl a poslední chyba.
+Výpadek zdroje ohlásí i přehled.
+
+## Monitoring: hlídání cronu a zdrojů
+
+URL **`https://game-watcher.rhsoft.cz/health/zdroje`** (veřejná, bez tokenu — prozrazuje
+jen stáří) vrací **200**, když cron běží a hlídané zdroje se povedly, jinak **503** (R29).
+Na každém řádku jeden zdroj, např. `PlayStation Store — VÝPADEK: poslední úspěch před 545 min`.
+
+- **výpadek cronu** = poslední běh starší než 5 h (`games.monitoring.cron_max_age_minutes`) — hosting cron přestal volat
+- **výpadek zdroje** = poslední úspěch starší než 9 h (`games.monitoring.stale_after_minutes`), tedy dva
+  neúspěšné běhy po sobě; jeden neúspěšný běh je jen „CHYBA“ a 503 nevrací
+- Steam (žánry a režimy) a Metacritic (Metascore her mimo ITAD) se nehlídají — jsou doplňkové (R25, R33)
+- změna formátu PS Store (stránka bez dat obchodu) je výpadek zdroje, dosavadní ceny zůstanou
+
+Hned po nasazení, než cron poprvé proběhne, vrací 503 — zavolej cron URL ručně.
+
+Nastavení v [UptimeRobot](https://uptimerobot.com) (zdarma, stejně jako u Počasí):
+1. *Add New Monitor* → typ **HTTP(s)**
+2. URL `https://game-watcher.rhsoft.cz/health/zdroje`, interval **5 minut**
+3. Alert contact: e-mail (případně mobilní aplikace)
+
+Monitoring nevolá cron URL — kontrola každých 5 minut by jinak pokaždé stahovala ceny.
 
 ---
 
@@ -178,6 +204,8 @@ je jediná cesta, jak ji neztratit.
 | `migrations-2026-10-12-watch-platform.sql` | hlídaná platforma (R24): ve `watchlist_items` sloupec `platform` (NULL = všude, i pro dosud sledované hry); opakovatelný, pustit **po** PlayStation a **před** nahráním kódu | 2026-10-12 |
 | `migrations-2026-10-12-game-details.sql` | žánry a režimy (R25): v `games` sloupce `genres`, `modes`, `steam_details_at`, ve `store_listings` `local_players`, `online_players` — prázdné, doplní je cron; opakovatelný, pustit **po** hlídané platformě a **před** nahráním kódu | 2026-10-12 |
 | `migrations-2026-10-12-price-alerts.sql` | hlídání cen (R26): ve `watchlist_items` cílová cena a poslední upozornění, v `users` `notify_email` (zapnuto) a `has_ps_plus`, tabulka `push_subscriptions`; opakovatelný, pustit **po** žánrech a **před** nahráním kódu | 2026-10-12 |
+| `migrations-2026-10-12-source-statuses.sql` | stav zdrojů (R29): tabulka `source_statuses` — prázdná, naplní ji první běh cronu; opakovatelný, pustit **po** hlídání cen a **před** nahráním kódu | |
+| `migrations-2026-10-12-ratings.sql` | hodnocení (R33): v `games` sloupce `metacritic_*`, ve `store_listings` `star_rating`, `star_ratings_count` — prázdné, doplní je cron a stažení cen; opakovatelný, pustit **po** stavu zdrojů a **před** nahráním kódu | |
 
 ## Nasazené verze
 

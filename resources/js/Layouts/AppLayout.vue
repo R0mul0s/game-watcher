@@ -1,10 +1,12 @@
 <!--
-    Rozvržení stránek přihlášeného uživatele — hlavička s navigací a odhlášením, obsah.
+    Rozvržení stránek přihlášeného uživatele — tlumená kulisa s obzorem (R6),
+    hlavička s navigací a odhlášením, obsah.
 
     @author Roman Hlaváček
     @created 2026-10-11
 -->
 <script setup>
+import AppBackdrop from '@/Components/AppBackdrop.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
 import CurrencySwitch from '@/Components/CurrencySwitch.vue';
 import FlashMessage from '@/Components/FlashMessage.vue';
@@ -16,6 +18,7 @@ const page = usePage();
 </script>
 
 <template>
+    <AppBackdrop variant="subtle" />
     <a href="#main" class="skip-link">{{ t('skip_to_content') }}</a>
     <header class="app-header">
         <div class="app-header__inner">

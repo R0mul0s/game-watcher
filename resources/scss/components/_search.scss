@@ -1,5 +1,5 @@
 // _search.scss
-// Hledání hry k přidání — formulář a seznam výsledků (Games/Search.vue).
+// Hledání hry k přidání — formulář, filtry a seznam výsledků (Games/Search.vue).
 //
 // @author Roman Hlaváček
 // @created 2026-10-11
@@ -37,6 +37,39 @@
 
     &__empty {
         color: var(--color-text-muted);
+    }
+
+    // „Zobrazit víc výsledků“ (R30)
+    &__more {
+        margin-top: var(--space-3);
+    }
+}
+
+// Filtry výsledků — druh, platforma, řazení (R30); na mobilu pod sebou
+.search-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+
+    &__group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    &__label {
+        padding: 0;
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+        letter-spacing: var(--letter-spacing-caps);
+        text-transform: uppercase;
     }
 }
 

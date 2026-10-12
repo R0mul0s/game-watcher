@@ -19,11 +19,13 @@ use App\Models\Game;
 use App\Models\User;
 use App\Models\WatchlistItem;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  * Filtruje a řadí server (R21) — sledovaných her je desítky, ne tisíce, takže
  * se karty spočítají všechny a pak se vybírá; „nejlevněji“ i cena pro filtr
- * jsou z PriceBoard ve stejné měně, jakou uživatel vidí. Žánr a počet hráčů
+ * jsou z PriceBoard ve stejné měně, jakou uživatel vidí, podle zvoleného zdroje
+ * ceny (oficiální, včetně klíčů, jen klíče — R30). Žánr a počet hráčů
  * (R25) jsou údaje hry ze Steamu a PS Store — hra bez údajů s takovým filtrem
  * vypadne.
  */
@@ -67,12 +69,12 @@ final class WatchlistView
     }
 
     /**
-     * Filtry, které nezávisí na ceně — název, druh, žánr a počet hráčů; hra
+     * Filtry, které nezávisí na ceně — hledání, druh, žánr a počet hráčů; hra
      * hlídaná jen na jiné platformě, než chce filtr, vypadne (R24).
      */
     private function matchesGame(Game $game, WatchlistFilters $filters, ?Platform $watchPlatform): bool
     {
-        return ($filters->query === '' || mb_stripos($game->title, $filters->query) !== false)
+        return ($filters->query === '' || $this->matchesQuery($game, $filters->query))
             && ($filters->type === null || $game->type === $filters->type)
             && ($filters->platform === null || $watchPlatform === null || $watchPlatform === $filters->platform)
             && ($filters->genres === null || array_intersect($filters->genres, $game->genres ?? []) !== [])
@@ -80,15 +82,61 @@ final class WatchlistView
     }
 
     /**
-     * Filtry ceny nad nejlevnější nabídkou karty (obchody s klíči se do ní
-     * nepočítají — mají vlastní řádek). Hra bez ceny projde jen bez cenových filtrů.
+     * Hledání v názvu, vývojářích, vydavatelích, štítcích a žánrech (R30) —
+     * každé slovo dotazu musí někde být; bez ohledu na velikost písmen
+     * a diakritiku („akcni“ najde „Akční“).
+     */
+    private function matchesQuery(Game $game, string $query): bool
+    {
+        $haystack = self::normalized(implode(' ', [
+            $game->title,
+            ...$game->developers ?? [],
+            ...$game->publishers ?? [],
+            ...$game->tags ?? [],
+            ...$game->genres ?? [],
+        ]));
+
+        foreach (preg_split('/\s+/u', self::normalized($query), flags: PREG_SPLIT_NO_EMPTY) ?: [] as $word) {
+            if (! str_contains($haystack, $word)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Text pro hledání — malá písmena bez diakritiky.
+     */
+    private static function normalized(string $text): string
+    {
+        return Str::lower(Str::ascii($text));
+    }
+
+    /**
+     * Cenové filtry (R21, R30). „Cena do“ a platforma se řídí cenou podle volby
+     * „Cena“ (`ranked`), sleva vždy oficiální nabídkou — obchody s klíči slevu
+     * neuvádějí. Hra bez ceny projde jen bez cenových filtrů.
      *
      * @param  array<string, mixed>  $card
      */
     private function matchesPrice(array $card, WatchlistFilters $filters): bool
     {
-        $best = $card['prices']['best'];
         if (! $filters->requiresPrice()) {
+            return true;
+        }
+
+        $best = $card['prices']['best'];
+        $ranked = $card['ranked'];
+        if ($ranked === null && $best === null) {
+            return false;
+        }
+
+        if ($filters->maxPriceCents !== null && ($ranked === null || $ranked['effectiveCents'] > $filters->maxPriceCents)) {
+            return false;
+        }
+
+        if (! $filters->dealsOnly && $filters->minCut === null) {
             return true;
         }
 
@@ -99,12 +147,11 @@ final class WatchlistView
         $discounted = $best['cut'] > 0 || ($filters->withPlus && $best['member'] !== null);
 
         return (! $filters->dealsOnly || $discounted)
-            && ($filters->maxPriceCents === null || $best['effectiveCents'] <= $filters->maxPriceCents)
             && ($filters->minCut === null || $best['cut'] >= $filters->minCut);
     }
 
     /**
-     * Karty v pořadí podle volby; hry bez ceny nebo data vydání na konci.
+     * Karty v pořadí podle volby; hry bez ceny, data vydání nebo hodnocení na konci.
      *
      * @param  Collection<int, array<string, mixed>>  $cards
      * @return Collection<int, array<string, mixed>>
@@ -114,9 +161,10 @@ final class WatchlistView
         return match ($sort) {
             WatchlistSort::Added => $cards,
             WatchlistSort::Title => $cards->sortBy('title', SORT_NATURAL | SORT_FLAG_CASE),
-            WatchlistSort::Price => $cards->sortBy(fn (array $card): int => $card['prices']['best']['effectiveCents'] ?? PHP_INT_MAX),
+            WatchlistSort::Price => $cards->sortBy(fn (array $card): int => $card['ranked']['effectiveCents'] ?? PHP_INT_MAX),
             WatchlistSort::Cut => $cards->sortByDesc(fn (array $card): int => $card['prices']['best']['cut'] ?? -1),
             WatchlistSort::Release => $cards->sortByDesc(fn (array $card): string => $card['releaseDate'] ?? ''),
+            WatchlistSort::Score => $cards->sortByDesc(fn (array $card): int => $card['metascore']['score'] ?? -1),
         };
     }
 

@@ -1,6 +1,6 @@
 <!--
     Pokročilé filtry přehledu sledovaných her (R21) — hledání, platforma,
-    hráči, žánr (R25), druh, cena, sleva, PS Plus a řazení. Stav je v adrese stránky;
+    hráči, žánr (R25), druh, zdroj ceny (R30), cena, sleva, PS Plus a řazení. Stav je v adrese stránky;
     filtruje server, komponenta jen posílá volby (s krátkou prodlevou při psaní).
 
     @author Roman Hlaváček
@@ -28,9 +28,14 @@ const DEBOUNCE_MS = 300;
 const CUT_OPTIONS = [25, 50, 75];
 const PLATFORMS = ['pc', 'playstation'];
 const TYPES = ['game', 'dlc'];
-const SORTS = ['added', 'title', 'price', 'cut', 'release'];
+/** Řazení (enum WatchlistSort); první je výchozí — od nejlevnější (R32). */
+const SORTS = ['price', 'score', 'cut', 'release', 'title', 'added'];
+const DEFAULT_SORT = SORTS[0];
 /** Filtr hráčů (enum PlayerFilter). */
 const PLAYERS = ['solo', 'duo', 'couch'];
+/** Zdroj ceny pro řazení a „cena do“ (enum PriceBasis, R30); první je výchozí. */
+const PRICE_BASES = ['official', 'cheapest', 'keyshops'];
+const DEFAULT_PRICE_BASIS = PRICE_BASES[0];
 
 const form = reactive({
     q: props.filters.q,
@@ -42,6 +47,7 @@ const form = reactive({
     minCut: props.filters.minCut,
     deals: props.filters.deals,
     plus: props.filters.plus,
+    price: props.filters.price,
     sort: props.filters.sort,
 });
 
@@ -65,7 +71,8 @@ function params() {
     if (form.minCut) result.min_cut = form.minCut;
     if (form.deals) result.deals = 1;
     if (form.plus) result.plus = 1;
-    if (form.sort !== 'added') result.sort = form.sort;
+    if (form.price !== DEFAULT_PRICE_BASIS) result.price = form.price;
+    if (form.sort !== DEFAULT_SORT) result.sort = form.sort;
 
     return result;
 }
@@ -98,7 +105,7 @@ function toggleGenre(name) {
 }
 
 /**
- * Vrátí všechny filtry na výchozí hodnoty (řazení zůstává).
+ * Vrátí všechny filtry na výchozí hodnoty (řazení a zdroj ceny zůstávají).
  */
 function reset() {
     Object.assign(form, { q: '', platform: null, genres: [], players: null, type: null, maxPrice: null, minCut: null, deals: false, plus: false });
@@ -133,7 +140,7 @@ function reset() {
         <div id="filters-advanced" class="filters__advanced">
             <fieldset class="filters__group">
                 <legend class="filters__label">{{ t('filters.platform') }}</legend>
-                <div class="segmented">
+                <div class="segmented segmented--fill">
                     <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.platform }" :aria-pressed="!form.platform" @click="form.platform = null">
                         {{ t('filters.all') }}
                     </button>
@@ -153,7 +160,7 @@ function reset() {
 
             <fieldset class="filters__group">
                 <legend class="filters__label" :title="t('filters.players_hint')">{{ t('filters.players') }}</legend>
-                <div class="segmented">
+                <div class="segmented segmented--fill">
                     <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.players }" :aria-pressed="!form.players" @click="form.players = null">
                         {{ t('filters.all') }}
                     </button>
@@ -175,7 +182,7 @@ function reset() {
 
             <fieldset class="filters__group">
                 <legend class="filters__label">{{ t('filters.type') }}</legend>
-                <div class="segmented">
+                <div class="segmented segmented--fill">
                     <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.type }" :aria-pressed="!form.type" @click="form.type = null">
                         {{ t('filters.all') }}
                     </button>
@@ -193,6 +200,25 @@ function reset() {
                 </div>
             </fieldset>
 
+            <fieldset class="filters__group">
+                <legend class="filters__label" :title="t('filters.price_basis_hint')">{{ t('filters.price_basis') }}</legend>
+                <div class="segmented segmented--fill">
+                    <button
+                        v-for="basis in PRICE_BASES"
+                        :key="basis"
+                        type="button"
+                        class="segmented__option"
+                        :class="{ 'segmented__option--active': form.price === basis }"
+                        :aria-pressed="form.price === basis"
+                        :title="t(`filters.price_basis_titles.${basis}`)"
+                        :aria-label="t(`filters.price_basis_titles.${basis}`)"
+                        @click="form.price = basis"
+                    >
+                        {{ t(`filters.price_basis_options.${basis}`) }}
+                    </button>
+                </div>
+            </fieldset>
+
             <div class="filters__group">
                 <label class="filters__label" for="filter-max-price">{{ t('filters.max_price') }}</label>
                 <div class="filters__price">
@@ -203,7 +229,7 @@ function reset() {
 
             <fieldset class="filters__group">
                 <legend class="filters__label">{{ t('filters.min_cut') }}</legend>
-                <div class="segmented">
+                <div class="segmented segmented--fill">
                     <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.minCut }" :aria-pressed="!form.minCut" @click="form.minCut = null">
                         {{ t('filters.all') }}
                     </button>

@@ -12,24 +12,20 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\Catalog\Actions\DescribeAvailability;
 use App\Domain\Catalog\Actions\SearchByPlayStationLink;
 use App\Domain\Catalog\Actions\SearchGames;
-use App\Domain\Catalog\GamePresenter;
+use App\Domain\Catalog\SearchResults;
 use App\Domain\Itad\Exceptions\ItadUnavailable;
-use App\Domain\Itad\ItadGame;
-use App\Domain\PlayStation\Actions\FindPlayStationGamePages;
 use App\Domain\PlayStation\Exceptions\PlayStationProductNotFound;
 use App\Domain\PlayStation\Exceptions\PlayStationUnavailable;
 use App\Http\Requests\GameSearchRequest;
-use App\Models\Game;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * Hledá v IsThereAnyDeal (etapa 2) podle názvu, Steamu nebo odkazu z PS Store
- * (R24), u výsledků vyznačí, co uživatel už sleduje, a kde se hra prodává (R23).
+ * Hledá v IsThereAnyDeal (etapa 2) podle názvu, Steamu, odkazu z PS Store
+ * (R24) nebo z ITAD (R30); výsledky s obchody a filtry připraví SearchResults.
  */
 class GameSearchController extends Controller
 {
@@ -40,13 +36,14 @@ class GameSearchController extends Controller
         GameSearchRequest $request,
         SearchGames $searchGames,
         SearchByPlayStationLink $searchByPlayStationLink,
-        DescribeAvailability $describeAvailability,
-        FindPlayStationGamePages $findGamePages,
-        GamePresenter $presenter,
+        SearchResults $searchResults,
     ): Response {
         $query = $request->gameQuery();
         $playstationUrl = $request->playStationUrl();
+        $filters = $request->searchFilters();
+        $user = $request->user();
         $results = [];
+        $found = 0;
         $unavailable = false;
         $playstation = null;
         $playstationError = null;
@@ -55,14 +52,15 @@ class GameSearchController extends Controller
             $games = [];
             if ($playstationUrl !== null) {
                 // Odkaz z PS Store nebo playstation.com — hledá se podle názvu produktu (R24)
-                $found = $searchByPlayStationLink->handle($playstationUrl);
-                $playstation = $found['product'];
-                $games = $found['games'];
+                $byLink = $searchByPlayStationLink->handle($playstationUrl);
+                $playstation = $byLink['product'];
+                $games = $byLink['games'];
             } elseif ($query !== null) {
-                $games = $searchGames->handle($query);
+                $games = $searchGames->handle($query, $filters->limit());
             }
 
-            $results = $this->present($games, $request->user(), $describeAvailability, $findGamePages, $presenter);
+            $found = count($games);
+            $results = $searchResults->build($games, $user instanceof User ? $user : null, $filters);
         } catch (ItadUnavailable) {
             // Podrobnosti zalogoval klient; uživatel jen uvidí, že hledání teď nejde
             $unavailable = true;
@@ -76,55 +74,16 @@ class GameSearchController extends Controller
             'query' => $request->string('q')->toString(),
             'searched' => $query !== null,
             'results' => $results,
+            // Kolik našel ITAD před filtry — „žádná hra filtrům“ vs. „nic jsme nenašli“
+            'found' => $found,
+            // Plný počet výsledků naznačuje, že ITAD má víc (R30)
+            'canShowMore' => ! $filters->more && $playstationUrl === null && $found >= $filters->limit(),
+            'filters' => $filters->toArray(),
             'unavailable' => $unavailable,
             'playstation' => $playstation,
             'playstationError' => $playstationError,
             'searchUrl' => route('games.search', absolute: false),
             'watchUrl' => route('watchlist.store', absolute: false),
         ]);
-    }
-
-    /**
-     * Výsledky pro stránku — které hry už katalog má, které uživatel sleduje
-     * a kde se prodávají (obchody pro PC z ITAD, PlayStation podle stránky hry).
-     *
-     * @param  list<ItadGame>  $games
-     * @return list<array<string, mixed>>
-     */
-    private function present(
-        array $games,
-        ?User $user,
-        DescribeAvailability $describeAvailability,
-        FindPlayStationGamePages $findGamePages,
-        GamePresenter $presenter,
-    ): array {
-        $itadIds = array_map(fn (ItadGame $game): string => $game->id, $games);
-        $availability = $describeAvailability->handle($itadIds);
-        $playstationPages = $findGamePages->handle($games);
-        $currency = $user?->displayCurrency() ?? (string) config('games.prices.default_currency');
-
-        $inCatalog = Game::query()
-            ->with('storeListings')
-            ->whereIn('itad_id', $itadIds)
-            ->get()
-            ->keyBy('itad_id');
-
-        $watchedIds = $user === null ? [] : $user->watchlistItems()
-            ->whereIn('game_id', $inCatalog->pluck('id'))
-            ->pluck('game_id')
-            ->all();
-
-        return array_map(function (ItadGame $game) use ($inCatalog, $watchedIds, $availability, $playstationPages, $currency, $presenter): array {
-            $catalogGame = $inCatalog->get($game->id);
-
-            return $presenter->searchResult(
-                $game,
-                $catalogGame,
-                $catalogGame !== null && in_array($catalogGame->id, $watchedIds, true),
-                $availability === null ? null : ($availability[$game->id] ?? null),
-                $playstationPages[$game->id] ?? null,
-                $currency,
-            );
-        }, $games);
     }
 }

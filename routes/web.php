@@ -18,9 +18,11 @@ use App\Http\Controllers\DisplayCurrencyController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameSearchController;
 use App\Http\Controllers\ManifestController;
+use App\Http\Controllers\MetacriticController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\ServiceWorkerController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SourceStatusController;
 use App\Http\Controllers\StoreListingController;
 use App\Http\Controllers\WatchlistController;
 use Illuminate\Support\Facades\Route;
@@ -62,8 +64,16 @@ Route::middleware('auth')->group(function (): void {
         ->scopeBindings()
         ->name('listings.destroy');
 
+    // Stránka hry na Metacritic odkazem (R33) — volá Metacritic, omezené jako propojení
+    Route::put('/hry/{game}/metacritic', [MetacriticController::class, 'update'])
+        ->middleware('throttle:'.config('games.listings.max_attempts_per_minute').',1')
+        ->name('metacritic.update');
+
     // Měna zobrazení cen (R14)
     Route::put('/nastaveni/mena', DisplayCurrencyController::class)->name('settings.currency');
+
+    // Stav zdrojů cen — kdy se který naposledy povedl (R29)
+    Route::get('/stav-zdroju', SourceStatusController::class)->name('sources.show');
 
     // Nastavení upozornění a zařízení s Web Push (etapa 6, R13, R26)
     Route::get('/nastaveni', [SettingsController::class, 'show'])->name('settings.show');

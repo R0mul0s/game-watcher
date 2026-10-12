@@ -1,6 +1,6 @@
 // _auth.scss
-// Přihlašovací stránka — noční obzor a ubíhající neonová podlaha (R6).
-// Podlaha je mřížka v perspektivě; pohyb jen bez omezeného pohybu v systému.
+// Přihlašovací stránka — formulář nad kulisou s obzorem a ubíhající neonovou
+// podlahou (AppBackdrop, components/_backdrop.scss, R6).
 //
 // @author Roman Hlaváček
 // @created 2026-10-11
@@ -12,38 +12,6 @@
     display: grid;
     min-height: 100vh;
     overflow: hidden;
-    background: linear-gradient(to bottom, var(--color-bg) 0%, var(--horizon-sky) 55%, var(--color-bg) 100%);
-
-    // Obloha s purpurovou září nad obzorem
-    &__horizon {
-        position: absolute;
-        right: 0;
-        bottom: var(--auth-grid-height);
-        left: 0;
-        height: var(--border-width);
-        background: var(--color-neon-magenta);
-        box-shadow: 0 0 var(--space-5) var(--space-3) var(--horizon-glow);
-    }
-
-    &__grid {
-        position: absolute;
-        bottom: 0;
-        left: -50%;
-        width: 200%;
-        height: var(--auth-grid-height);
-        background-image:
-            linear-gradient(var(--grid-line-strong) var(--border-width), transparent var(--border-width)),
-            linear-gradient(90deg, var(--grid-line-strong) var(--border-width), transparent var(--border-width));
-        background-size: var(--grid-cell) var(--grid-cell);
-        transform: perspective(var(--auth-perspective)) rotateX(var(--auth-grid-tilt));
-        transform-origin: center bottom;
-        // Ke vzdálenému obzoru mřížka mizí
-        mask-image: linear-gradient(to top, black 30%, transparent 100%);
-
-        @include with-motion {
-            animation: auth-grid-scroll var(--duration-grid-scroll) linear infinite;
-        }
-    }
 
     &__main {
         position: relative;
@@ -90,12 +58,5 @@
     &__panel {
         width: 100%;
         max-width: var(--auth-panel-width);
-    }
-}
-
-// Podlaha ubíhá k divákovi — posun o celou buňku navazuje bez skoku
-@keyframes auth-grid-scroll {
-    to {
-        background-position: 0 var(--grid-cell);
     }
 }

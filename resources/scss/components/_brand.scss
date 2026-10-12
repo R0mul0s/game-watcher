@@ -44,4 +44,38 @@
         stroke-width: var(--svg-stroke-logo);
         filter: var(--svg-glow-magenta);
     }
+
+    // Neonová trubice občas problikne — rám a „play“ každý v jiném rytmu,
+    // aby neblikaly spolu (R6)
+    @include with-motion {
+        &__frame,
+        &__ticks {
+            animation: neon-flicker var(--duration-logo-flicker) linear infinite;
+        }
+
+        &__play {
+            animation: neon-flicker var(--duration-logo-flicker-play) linear infinite var(--logo-flicker-delay);
+        }
+    }
+}
+
+// Většinu cyklu svítí, ke konci dvakrát krátce pohasne a jednou zakolísá
+@keyframes neon-flicker {
+    0%,
+    88%,
+    90%,
+    93%,
+    96%,
+    100% {
+        opacity: 1;
+    }
+
+    89%,
+    94% {
+        opacity: var(--flicker-dim-opacity);
+    }
+
+    95% {
+        opacity: var(--flicker-half-opacity);
+    }
 }

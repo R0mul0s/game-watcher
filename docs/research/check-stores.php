@@ -25,6 +25,8 @@ const PSN_GAME_PAGE_URL = 'https://www.playstation.com/cs-cz/games/until-dawn/';
 const SEARCH_TERM = 'biomutant';
 const G2A_PRODUCT_URL = 'https://www.g2a.com/biomutant-steam-key-europe-i10000190196001';
 const G2A_ATTEMPTS = 3;
+// Metacritic — Metascore exkluzivity PS5, kterou ITAD nemá (R33)
+const METACRITIC_GAME_URL = 'https://www.metacritic.com/game/saros/';
 
 // Veřejné Algolia údaje Ubisoft Store (vložené v HTML jejich stránky, mohou se změnit)
 const UBISOFT_ALGOLIA_APP = 'XELY3U4LOD';
@@ -140,6 +142,26 @@ function checkPsnGamePage(): string
 }
 
 /**
+ * Metacritic – Metascore ze strukturovaných dat (schema.org aggregateRating) stránky hry.
+ *
+ * @return string Metascore s platformou nebo popis chyby
+ */
+function checkMetacritic(): string
+{
+    $r = httpRequest(METACRITIC_GAME_URL, ['Accept-Language' => 'en-US,en;q=0.9']);
+    if (preg_match_all('/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/s', $r['body'], $m)) {
+        foreach ($m[1] as $json) {
+            $data = json_decode($json, true);
+            if (isset($data['aggregateRating']['ratingValue'])) {
+                return sprintf('Metascore %d (%s)', $data['aggregateRating']['ratingValue'], implode(', ', (array) ($data['gamePlatform'] ?? [])));
+            }
+        }
+    }
+
+    return describeFailure($r);
+}
+
+/**
  * Kinguin – interní JSON API vyhledávání, vrací nejlevnější nabídku.
  *
  * @return string Cena nebo popis chyby
@@ -244,6 +266,7 @@ $checks = [
     'Steam' => 'checkSteam',
     'PlayStation' => 'checkPsn',
     'PS web' => 'checkPsnGamePage',
+    'Metacritic' => 'checkMetacritic',
     'Kinguin' => 'checkKinguin',
     'Eneba' => 'checkEneba',
     'Ubisoft' => 'checkUbisoft',

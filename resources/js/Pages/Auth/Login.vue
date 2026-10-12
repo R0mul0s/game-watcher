@@ -6,6 +6,7 @@
     @created 2026-10-11
 -->
 <script setup>
+import AppBackdrop from '@/Components/AppBackdrop.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
 import { useTranslations } from '@/lib/i18n';
 import { Head, useForm } from '@inertiajs/vue3';
@@ -36,9 +37,7 @@ function submit() {
     <Head :title="t('auth.title')" />
 
     <div class="auth">
-        <!-- Kulisa: obzor a mřížka podlahy (jen dekorace) -->
-        <div class="auth__horizon" aria-hidden="true"></div>
-        <div class="auth__grid" aria-hidden="true"></div>
+        <AppBackdrop />
 
         <main class="auth__main">
             <div class="auth__brand">

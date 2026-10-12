@@ -37,6 +37,19 @@ return [
     ],
 
     /*
+    | Stav zdrojů a monitoring (R29). Cron běží každé 4 hodiny: výpadek cronu
+    | je běh starší než 5 h (interval + hodina rezervy), výpadek zdroje úspěch
+    | starší než 9 h — jeden neúspěšný běh nevadí, dva po sobě ano.
+    | /health/zdroje je veřejná (UptimeRobot), prozrazuje jen stáří.
+    */
+    'monitoring' => [
+        'path' => '/health/zdroje',
+        'max_attempts_per_minute' => 30,
+        'cron_max_age_minutes' => 300,
+        'stale_after_minutes' => 540,
+    ],
+
+    /*
     | Ceny (etapa 3, R9, R14). Dávky odpovídají limitům API: ITAD bere až 200
     | her v jednom požadavku; gg.deals limit nezveřejňuje — 100 je opatrný odhad.
     | Zobrazovací měny přepíná uživatel v hlavičce (users.display_currency).
@@ -77,6 +90,9 @@ return [
     */
     'catalog' => [
         'search_results' => 12,
+        // „Zobrazit víc“ (R30) — ITAD vrací nejvýš 100, každý výsledek je i dotaz
+        // HEAD na playstation.com (v cache týden, R24)
+        'search_results_more' => 40,
         'search_cache_seconds' => 3600,
         'max_searches_per_minute' => 20,
         // Nejdelší hledaný text — název hry nebo odkaz na Steam
@@ -215,6 +231,20 @@ return [
             'game_page_concurrency' => 4,
             'game_page_cache_seconds' => 604800,
             // Akamai obchodu odmítá klienty bez hlaviček běžného prohlížeče (R7)
+            'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+        ],
+        // Metacritic (R33) — Metascore her, které ITAD nemá (exkluzivity PS5).
+        // Hostitel je jediný, který server z vloženého odkazu zavolá (SSRF).
+        // Stránky po malých dávkách s pauzou; nenalezená nebo nehodnocená hra
+        // se zkusí znovu po refresh_days (hodnocení přichází po vydání).
+        'metacritic' => [
+            'url' => env('GAMES_METACRITIC_URL', 'https://www.metacritic.com'),
+            // Hostitelé odkazu od uživatele — volá se ale vždy jen adresa z `url`
+            'hosts' => ['www.metacritic.com', 'metacritic.com'],
+            'timeout_seconds' => 15,
+            'request_delay_ms' => (int) env('GAMES_METACRITIC_DELAY_MS', 1000),
+            'per_run' => 10,
+            'refresh_days' => 14,
             'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
         ],
     ],

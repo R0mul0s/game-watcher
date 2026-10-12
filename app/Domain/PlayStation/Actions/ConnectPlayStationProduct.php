@@ -51,8 +51,7 @@ final class ConnectPlayStationProduct
             [
                 'name' => $product->name,
                 'platforms' => $product->platforms === [] ? null : implode(', ', $product->platforms),
-                'local_players' => $product->localPlayers,
-                'online_players' => $product->onlinePlayers,
+                ...$product->listingDetails(),
                 'url' => $this->client->productUrl($product->id),
             ],
         );

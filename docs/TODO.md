@@ -20,6 +20,8 @@ v [PLAN.md](PLAN.md); větší celky se z toho stávají etapou.
   obchody by potřebovaly vlastní průzkum jako v R7
 - **GOG, GreenManGaming, Fanatical, Humble** přicházejí z ITAD „zadarmo“ — rozhodnout, jestli je
   v přehledu ukazovat všechny, nebo jen vybrané obchody (nastavení uživatele)
+- **Kinguin a Eneba přímo** (zbytek etapy 5) — odloženo spolu s O4 (2026-10-12): zatím stačí
+  souhrnná cena obchodů s klíči z gg.deals; přímé zdroje by přidaly jen další křehké parsery
 - **Konkrétní cena G2A a Loaded** — z hostingu nejde (R7, R8). Kdyby souhrn z gg.deals nestačil
   (O4): malý pomocník na domácím PC (Plánovač úloh + skutečný prohlížeč), který ceny pošle na
   hosting přes URL s tokenem. Složitější provoz — až když bude opravdu potřeba
@@ -33,12 +35,8 @@ v [PLAN.md](PLAN.md); větší celky se z toho stávají etapou.
 **Odkud:** etapa 2 v PLAN.md, R15, R16.
 
 - **obnova údajů her** — `info_refreshed_at` je připravené; další krok cron URL (R19) by obnovil snímek
-  starší než např. 30 dní (datum vydání neohlášených her, hodnocení, obrázky). Pozor na limit ITAD
+  starší než např. 30 dní (datum vydání neohlášených her, hodnocení včetně Metascore na kartě a řazení podle Metacritic — R32, obrázky). Pozor na limit ITAD
   (R15) — po pár hrách za běh
-- hledání i podle **odkazu na IsThereAnyDeal** (`isthereanydeal.com/game/<slug>/`) — ITAD nemá
-  lookup podle slugu; šlo by přes `games/search` se slugem jako názvem
-- řazení a filtr přehledu (podle názvu, data vydání, později slevy)
-
 - **import Steam wishlistu** (ITAD umí synchronizaci wishlistu i „waitlist“ — přes OAuth uživatele;
   zatím zbytečné, pár her se přidá ručně)
 - sdílení seznamu mezi účty (rodina) — dnes má každý vlastní (R11)
@@ -58,9 +56,3 @@ v [PLAN.md](PLAN.md); větší celky se z toho stávají etapou.
 - **PWA** — manifest a service worker pro upozornění jsou (R27); zkratky aplikace a odznak s počtem slev jako v Počasí zatím ne
 - **graf ceny**: historické kurzy ČNB (dnes se přepočítává dnešním kurzem, R28), historie obchodů s klíči odjinud než z vlastních záznamů, značky slev (začátek a konec akce)
 - porovnání regionů (stejná hra na PS Store v CZ vs. TR/AR) — zajímavé, ale na hranici pravidel obchodů
-
-## Provoz
-
-- provozní stránka „stav zdrojů“: kdy se který zdroj naposledy úspěšně stáhl, kolik cen, chyby —
-  změna formátu obchodu se jinak pozná až podle chybějících cen
-- monitoring cron URL externí službou (UptimeRobot jako v Počasí)

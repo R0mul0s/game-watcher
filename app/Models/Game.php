@@ -43,11 +43,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $itad_url
  * @property CarbonImmutable $info_refreshed_at
  * @property CarbonImmutable|null $steam_details_at
+ * @property string|null $metacritic_slug
+ * @property int|null $metacritic_score
+ * @property int|null $metacritic_reviews
+ * @property CarbonImmutable|null $metacritic_checked_at
  */
 class Game extends Model
 {
     /** @use HasFactory<GameFactory> */
     use HasFactory;
+
+    /** Zdroj hodnocení kritiků z Metacritic v `reviews` (ITAD). */
+    public const METASCORE_SOURCE = 'Metascore';
 
     /**
      * @var list<string>
@@ -71,6 +78,10 @@ class Game extends Model
         'itad_url',
         'info_refreshed_at',
         'steam_details_at',
+        'metacritic_slug',
+        'metacritic_score',
+        'metacritic_reviews',
+        'metacritic_checked_at',
     ];
 
     /**
@@ -92,6 +103,9 @@ class Game extends Model
             'reviews' => 'array',
             'info_refreshed_at' => 'immutable_datetime',
             'steam_details_at' => 'immutable_datetime',
+            'metacritic_score' => 'integer',
+            'metacritic_reviews' => 'integer',
+            'metacritic_checked_at' => 'immutable_datetime',
         ];
     }
 
@@ -172,6 +186,29 @@ class Game extends Model
     public function priceLows(): HasMany
     {
         return $this->hasMany(PriceLow::class);
+    }
+
+    /**
+     * Hodnocení kritiků z Metacritic (R32) — z ITAD, a když ho ITAD nemá
+     * (exkluzivity PS5), přímo z Metacritic (R33); null, když ho nemá ani jeden.
+     */
+    public function metascore(): ?int
+    {
+        return $this->itadMetascore() ?? $this->metacritic_score;
+    }
+
+    /**
+     * Metascore ze snímku údajů ITAD (`reviews`); null, když ho ITAD nedává.
+     */
+    public function itadMetascore(): ?int
+    {
+        foreach ($this->reviews ?? [] as $review) {
+            if ($review['source'] === self::METASCORE_SOURCE) {
+                return $review['score'];
+            }
+        }
+
+        return null;
     }
 
     /**

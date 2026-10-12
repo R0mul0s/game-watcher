@@ -1,0 +1,134 @@
+// _backdrop.scss
+// Kulisa ve stylu Tronu (AppBackdrop.vue, R6) — obloha, neonový obzor,
+// perspektivní podlaha, která ubíhá k divákovi, a světelné stopy motorek
+// po ní. Pevně za obsahem; pohyb jen bez omezeného pohybu v systému.
+//
+// @author Roman Hlaváček
+// @created 2026-10-12
+
+@use '../abstracts/mixins' as *;
+
+.backdrop {
+    --backdrop-floor-height: var(--backdrop-floor-height-full);
+
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-backdrop);
+    overflow: hidden;
+    background: linear-gradient(to bottom, var(--color-bg) 0%, var(--horizon-sky) 55%, var(--color-bg) 100%);
+    pointer-events: none;
+
+    // Stránky aplikace — nižší a tlumenější podlaha, nahoře zůstává jemná mřížka těla
+    &--subtle {
+        --backdrop-floor-height: var(--backdrop-floor-height-subtle);
+
+        background: linear-gradient(to bottom, transparent 0%, transparent 45%, var(--horizon-sky-soft) 68%, var(--color-bg) 100%);
+        opacity: var(--backdrop-subtle-opacity);
+    }
+
+    // Obloha s purpurovou září nad obzorem
+    &__horizon {
+        position: absolute;
+        right: 0;
+        bottom: var(--backdrop-floor-height);
+        left: 0;
+        height: var(--border-width);
+        background: var(--color-neon-magenta);
+        box-shadow: 0 0 var(--space-5) var(--space-3) var(--horizon-glow);
+    }
+
+    &__floor {
+        position: absolute;
+        bottom: 0;
+        left: -50%;
+        width: 200%;
+        height: var(--backdrop-floor-height);
+        background-image:
+            linear-gradient(var(--grid-line-strong) var(--border-width), transparent var(--border-width)),
+            linear-gradient(90deg, var(--grid-line-strong) var(--border-width), transparent var(--border-width));
+        background-size: var(--grid-cell) var(--grid-cell);
+        transform: perspective(var(--backdrop-perspective)) rotateX(var(--backdrop-floor-tilt));
+        transform-origin: center bottom;
+        // Ke vzdálenému obzoru mřížka mizí
+        mask-image: linear-gradient(to top, black 30%, transparent 100%);
+
+        @include with-motion {
+            animation: backdrop-floor-scroll var(--duration-grid-scroll) linear infinite;
+        }
+    }
+
+    // Světelné stopy motorek — přejedou po podlaze těsně pod obzorem
+    &__trail {
+        position: absolute;
+        left: 0;
+        width: var(--trail-length);
+        height: var(--trail-width);
+        opacity: 0;
+
+        &--cyan {
+            bottom: calc(var(--backdrop-floor-height) * var(--trail-cyan-position));
+            background: linear-gradient(90deg, transparent, var(--color-neon-cyan));
+            box-shadow: var(--glow-accent);
+        }
+
+        &--magenta {
+            bottom: calc(var(--backdrop-floor-height) * var(--trail-magenta-position));
+            background: linear-gradient(270deg, transparent, var(--color-neon-magenta));
+            box-shadow: var(--glow-magenta);
+        }
+
+        @include with-motion {
+            &--cyan {
+                animation: backdrop-trail-right var(--duration-trail) linear infinite;
+            }
+
+            &--magenta {
+                animation: backdrop-trail-left var(--duration-trail) linear infinite var(--trail-delay);
+            }
+        }
+    }
+}
+
+// Podlaha ubíhá k divákovi — posun o celou buňku navazuje bez skoku
+@keyframes backdrop-floor-scroll {
+    to {
+        background-position: 0 var(--grid-cell);
+    }
+}
+
+// Stopa projede zleva doprava a pak čeká mimo obrazovku (zbytek cyklu)
+@keyframes backdrop-trail-right {
+    0% {
+        opacity: 1;
+        transform: translateX(calc(-1 * var(--trail-length)));
+    }
+
+    40% {
+        opacity: 1;
+        transform: translateX(100vw);
+    }
+
+    41%,
+    100% {
+        opacity: 0;
+        transform: translateX(100vw);
+    }
+}
+
+@keyframes backdrop-trail-left {
+    0% {
+        opacity: 1;
+        transform: translateX(100vw);
+    }
+
+    40% {
+        opacity: 1;
+        transform: translateX(calc(-1 * var(--trail-length)));
+    }
+
+    41%,
+    100% {
+        opacity: 0;
+        transform: translateX(calc(-1 * var(--trail-length)));
+    }
+}

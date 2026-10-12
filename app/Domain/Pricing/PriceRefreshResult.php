@@ -15,18 +15,22 @@ namespace App\Domain\Pricing;
 use App\Enums\PriceSource;
 
 /**
- * Kolik her který zdroj aktualizoval a které zdroje selhaly — pro řádek
- * odpovědi cron URL.
+ * Kolik her který zdroj aktualizoval, kolik jich měl, a které zdroje selhaly
+ * s jakou zprávou — pro řádek odpovědi cron URL a stav zdrojů (R29).
  */
 final readonly class PriceRefreshResult
 {
     /**
-     * @param  array<string, int>  $updated  počet her podle zdroje (PriceSource->value)
+     * @param  array<string, int>  $updated  počet her (u PS Store produktů) podle zdroje (PriceSource->value)
      * @param  list<PriceSource>  $failed
+     * @param  array<string, int>  $expected  kolik her (produktů) měl zdroj aktualizovat
+     * @param  array<string, string>  $errors  zpráva výpadku podle zdroje (bez API klíče)
      */
     public function __construct(
         public array $updated,
         public array $failed,
+        public array $expected = [],
+        public array $errors = [],
     ) {}
 
     /**
@@ -35,6 +39,30 @@ final readonly class PriceRefreshResult
     public function updatedBy(PriceSource $source): int
     {
         return $this->updated[$source->value] ?? 0;
+    }
+
+    /**
+     * Kolik her (produktů) měl zdroj aktualizovat.
+     */
+    public function expectedBy(PriceSource $source): int
+    {
+        return $this->expected[$source->value] ?? 0;
+    }
+
+    /**
+     * Selhal zdroj?
+     */
+    public function hasFailed(PriceSource $source): bool
+    {
+        return in_array($source, $this->failed, true);
+    }
+
+    /**
+     * Zpráva výpadku zdroje; prázdná, když nic neřekl.
+     */
+    public function errorOf(PriceSource $source): string
+    {
+        return $this->errors[$source->value] ?? '';
     }
 
     /**

@@ -151,6 +151,18 @@ it('produkt, který z obchodu zmizel, ztratí cenu, ale propojení zůstane', fu
         ->and(StoreListing::query()->count())->toBe(1);
 });
 
+it('stránku bez dat obchodu bere jako změnu formátu — ceny nesmaže (R29)', function (): void {
+    $this->actingAs($this->user)->post('/hry/control-resonant/obchody', ['url' => 'https://store.playstation.com/cs-cz/product/'.PSN_CONTROL_RESONANT]);
+    // Obchod odpoví 200, ale stránka nemá JSON skripty env:* (nový web)
+    fakeApis(['store.playstation.com/*' => Http::response('<html><body><div id="root"></div></body></html>')]);
+
+    $result = app(RefreshPrices::class)->watched();
+
+    expect($result->failed)->toBe([PriceSource::PlayStation])
+        ->and($result->errorOf(PriceSource::PlayStation))->toContain('nemá data obchodu ve známém formátu')
+        ->and(CurrentPrice::query()->where('source', PriceSource::PlayStation->value)->exists())->toBeTrue();
+});
+
 it('výpadek PlayStation Store v cronu ostatní zdroje nezastaví', function (): void {
     $this->actingAs($this->user)->post('/hry/control-resonant/obchody', ['url' => 'https://store.playstation.com/cs-cz/product/'.PSN_CONTROL_RESONANT]);
     fakeApis(['store.playstation.com/*' => Http::response('Access Denied', 403)]);

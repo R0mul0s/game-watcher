@@ -132,6 +132,26 @@ export function formatDateInZone(iso, locale, timeZone) {
     return cachedFormatter(Intl.DateTimeFormat, locale, { day: 'numeric', month: 'numeric', year: 'numeric', timeZone }).format(new Date(iso));
 }
 
+/** Desetinná místa hodnocení hvězdičkami („4,6" na kartě, „4,55" na detailu). */
+export const RATING_DIGITS_SHORT = 1;
+export const RATING_DIGITS_FULL = 2;
+
+/**
+ * Hodnocení hvězdičkami („4,6"); chybějící jako pomlčku.
+ *
+ * @param {number|null} value
+ * @param {string} locale
+ * @param {number} digits desetinná místa
+ * @returns {string}
+ */
+export function formatRating(value, locale, digits = RATING_DIGITS_SHORT) {
+    if (value === null || value === undefined) {
+        return EMPTY_VALUE;
+    }
+
+    return cachedFormatter(Intl.NumberFormat, locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value);
+}
+
 /**
  * Celé číslo s oddělením tisíců („8 194").
  *

@@ -12,10 +12,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Steam\Exceptions;
 
+use App\Domain\Monitoring\SourceUnavailable;
 use RuntimeException;
 
 /**
  * Výpadek, limit požadavků (HTTP 429) nebo změněný tvar dat — údaje se
  * zkusí stáhnout při dalším běhu cronu, podrobnosti v logu.
  */
-final class SteamUnavailable extends RuntimeException {}
+final class SteamUnavailable extends RuntimeException implements SourceUnavailable {}

@@ -14,6 +14,7 @@ namespace App\Domain\Catalog;
 
 use App\Domain\Currency\ExchangeRates;
 use App\Domain\Itad\ItadGame;
+use App\Domain\Metacritic\MetacriticUrl;
 use App\Domain\Pricing\Money;
 use App\Domain\Pricing\PriceBoard;
 use App\Domain\Pricing\PriceFilter;
@@ -62,6 +63,18 @@ final class GamePresenter
             ...$this->basics($game),
             'isMature' => $game->is_mature,
             'prices' => $summary,
+            // Cena pro řazení a filtry podle volby „Cena“ (R30) — karta ji zvýrazní
+            'ranked' => $this->priceBoard->ranked($summary, $filter->basis),
+            // Hodnocení kritiků z Metacritic pro kartu a řazení (R32, R33)
+            'metascore' => ($metascore = $game->metascore()) === null ? null : [
+                'score' => $metascore,
+                'level' => $this->reviewLevel($metascore),
+            ],
+            // Hodnocení hráčů na PS Store — produkt s nejvíc hodnoceními (R33)
+            'playerRating' => ($listing = $this->mostRatedListing($game)) === null ? null : [
+                'rating' => (float) $listing->star_rating,
+                'count' => $listing->star_ratings_count,
+            ],
             'watchPlatform' => $watchPlatform?->value,
             'needsPlayStation' => $watchPlatform === Platform::PlayStation && $game->storeListings->isEmpty(),
             'target' => $target?->toArray(),
@@ -100,7 +113,21 @@ final class GamePresenter
             'reviews' => array_map(fn (array $review): array => [
                 ...$review,
                 'level' => $this->reviewLevel($review['score']),
-            ], $game->reviews ?? []),
+            ], $this->reviews($game)),
+            // Hodnocení hráčů na PS Store po připojených produktech (R33)
+            'playerRatings' => $game->storeListings
+                ->filter(fn (StoreListing $listing): bool => $listing->star_rating !== null)
+                ->map(fn (StoreListing $listing): array => [
+                    'name' => $listing->name,
+                    'rating' => (float) $listing->star_rating,
+                    'count' => $listing->star_ratings_count,
+                ])->values()->all(),
+            // Odkaz na Metacritic od uživatele — jen hra bez Metascore z ITAD (R33)
+            'metacritic' => $game->itadMetascore() !== null ? null : [
+                'url' => $game->metacritic_slug === null ? null : MetacriticUrl::game($game->metacritic_slug),
+                'checked' => $game->metacritic_checked_at !== null,
+                'linkUrl' => route('metacritic.update', $game, absolute: false),
+            ],
             'steamUrl' => $game->steamUrl(),
             'itadUrl' => $game->itad_url,
             'watching' => $watch !== null,
@@ -209,6 +236,40 @@ final class GamePresenter
             fn (GameMode $mode): string => $mode->value,
             array_filter(GameMode::cases(), fn (GameMode $mode): bool => in_array($mode, $played, true)),
         ));
+    }
+
+    /**
+     * Hodnocení z ITAD; když ITAD Metascore nemá, doplní ho z Metacritic (R33).
+     *
+     * @return list<array{source: string, score: int, count: int|null, url: string|null}>
+     */
+    private function reviews(Game $game): array
+    {
+        $reviews = $game->reviews ?? [];
+        if ($game->itadMetascore() === null && $game->metacritic_score !== null && $game->metacritic_slug !== null) {
+            $reviews[] = [
+                'source' => Game::METASCORE_SOURCE,
+                'score' => $game->metacritic_score,
+                'count' => $game->metacritic_reviews,
+                'url' => MetacriticUrl::criticReviews($game->metacritic_slug),
+            ];
+        }
+
+        return $reviews;
+    }
+
+    /**
+     * Připojený produkt PS Store s nejvíc hodnoceními hráčů; null, když žádný
+     * hodnocení nemá (hra musí mít načtenou vazbu storeListings).
+     */
+    private function mostRatedListing(Game $game): ?StoreListing
+    {
+        $listing = $game->storeListings
+            ->filter(fn (StoreListing $listing): bool => $listing->star_rating !== null)
+            ->sortByDesc('star_ratings_count')
+            ->first();
+
+        return $listing instanceof StoreListing ? $listing : null;
     }
 
     /**

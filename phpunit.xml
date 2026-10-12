@@ -36,6 +36,7 @@
         <!-- Testy nečekají mezi stránkami PS Store -->
         <env name="GAMES_PLAYSTATION_DELAY_MS" value="0"/>
         <env name="GAMES_STEAM_DELAY_MS" value="0"/>
+        <env name="GAMES_METACRITIC_DELAY_MS" value="0"/>
         <env name="MAIL_MAILER" value="array"/>
         <!-- Prázdné klíče = upozornění na zařízení vypnutá; testy je zapnou přes enablePush() -->
         <env name="GAMES_PUSH_PUBLIC_KEY" value=""/>

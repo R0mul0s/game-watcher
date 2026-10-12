@@ -9,6 +9,7 @@
 @use 'layout/app-header';
 @use 'layout/page';
 @use 'layout/auth';
+@use 'components/backdrop';
 @use 'components/brand';
 @use 'components/button';
 @use 'components/field';
@@ -26,3 +27,4 @@
 @use 'components/price-chart';
 @use 'pages/game-detail';
 @use 'pages/settings';
+@use 'pages/sources';

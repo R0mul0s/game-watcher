@@ -36,9 +36,10 @@ final class PlayStationClient
      */
     public function product(string $productId): ?PlayStationProduct
     {
-        $html = $this->page('product/'.$productId);
+        $path = 'product/'.$productId;
+        $html = $this->page($path);
 
-        return $html === null ? null : PlayStationPage::fromHtml($html)->product($productId);
+        return $html === null ? null : $this->parse($path, $html)->product($productId);
     }
 
     /**
@@ -48,9 +49,10 @@ final class PlayStationClient
      */
     public function conceptDefaultProductId(string $conceptId): ?string
     {
-        $html = $this->page('concept/'.$conceptId);
+        $path = 'concept/'.$conceptId;
+        $html = $this->page($path);
 
-        return $html === null ? null : PlayStationPage::fromHtml($html)->defaultProductId($conceptId);
+        return $html === null ? null : $this->parse($path, $html)->defaultProductId($conceptId);
     }
 
     /**
@@ -132,6 +134,24 @@ final class PlayStationClient
     public function productUrl(string $productId): string
     {
         return $this->baseUrl().'/product/'.$productId;
+    }
+
+    /**
+     * Rozbor stránky obchodu. Stránka bez dat obchodu znamená změněný formát —
+     * výpadek, ne „produkt zmizel“, jinak by cron ceny všech produktů smazal (R29).
+     *
+     * @throws PlayStationUnavailable
+     */
+    private function parse(string $path, string $html): PlayStationPage
+    {
+        $page = PlayStationPage::fromHtml($html);
+        if (! $page->hasData()) {
+            Log::warning("PlayStation Store {$path}: stránka nemá data obchodu (JSON skripty env:*) — změnil se formát?");
+
+            throw new PlayStationUnavailable((string) __('app.monitoring.playstation_format', ['path' => $path]));
+        }
+
+        return $page;
     }
 
     /**

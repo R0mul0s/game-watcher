@@ -107,15 +107,17 @@ Eloquent model                 ← perzistence
 | `app/Domain/Itad` | HTTP klient IsThereAnyDeal (`ItadClient`) a jeho datové třídy (`ItadGame`, `ItadGameInfo`, `ItadGamePrices`, `ItadDeal`) — katalog i ceny oficiálních obchodů |
 | `app/Domain/GgDeals` | HTTP klient gg.deals (`GgDealsClient`, `GgDealsPrices`) — nejnižší cena obchodů s klíči; klíč maže z logu (R18) |
 | `app/Domain/Currency` | kurzy ČNB — lístek (`CnbRateSheet`), stažení (`Actions/ImportExchangeRates`), převod (`ExchangeRates`, jeden za požadavek) (R14) |
-| `app/Domain/Catalog` | katalog her — dotaz (`GameQuery`), hledání (`Actions/SearchGames`), obchody ve výsledcích (`Actions/DescribeAvailability`, R23), hledání podle odkazu z PS Store (`Actions/SearchByPlayStationLink`, R24), žánry a režimy ze Steamu (`Actions/RefreshGameDetails`, R25), převzetí hry (`Actions/ImportGame`), data pro stránky (`GamePresenter`) |
+| `app/Domain/Catalog` | katalog her — dotaz (`GameQuery`), hledání (`Actions/SearchGames`), výsledky hledání s filtry (`SearchResults`, `SearchFilters`, R30), obchody ve výsledcích (`Actions/DescribeAvailability`, R23), hledání podle odkazu z PS Store (`Actions/SearchByPlayStationLink`, R24), žánry a režimy ze Steamu (`Actions/RefreshGameDetails`, R25), převzetí hry (`Actions/ImportGame`), data pro stránky (`GamePresenter`) |
 | `app/Domain/Watchlist` | osobní seznam sledovaných her (`Actions/WatchGame`, `Actions/UnwatchGame`), přehled s filtry (`WatchlistFilters`, `WatchlistView`, R21); upozornění v etapě 6 |
 | `app/Domain/Pricing/PriceChart.php` | graf vývoje ceny (R28) — denní řady z historie ITAD a vlastní `price_history` |
 | `app/Domain/Alerts` | upozornění na ceny (R26) — vyhodnocení (`PriceWatch`), texty (`AlertPresenter`), Web Push (`PushSender`, vzor z Počasí), rozeslání v cronu (`Actions/SendPriceAlerts`) |
+| `app/Domain/Metacritic` | Metascore z Metacritic pro hry mimo ITAD (R33) — odkaz (`MetacriticUrl`, jediné ověření hostitele), rozbor JSON-LD (`MetacriticGame`), stahování (`MetacriticClient`), obnova v cronu a při přidání (`Actions/RefreshMetascores`), odkaz od uživatele (`Actions/LinkMetacritic`) |
 | `app/Domain/Steam` | Steam appdetails (R25) — žánry a režimy hry (`SteamClient`, `SteamAppDetails`) |
 | `app/Domain/PlayStation` | PlayStation Store (R20, R22) — odkaz z obchodu i ze stránky hry na playstation.com (`PlayStationUrl`, jediné místo ověření hostitele), rozbor stránky (`PlayStationPage`), stahování (`PlayStationClient`), produkt z odkazu (`Actions/FindPlayStationProduct`, R24), stránky her k výsledkům hledání (`Actions/FindPlayStationGamePages`, R24), připojení a odpojení produktu (`Actions/ConnectPlayStationProduct`, `Actions/DisconnectStoreListing`) |
 | `app/Domain/Pricing` | ceny — částka (`Money`), stažení (`Actions/RefreshPrices`), uložení (`StorePrices`), data pro stránky v měně účtu (`PriceBoard`) (R18); přímé zdroje v etapě 5 |
 | `app/Domain/Maintenance` | úklid volaný z cron URL (`PruneExpiredCache`) — hosting nemá scheduler |
-| `app/Enums` | výčty (`PriceSource`, `PriceScope`) |
+| `app/Domain/Monitoring` | stav zdrojů (R29) — zápis a vyhodnocení (`SourceMonitor`, `SourceHealth`), rozhraní `SourceUnavailable` pro výjimky zdrojů, jejichž zprávu smí ukázat stránka stavu |
+| `app/Enums` | výčty (`PriceSource`, `PriceScope`, `PriceBasis`, `SearchSort`, `MonitoredSource`, `SourceState`) |
 | `app/Http/Controllers` | tenké kontrolery |
 | `app/Http/Requests` | Form Requesty (včetně `LoginRequest`) |
 | `app/Console/Commands` | Artisan příkazy — jen obálka nad Action |
@@ -145,7 +147,7 @@ Eloquent model                 ← perzistence
 ### Externí zdroje a stahování
 - **Všechna volání přes HTTP klienta Laravelu** (`Http::`) s timeoutem z konfigurace — jinak nejdou testovat přes `Http::fake()`
 - **Klíče API se nikdy nelogují** a nejdou do odpovědí ani do frontendu
-- **URL zadané uživatelem** (produkt v obchodě) se ověří proti povolenému hostiteli zdroje (`store.playstation.com`, `www.kinguin.net`, `www.eneba.com`) — server nesmí volat libovolnou adresu (SSRF)
+- **URL zadané uživatelem** (produkt v obchodě, stránka na Metacritic) se ověří proti povolenému hostiteli zdroje (`store.playstation.com`, `www.metacritic.com`, `www.kinguin.net`, `www.eneba.com`) — server nesmí volat libovolnou adresu (SSRF)
 - Přímé stahování obchodů je **křehké** — parser vrací null a zaloguje varování, když nenajde očekávaná data; nikdy neuloží nulu ani nesmysl jako cenu
 - Šetrnost k obchodům: dávky, pauzy mezi požadavky, hlavičky běžného prohlížeče jen tam, kde bez nich obchod neodpoví (zjištěno v R7)
 
@@ -164,6 +166,7 @@ Eloquent model                 ← perzistence
 - Zachycené odpovědi načítá `jsonFixture('itad/…')` (nad `fixture()` z Pestu — vlastní funkce se tak jmenovat nesmí). Všechna API (ITAD, gg.deals, ČNB) podvrhne `fakeApis()`; výpadek zdroje `fakeApis(['api.gg.deals/*' => apiError(503)])`. Další `Http::fake()` v testu dřívější podvrhy **nepřebije** (vyhraje první shoda), proto `fakeApis()` vymění celý HTTP klient
 - Účet se sledovanými hrami i s cenami z fixtures: `watcherOf([BIOMUTANT_ID, …])`
 - Stránky PS Store jsou zkrácené skutečné stránky (jen JSON skripty `env:*` s položkami Product, Concept a GameCTA) — `psnFixture('product-…')`; nové se dělají stejně, ne ručně psaným JSON
+- Stránky Metacritic jsou zkrácené skutečné stránky (jen `<title>` a JSON-LD) — `metacriticFixture('saros')`
 
 ### Error handling
 - Doménové výjimky jako vlastní třídy, ne holé `\Exception`
@@ -221,6 +224,7 @@ Na hostingu **nejde spustit `php artisan migrate`**. Proto:
 - **Vzhled je jen tmavý** (R6) — žádný přepínač vzhledu ani světlé tokeny
 - **Animace jen přes mixin `with-motion`** — při omezeném pohybu v systému se nehýbe nic
 - Neonové efekty přes tokeny `--glow-*`, `--text-glow-*`, `--svg-glow-*` a mixin `neon-focus` — ne vlastní stíny v komponentě
+- Rohové lišty HUD jen mixinem `hud-corners` (panel, karta hry); kulisa s obzorem a podlahou jen komponentou `AppBackdrop` (R31)
 - Kontrast textu: běžný text `--color-text`, vedlejší `--color-text-muted` — neon na ploše jen pro akcenty, nadpisy a rámy
 
 ### Struktura

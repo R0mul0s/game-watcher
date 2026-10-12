@@ -55,6 +55,7 @@
     // Obzor na přihlašovací stránce
     --horizon-glow: rgb(255 43 214 / 55%);
     --horizon-sky: #12051f;
+    --horizon-sky-soft: rgb(18 5 31 / 70%);
     // Řádkování „obrazovky" přes celou stránku
     --scanline: rgb(255 255 255 / 2.5%);
     --scanline-gap: 3px;
@@ -113,14 +114,34 @@
     // Tloušťka čar loga v jednotkách viewBoxu (48 × 48), ne v pixelech
     --svg-stroke-logo: 2;
 
-    // Perspektivní podlaha přihlašovací stránky
-    --auth-perspective: 22rem;
-    --auth-grid-tilt: 62deg;
-    --auth-grid-height: 55vh;
+    // Perspektivní podlaha kulisy (AppBackdrop) — naplno na přihlášení
+    --backdrop-perspective: 22rem;
+    --backdrop-floor-tilt: 62deg;
+    --backdrop-floor-height-full: 55vh;
+    // Kulisa na stránkách aplikace — nižší a tlumená, aby nerušila obsah
+    --backdrop-floor-height-subtle: 38vh;
+    --backdrop-subtle-opacity: 0.6;
+    // Světelné stopy motorek po podlaze (výška nad spodkem jako díl podlahy)
+    --trail-length: 30vw;
+    --trail-width: 2px;
+    --trail-cyan-position: 0.82;
+    --trail-magenta-position: 0.62;
+    // Šipka vlastního selectu (field__select)
+    --select-arrow-size: 0.75rem;
+    // Světelná stopa na lince pod nadpisem stránky
+    --header-trail-length: 6rem;
 
     // --- Pohyb ---------------------------------------------------------------
     --duration-fast: 150ms;
     --duration-grid-scroll: 6s;
+    // Stopa přejede za 40 % cyklu, druhá vyjíždí v půlce — po obrazovce jede vždy nejvýš jedna
+    --duration-trail: 14s;
+    --trail-delay: 7s;
+    --duration-header-trail: 8s;
+    // Problikávání neonového loga — rám a „play“ v různém rytmu
+    --duration-logo-flicker: 7s;
+    --duration-logo-flicker-play: 11s;
+    --logo-flicker-delay: 3s;
     --duration-radar: 4s;
 
     // --- Vrstvy --------------------------------------------------------------
@@ -129,6 +150,9 @@
     --z-overlay: 50;
 
     --opacity-disabled: 0.45;
+    // Pohasnutí neonu při problikávání loga
+    --flicker-dim-opacity: 0.25;
+    --flicker-half-opacity: 0.7;
     // Nabídky mimo hlídanou platformu (R24) — čitelné, ale v pozadí
     --opacity-muted: 0.55;
 

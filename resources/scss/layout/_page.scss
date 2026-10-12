@@ -23,13 +23,32 @@
         padding: var(--space-5) var(--space-4);
     }
 
+    // Pod nadpisem linka, po které jezdí světelná stopa (R6)
     &__header {
+        position: relative;
         display: flex;
         flex-wrap: wrap;
         align-items: flex-end;
         justify-content: space-between;
         gap: var(--space-3);
         margin-bottom: var(--space-4);
+        padding-bottom: var(--space-3);
+        border-bottom: var(--border-width) solid var(--color-border);
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: calc(-1 * var(--border-width));
+            left: 0;
+            width: var(--header-trail-length);
+            height: var(--trail-width);
+            background: linear-gradient(90deg, transparent, var(--color-neon-cyan));
+            box-shadow: var(--glow-accent);
+
+            @include with-motion {
+                animation: page-header-trail var(--duration-header-trail) ease-in-out infinite;
+            }
+        }
     }
 
     &__title {
@@ -44,6 +63,29 @@
         color: var(--color-text-muted);
         font-family: var(--font-mono);
         font-size: var(--font-size-sm);
+    }
+}
+
+// Stopa projede linku pod nadpisem, zhasne a začne znovu zleva
+@keyframes page-header-trail {
+    0% {
+        left: 0;
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    60% {
+        left: calc(100% - var(--header-trail-length));
+        opacity: 1;
+    }
+
+    70%,
+    100% {
+        left: calc(100% - var(--header-trail-length));
+        opacity: 0;
     }
 }
 

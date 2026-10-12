@@ -56,6 +56,35 @@
     letter-spacing: var(--letter-spacing-display);
 }
 
+/// Svítící rohové lišty HUD vlevo nahoře a vpravo dole (panel, karta hry, R6).
+/// Používá ::before a ::after — prvek je musí mít volné a mít position.
+@mixin hud-corners {
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        width: var(--hud-corner-size);
+        height: var(--hud-corner-size);
+        border: 0 solid var(--color-accent);
+        filter: var(--svg-glow-accent);
+        pointer-events: none;
+    }
+
+    &::before {
+        top: calc(-1 * var(--border-width));
+        left: calc(-1 * var(--border-width));
+        border-top-width: var(--hud-corner-width);
+        border-left-width: var(--hud-corner-width);
+    }
+
+    &::after {
+        right: calc(-1 * var(--border-width));
+        bottom: calc(-1 * var(--border-width));
+        border-right-width: var(--hud-corner-width);
+        border-bottom-width: var(--hud-corner-width);
+    }
+}
+
 /// Neonová záře prvku v barvě akcentu — při najetí a fokusu.
 @mixin neon-focus {
     &:focus-visible {

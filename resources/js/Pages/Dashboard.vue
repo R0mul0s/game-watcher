@@ -1,7 +1,7 @@
 <!--
     Přehled po přihlášení — osobní seznam sledovaných her (R11) s pokročilými
     filtry (R21). U každé hry nejlevnější cena v měně účtu (R14); nad filtry
-    slevy dne (R26).
+    slevy dne (R26), při výpadku zdroje cen upozornění (R29).
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -13,8 +13,9 @@ import WatchlistFilters from '@/Components/WatchlistFilters.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/lib/i18n';
 import { Head, Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
     games: { type: Array, required: true },
     total: { type: Number, required: true },
     genres: { type: Array, default: () => [] },
@@ -22,9 +23,17 @@ defineProps({
     filters: { type: Object, required: true },
     dashboardUrl: { type: String, required: true },
     searchUrl: { type: String, required: true },
+    sourcesDown: { type: Array, default: () => [] },
+    sourcesUrl: { type: String, required: true },
 });
 
 const t = useTranslations();
+
+/** Oddělovač názvů zdrojů ve výpadku. */
+const SOURCE_SEPARATOR = ', ';
+
+/** Názvy zdrojů ve výpadku pro upozornění nad přehledem. */
+const downSources = computed(() => props.sourcesDown.map((source) => t(`sources.names.${source}`)).join(SOURCE_SEPARATOR));
 </script>
 
 <template>
@@ -38,6 +47,11 @@ const t = useTranslations();
             </div>
             <Link v-if="total" :href="searchUrl" class="button button--primary">{{ t('dashboard.add_game') }}</Link>
         </header>
+
+        <p v-if="sourcesDown.length" class="notice notice--error" role="status">
+            {{ t('sources.dashboard_down', { sources: downSources }) }}
+            <Link :href="sourcesUrl">{{ t('sources.dashboard_link') }}</Link>
+        </p>
 
         <template v-if="total">
             <DailyDeals v-if="dailyDeals.length" :deals="dailyDeals" />

@@ -147,8 +147,9 @@ it('přehled ukáže jen vlastní hry, naposledy přidané první', function ():
     $user->watchlistItems()->create(['game_id' => $newer->id]);
     user()->watchlistItems()->create(['game_id' => $foreign->id]);
 
+    // Výchozí řazení je od nejlevnější (R32) — pořadí přidání jen na vyžádání
     $this->actingAs($user)
-        ->get('/')
+        ->get('/?sort=added')
         ->assertInertia(fn (Assert $page) => $page
             ->component('Dashboard')
             ->has('games', 2)

@@ -24,6 +24,9 @@ final readonly class PlayStationProduct
 {
     private const PERCENT = 100;
 
+    /** Desetinná místa hvězdiček (store_listings.star_rating decimal(3,2)). */
+    private const STAR_DECIMALS = 2;
+
     /**
      * Části názvu, které katalog ITAD nemá — ochranné známky a označení
      * platformy na konci („Until Dawn™“, „… PS4 & PS5“), R24.
@@ -51,7 +54,26 @@ final readonly class PlayStationProduct
         public ?string $publisher = null,
         public ?int $localPlayers = null,
         public ?int $onlinePlayers = null,
+        // Hodnocení hráčů na PS Store (R33) — průměr hvězdiček 0–5 a počet hodnocení
+        public ?float $starRating = null,
+        public ?int $starRatingsCount = null,
     ) {}
+
+    /**
+     * Údaje produktu, které se ukládají k propojení (store_listings) při
+     * připojení i každé obnově ceny — počet hráčů (R25) a hodnocení hráčů (R33).
+     *
+     * @return array{local_players: int|null, online_players: int|null, star_rating: string|null, star_ratings_count: int|null}
+     */
+    public function listingDetails(): array
+    {
+        return [
+            'local_players' => $this->localPlayers,
+            'online_players' => $this->onlinePlayers,
+            'star_rating' => $this->starRating === null ? null : number_format($this->starRating, self::STAR_DECIMALS, '.', ''),
+            'star_ratings_count' => $this->starRatingsCount,
+        ];
+    }
 
     /**
      * Název pro hledání hry v katalogu ITAD — bez ochranných známek

@@ -16,7 +16,11 @@ use App\Domain\Alerts\Actions\SendPriceAlerts;
 use App\Domain\Catalog\Actions\RefreshGameDetails;
 use App\Domain\Currency\Actions\ImportExchangeRates;
 use App\Domain\Maintenance\PruneExpiredCache;
+use App\Domain\Metacritic\Actions\RefreshMetascores;
+use App\Domain\Monitoring\SourceMonitor;
 use App\Domain\Pricing\Actions\RefreshPrices;
+use App\Domain\Pricing\PriceRefreshResult;
+use App\Enums\MonitoredSource;
 use App\Enums\PriceSource;
 use App\Http\Requests\CronRequest;
 use Closure;
@@ -28,6 +32,7 @@ use Throwable;
  * Cron ve WebAdminu umí jen zavolat URL, artisan nespustí (R2). Kroky na sobě
  * nezávisí: chyba jednoho se zaloguje a ostatní proběhnou, URL pak vrátí 500
  * (pro monitoring). Souběžné volání zastaví zámek — vzor z projektu Počasí.
+ * Výsledek každého zdroje i celého běhu zapisuje stav zdrojů (R29).
  */
 class CronController extends Controller
 {
@@ -36,6 +41,11 @@ class CronController extends Controller
 
     /** Den lístku ČNB v odpovědi („9. 10. 2026“). */
     private const DAY_FORMAT = 'j. n. Y';
+
+    /** Oddělovač kroků ve zprávě o neúspěšném běhu. */
+    private const STEP_SEPARATOR = ', ';
+
+    public function __construct(private readonly SourceMonitor $monitor) {}
 
     /**
      * Provede kroky a vrátí souhrn jako prostý text — 500, když některý krok
@@ -46,6 +56,7 @@ class CronController extends Controller
         ImportExchangeRates $importExchangeRates,
         RefreshPrices $refreshPrices,
         RefreshGameDetails $refreshGameDetails,
+        RefreshMetascores $refreshMetascores,
         SendPriceAlerts $sendPriceAlerts,
         PruneExpiredCache $pruneExpiredCache,
     ): Response {
@@ -55,24 +66,29 @@ class CronController extends Controller
         }
 
         try {
-            $failed = false;
+            /** @var list<string> $failedSteps klíče kroků (app.cron.steps), které selhaly */
+            $failedSteps = [];
 
             $lines = [
                 // Kurzy před cenami — přehled hned převádí novým kurzem (R14)
-                $this->attempt('exchange_rates', $failed, function () use ($importExchangeRates): string {
+                $this->attempt('exchange_rates', [MonitoredSource::ExchangeRates], $failedSteps, function () use ($importExchangeRates): string {
                     $day = $importExchangeRates->handle();
+                    $this->monitor->succeeded(MonitoredSource::ExchangeRates);
 
                     return $day === null
                         ? __('app.cron.exchange_rates_current')
                         : __('app.cron.exchange_rates_imported', ['day' => $day->format(self::DAY_FORMAT)]);
                 }),
-                $this->attempt('prices', $failed, function () use ($refreshPrices, &$failed): string {
+                $this->attempt('prices', self::priceSources(), $failedSteps, function () use ($refreshPrices, &$failedSteps): string {
                     $result = $refreshPrices->watched();
+                    $this->recordPrices($result);
                     // Výpadek zdroje zalogoval klient; tady jen označí běh jako neúspěšný
-                    $failed = $failed || $result->hasFailures();
+                    if ($result->hasFailures()) {
+                        $failedSteps[] = 'prices';
+                    }
 
                     // U zdroje, který selhal, místo počtu „chyba“
-                    $count = fn (PriceSource $source): int|string => in_array($source, $result->failed, true)
+                    $count = fn (PriceSource $source): int|string => $result->hasFailed($source)
                         ? (string) __('app.cron.source_failed')
                         : $result->updatedBy($source);
 
@@ -84,16 +100,35 @@ class CronController extends Controller
                 }),
                 // Žánry a režimy pro filtry (R25) — doplňkové údaje, výpadek Steamu
                 // běh neoznačí jako chybný, zbytek dožene další běh
-                $this->attempt('details', $failed, function () use ($refreshGameDetails): string {
-                    [$count, $steamFailed] = $refreshGameDetails->handle($refreshGameDetails->pending());
+                $this->attempt('details', [MonitoredSource::Steam], $failedSteps, function () use ($refreshGameDetails): string {
+                    $pending = $refreshGameDetails->pending();
+                    [$count, $steamFailed] = $refreshGameDetails->handle($pending);
+                    $steamFailed
+                        ? $this->monitor->failed(MonitoredSource::Steam, (string) __('app.monitoring.steam_failed'))
+                        : $this->monitor->succeeded(MonitoredSource::Steam, $count, $pending->count());
 
                     return __($steamFailed ? 'app.cron.details_failed' : 'app.cron.details', ['count' => $count]);
                 }),
+                // Metascore her, které ITAD nemá (R33) — doplňkové údaje jako žánry
+                $this->attempt('metacritic', [MonitoredSource::Metacritic], $failedSteps, function () use ($refreshMetascores): string {
+                    $pending = $refreshMetascores->pending();
+                    [$count, $error] = $refreshMetascores->handle($pending);
+                    $error === null
+                        ? $this->monitor->succeeded(MonitoredSource::Metacritic, $count, $pending->count())
+                        : $this->monitor->failed(MonitoredSource::Metacritic, $error);
+
+                    return __($error === null ? 'app.cron.metacritic' : 'app.cron.metacritic_failed', ['count' => $count]);
+                }),
                 // Upozornění až po cenách (R26) — porovnávají čerstvé ceny. Nedoručené
                 // upozornění (chyba SMTP i push) označí běh jako chybný, zkusí ho další běh
-                $this->attempt('alerts', $failed, function () use ($sendPriceAlerts, &$failed): string {
+                $this->attempt('alerts', [MonitoredSource::Alerts], $failedSteps, function () use ($sendPriceAlerts, &$failedSteps): string {
                     $result = $sendPriceAlerts->handle();
-                    $failed = $failed || $result->undelivered > 0;
+                    if ($result->undelivered > 0) {
+                        $failedSteps[] = 'alerts';
+                        $this->monitor->failed(MonitoredSource::Alerts, (string) __('app.monitoring.alerts_undelivered', ['count' => $result->undelivered]));
+                    } else {
+                        $this->monitor->succeeded(MonitoredSource::Alerts, $result->alerts);
+                    }
 
                     return __('app.cron.alerts', [
                         'alerts' => $result->alerts,
@@ -101,10 +136,12 @@ class CronController extends Controller
                         'pushes' => $result->pushes,
                     ]).($result->undelivered > 0 ? __('app.cron.alerts_undelivered', ['count' => $result->undelivered]) : '');
                 }),
-                $this->attempt('cache', $failed, fn (): string => __('app.cron.cache_pruned', ['count' => $pruneExpiredCache->handle()])),
+                $this->attempt('cache', [], $failedSteps, fn (): string => __('app.cron.cache_pruned', ['count' => $pruneExpiredCache->handle()])),
             ];
 
-            return $this->plainText(implode("\n", $lines), $failed ? Response::HTTP_INTERNAL_SERVER_ERROR : Response::HTTP_OK);
+            $this->recordRun($failedSteps);
+
+            return $this->plainText(implode("\n", $lines), $failedSteps === [] ? Response::HTTP_OK : Response::HTTP_INTERNAL_SERVER_ERROR);
         } finally {
             $lock->release();
         }
@@ -112,21 +149,65 @@ class CronController extends Controller
 
     /**
      * Provede krok a vrátí jeho řádek souhrnu. Výjimku zapíše do logu,
-     * nastaví $failed a místo souhrnu vrátí řádek o chybě kroku.
+     * zdrojům kroku jako chybu a místo souhrnu vrátí řádek o chybě kroku.
      *
      * @param  string  $step  Klíč kroku v app.cron.steps
+     * @param  list<MonitoredSource>  $sources  zdroje kroku pro stav zdrojů
+     * @param  list<string>  $failedSteps  klíče kroků, které selhaly
      * @param  Closure(): string  $task
      */
-    private function attempt(string $step, bool &$failed, Closure $task): string
+    private function attempt(string $step, array $sources, array &$failedSteps, Closure $task): string
     {
         try {
             return $task();
         } catch (Throwable $e) {
             report($e);
-            $failed = true;
+            $failedSteps[] = $step;
+            foreach ($sources as $source) {
+                $this->monitor->failed($source, $this->monitor->describe($e));
+            }
 
             return __('app.cron.step_failed', ['step' => __('app.cron.steps.'.$step)]);
         }
+    }
+
+    /**
+     * Zapíše výsledek zdrojů cen do stavu zdrojů.
+     */
+    private function recordPrices(PriceRefreshResult $result): void
+    {
+        foreach (PriceSource::cases() as $source) {
+            $result->hasFailed($source)
+                ? $this->monitor->failed(MonitoredSource::fromPriceSource($source), $result->errorOf($source))
+                : $this->monitor->succeeded(MonitoredSource::fromPriceSource($source), $result->updatedBy($source), $result->expectedBy($source));
+        }
+    }
+
+    /**
+     * Zapíše běh cronu jako celek — u neúspěchu se seznamem kroků, které selhaly.
+     *
+     * @param  list<string>  $failedSteps  klíče kroků v app.cron.steps
+     */
+    private function recordRun(array $failedSteps): void
+    {
+        if ($failedSteps === []) {
+            $this->monitor->succeeded(MonitoredSource::Cron);
+
+            return;
+        }
+
+        $steps = array_map(fn (string $step): string => (string) __('app.cron.steps.'.$step), array_unique($failedSteps));
+        $this->monitor->failed(MonitoredSource::Cron, (string) __('app.monitoring.cron_failed', ['steps' => implode(self::STEP_SEPARATOR, $steps)]));
+    }
+
+    /**
+     * Zdroje kroku „ceny“.
+     *
+     * @return list<MonitoredSource>
+     */
+    private static function priceSources(): array
+    {
+        return array_map(MonitoredSource::fromPriceSource(...), PriceSource::cases());
     }
 
     /**

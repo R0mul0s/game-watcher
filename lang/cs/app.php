@@ -44,6 +44,15 @@ return [
         'disconnected' => '„:name“ už není připojená.',
     ],
 
+    // Stránka hry na Metacritic připojená odkazem (R33)
+    'metacritic' => [
+        'url_required' => 'Vlož odkaz na hru na Metacritic.',
+        'not_found' => 'Z odkazu nejde najít hru na Metacritic. Vlož odkaz ve tvaru metacritic.com/game/…',
+        'unavailable' => 'Metacritic teď neodpovídá. Zkus to za chvíli.',
+        'linked' => 'Metacritic je připojený — Metascore :score.',
+        'linked_unrated' => 'Metacritic je připojený, „:name“ ale zatím nemá hodnocení kritiků.',
+    ],
+
     'watchlist' => [
         'added' => '„:title“ je na tvém seznamu.',
         'removed' => '„:title“ už nesleduješ.',
@@ -64,6 +73,8 @@ return [
         'prices' => 'ceny — ITAD her: :itad, gg.deals her: :ggdeals, PlayStation Store produktů: :playstation',
         'details' => 'žánry a režimy ze Steamu — her: :count',
         'details_failed' => 'žánry a režimy ze Steamu — her: :count, Steam neodpovídá (doplní další běh)',
+        'metacritic' => 'Metascore z Metacritic — her: :count',
+        'metacritic_failed' => 'Metascore z Metacritic — her: :count, Metacritic neodpovídá (doplní další běh)',
         'alerts' => 'upozornění — her: :alerts, e-mailů: :emails, na zařízení: :pushes',
         'alerts_undelivered' => ', nedoručeno: :count (zkusí další běh, podrobnosti v logu)',
         'cache_pruned' => 'cache — smazáno prošlých záznamů: :count',
@@ -71,8 +82,31 @@ return [
             'exchange_rates' => 'kurzy ČNB',
             'prices' => 'ceny',
             'details' => 'žánry a režimy',
+            'metacritic' => 'Metascore',
             'alerts' => 'upozornění',
             'cache' => 'cache',
+        ],
+    ],
+
+    // Stav zdrojů (R29) — zprávy chyb ukládané cronem a řádky /health/zdroje
+    // (prostý text pro monitoring); názvy zdrojů jsou v ui.sources.names
+    'monitoring' => [
+        'unexpected_error' => 'Neočekávaná chyba — podrobnosti v logu aplikace',
+        'playstation_format' => 'Stránka :path nemá data obchodu ve známém formátu — PS Store nejspíš změnil web',
+        'metacritic_format' => 'Stránka hry :slug nemá strukturovaná data hry — Metacritic nejspíš změnil web',
+        'steam_failed' => 'Steam neodpovídá — údaje doplní další běh',
+        'alerts_undelivered' => 'Nedoručená upozornění: :count — podrobnosti v logu aplikace',
+        'cron_failed' => 'Selhalo: :steps',
+        'health' => [
+            'ok' => 'OK: poslední úspěch před :minutes min',
+            'failing' => 'CHYBA: poslední pokus selhal, úspěch před :minutes min',
+            'stale' => 'VÝPADEK: poslední úspěch před :minutes min',
+            'cron_ok' => 'OK: poslední běh před :minutes min',
+            'cron_failing' => 'CHYBA: poslední běh před :minutes min skončil chybou',
+            'cron_stale' => 'VÝPADEK: poslední běh před :minutes min — cron neběží',
+            'never' => 'VÝPADEK: zatím neproběhlo',
+            'never_succeeded' => 'VÝPADEK: zatím se nepovedlo',
+            'optional' => '(nehlídá se) ',
         ],
     ],
 
@@ -145,6 +179,7 @@ return [
             'keyshops' => 'Obchody s klíči',
             'keyshops_hint' => 'Nejnižší cena napříč obchody s klíči (G2A, Loaded, Kinguin, Eneba…) podle gg.deals',
             'keyshops_short' => 'klíče od :price',
+            'official_short' => 'oficiálně od :price',
             'shop' => 'Obchod',
             'price' => 'Cena',
             'regular' => 'Běžně :price',
@@ -183,7 +218,7 @@ return [
             'title' => 'Filtry',
             'toggle' => 'Zobrazit filtry',
             'search' => 'Hledat',
-            'search_placeholder' => 'Název hry',
+            'search_placeholder' => 'Název, vývojář, vydavatel, žánr…',
             'platform' => 'Platforma',
             'all' => 'Vše',
             'genres' => 'Žánr',
@@ -208,12 +243,26 @@ return [
             'deals' => 'Jen ve slevě',
             'plus' => 'Mám PS Plus',
             'plus_hint' => 'U PlayStation Store počítat cenu pro předplatitele',
+            // Zdroj ceny pro řazení a „cena do“ (R30)
+            'price_basis' => 'Cena',
+            'price_basis_hint' => 'Podle čeho řadit od nejlevnější a filtrovat „cena do“. Sleva je vždy z oficiálních obchodů — obchody s klíči ji neuvádějí.',
+            'price_basis_options' => [
+                'official' => 'Oficiální',
+                'cheapest' => 'Vše',
+                'keyshops' => 'Klíče',
+            ],
+            'price_basis_titles' => [
+                'official' => 'Oficiální obchody a PlayStation Store',
+                'cheapest' => 'Nejlevnější nabídka včetně obchodů s klíči',
+                'keyshops' => 'Jen obchody s klíči (G2A, Loaded, Kinguin, Eneba… podle gg.deals)',
+            ],
             'sort' => 'Řadit',
             'sort_added' => 'Naposledy přidané',
             'sort_title' => 'Podle názvu',
             'sort_price' => 'Od nejlevnější',
             'sort_cut' => 'Od největší slevy',
             'sort_release' => 'Od nejnovějšího vydání',
+            'sort_score' => 'Podle Metacritic',
             'reset' => 'Zrušit filtry',
             'shown' => 'Zobrazeno :shown z :total',
             'empty' => 'Filtrům neodpovídá žádná hra.',
@@ -238,6 +287,12 @@ return [
             'connect_playstation' => 'Připoj PlayStation Store',
             'target' => 'cíl :price',
             'target_reached' => 'Pod cílovou cenou',
+            // Hodnocení kritiků na kartě (R32)
+            'metascore' => 'MC :score',
+            'metascore_title' => 'Hodnocení kritiků na Metacritic (Metascore)',
+            'metascore_label' => 'Metacritic :score',
+            'player_rating' => '★ :rating',
+            'player_rating_title' => 'Hodnocení hráčů na PlayStation Store (:count hodnocení)',
         ],
 
         // Slevy dne nad přehledem (R26)
@@ -251,7 +306,7 @@ return [
             'title' => 'Přidat hru',
             'label' => 'Hra',
             'placeholder' => 'Název, odkaz na Steam nebo na PlayStation Store',
-            'hint' => 'Katalog je z IsThereAnyDeal. Přesnou hru najdeš podle odkazu na Steam nebo jejího čísla (App ID). Hru na PlayStation najdeš podle odkazu z PlayStation Store nebo playstation.com — produkt se při přidání rovnou připojí.',
+            'hint' => 'Katalog je z IsThereAnyDeal. Přesnou hru najdeš podle odkazu na Steam, jejího čísla (App ID) nebo odkazu na IsThereAnyDeal. Hru na PlayStation najdeš podle odkazu z PlayStation Store nebo playstation.com — produkt se při přidání rovnou připojí.',
             'submit' => 'Hledat',
             'results' => 'Výsledky',
             'no_results' => 'Nic jsme nenašli. Zkus jiný název nebo odkaz na Steam.',
@@ -270,6 +325,18 @@ return [
             'from_price' => 'od :price',
             'free' => 'zdarma',
             'no_pc_shops' => 'V obchodech pro PC se neprodává',
+            // Filtry výsledků (R30)
+            'filter_type' => 'Druh',
+            'types' => [
+                'game' => 'Hry',
+                'other' => 'DLC a další',
+            ],
+            'sorts' => [
+                'relevance' => 'Podle shody',
+                'price' => 'Od nejlevnější',
+            ],
+            'no_filtered_results' => 'Filtrům neodpovídá žádný výsledek.',
+            'show_more' => 'Zobrazit víc výsledků',
         ],
 
         'game' => [
@@ -297,6 +364,15 @@ return [
             ],
             'reviews' => 'Hodnocení',
             'reviews_count' => ':count hodnocení',
+            // Hodnocení hráčů na PS Store a odkaz na Metacritic (R33)
+            'player_rating' => 'Hráči na PS Store — :name',
+            'player_rating_count' => ':count hodnocení',
+            'metacritic_label' => 'Odkaz na Metacritic',
+            'metacritic_placeholder' => 'https://www.metacritic.com/game/…',
+            'metacritic_submit' => 'Připojit',
+            'metacritic_linked' => 'Metascore se stahuje ze stránky',
+            'metacritic_not_found' => 'Metacritic jsme podle názvu nenašli — vlož odkaz na stránku hry.',
+            'metacritic_pending' => 'Metascore z Metacritic doplní nejbližší stahování cen, nebo vlož odkaz rovnou.',
             'links' => 'Odkazy',
             'steam' => 'Steam',
             'itad' => 'IsThereAnyDeal',
@@ -363,6 +439,43 @@ return [
             'push_test_sent' => 'Zkušební upozornění je odeslané.',
             'push_test_failed' => 'Zkušební upozornění se nepodařilo doručit — zkus upozornění vypnout a zapnout.',
             'devices' => 'Upozornění máš zapnutá na :count zařízení|Upozornění máš zapnutá na :count zařízeních|Upozornění máš zapnutá na :count zařízeních',
+            'sources_title' => 'Stav zdrojů',
+            'sources_text' => 'Kdy se který zdroj cen naposledy stáhl, kolik toho bylo a poslední chyba.',
+            'sources_link' => 'Zobrazit stav zdrojů',
+        ],
+
+        // Stav zdrojů cen (R29)
+        'sources' => [
+            'title' => 'Stav zdrojů',
+            'intro' => 'Cron stahuje ceny každé 4 hodiny. Jeden neúspěšný pokus je jen chyba — výpadek je, když se zdroj nepovedl víckrát po sobě. Výpadek hlásí i externí monitoring.',
+            'column_source' => 'Zdroj',
+            'column_state' => 'Stav',
+            'column_last_success' => 'Poslední úspěch',
+            'column_last_run' => 'Poslední pokus',
+            'column_processed' => 'Zpracováno',
+            'column_error' => 'Poslední chyba',
+            'processed_of' => ':processed z :expected',
+            'failures_in_row' => ':count neúspěšný pokus po sobě|:count neúspěšné pokusy po sobě|:count neúspěšných pokusů po sobě',
+            'optional' => 'Doplňkový — výpadek nehlásí monitoring',
+            'no_error' => 'Žádná',
+            'states' => [
+                'ok' => 'V pořádku',
+                'failing' => 'Chyba',
+                'stale' => 'Výpadek',
+                'never' => 'Zatím neběželo',
+            ],
+            'names' => [
+                'cron' => 'Běh cronu',
+                'exchange_rates' => 'Kurzy ČNB',
+                'itad' => 'IsThereAnyDeal — oficiální obchody',
+                'ggdeals' => 'gg.deals — obchody s klíči',
+                'playstation' => 'PlayStation Store',
+                'steam' => 'Steam — žánry a režimy',
+                'metacritic' => 'Metacritic — Metascore her mimo ITAD',
+                'alerts' => 'Upozornění — e-mail a zařízení',
+            ],
+            'dashboard_down' => 'Některé zdroje cen teď nefungují (:sources) — ceny nemusí být aktuální.',
+            'dashboard_link' => 'Stav zdrojů',
         ],
     ],
 

@@ -4,7 +4,8 @@
     (limit API, viz games.catalog). U výsledků ukazuje obchody a nejnižší
     cenu (R23). Hru jde sledovat všude, nebo jen na PlayStationu; s odkazem
     z PS Store se hledá podle názvu produktu a produkt se při přidání
-    připojí (R24).
+    připojí (R24). Výsledky jde filtrovat podle druhu a platformy, řadit podle
+    ceny a načíst jich víc; hledá i podle odkazu na ITAD (R30).
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -21,6 +22,9 @@ const props = defineProps({
     query: { type: String, default: '' },
     searched: { type: Boolean, default: false },
     results: { type: Array, default: () => [] },
+    found: { type: Number, default: 0 },
+    canShowMore: { type: Boolean, default: false },
+    filters: { type: Object, required: true },
     unavailable: { type: Boolean, default: false },
     playstation: { type: Object, default: null },
     playstationError: { type: String, default: null },
@@ -37,12 +41,43 @@ const adding = ref(null);
 
 /** Hodnota platformy „jen PlayStation“ (enum Platform). */
 const PLAYSTATION = 'playstation';
+/** Filtry výsledků (R30) — druh (SearchFilters::TYPES), platforma, řazení (enum SearchSort). */
+const TYPES = ['game', 'other'];
+const PLATFORMS = ['pc', PLAYSTATION];
+const SORTS = ['relevance', 'price'];
+const DEFAULT_SORT = SORTS[0];
+
+/**
+ * Parametry filtrů do adresy — výchozí hodnoty se vynechají.
+ *
+ * @param {object} filters
+ * @returns {Record<string, string|number>}
+ */
+function filterParams(filters) {
+    const result = {};
+    if (filters.type) result.type = filters.type;
+    if (filters.platform) result.platform = filters.platform;
+    if (filters.sort !== DEFAULT_SORT) result.sort = filters.sort;
+    if (filters.more) result.more = 1;
+
+    return result;
+}
 
 /**
  * Odešle hledání — výsledek je v adrese, jde ho sdílet i vrátit se k němu.
+ * Druh, platforma a řazení zůstávají, „víc výsledků“ platí jen pro jedno hledání.
  */
 function search() {
-    form.get(props.searchUrl, { preserveState: true });
+    form.transform((data) => ({ ...data, ...filterParams({ ...props.filters, more: false }) })).get(props.searchUrl, { preserveState: true });
+}
+
+/**
+ * Změní filtr výsledků — stejné hledání se načte z cache serveru.
+ *
+ * @param {object} changes
+ */
+function applyFilters(changes) {
+    router.get(props.searchUrl, { q: props.query, ...filterParams({ ...props.filters, ...changes }) }, { preserveState: true, preserveScroll: true, replace: true });
 }
 
 /**
@@ -120,7 +155,65 @@ function watch(game, platform = null) {
                 <span class="search-results__source-hint">{{ t('search.playstation_connect') }}</span>
             </div>
 
-            <p v-if="!results.length" class="search-results__empty">{{ t('search.no_results') }}</p>
+            <div v-if="found" class="search-filters">
+                <fieldset class="search-filters__group">
+                    <legend class="search-filters__label">{{ t('search.filter_type') }}</legend>
+                    <div class="segmented">
+                        <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !filters.type }" :aria-pressed="!filters.type" @click="applyFilters({ type: null })">
+                            {{ t('filters.all') }}
+                        </button>
+                        <button
+                            v-for="type in TYPES"
+                            :key="type"
+                            type="button"
+                            class="segmented__option"
+                            :class="{ 'segmented__option--active': filters.type === type }"
+                            :aria-pressed="filters.type === type"
+                            @click="applyFilters({ type })"
+                        >
+                            {{ t(`search.types.${type}`) }}
+                        </button>
+                    </div>
+                </fieldset>
+                <fieldset class="search-filters__group">
+                    <legend class="search-filters__label">{{ t('filters.platform') }}</legend>
+                    <div class="segmented">
+                        <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !filters.platform }" :aria-pressed="!filters.platform" @click="applyFilters({ platform: null })">
+                            {{ t('filters.all') }}
+                        </button>
+                        <button
+                            v-for="platform in PLATFORMS"
+                            :key="platform"
+                            type="button"
+                            class="segmented__option"
+                            :class="{ 'segmented__option--active': filters.platform === platform }"
+                            :aria-pressed="filters.platform === platform"
+                            @click="applyFilters({ platform })"
+                        >
+                            {{ t(`prices.platforms.${platform}`) }}
+                        </button>
+                    </div>
+                </fieldset>
+                <fieldset class="search-filters__group">
+                    <legend class="search-filters__label">{{ t('filters.sort') }}</legend>
+                    <div class="segmented">
+                        <button
+                            v-for="sort in SORTS"
+                            :key="sort"
+                            type="button"
+                            class="segmented__option"
+                            :class="{ 'segmented__option--active': filters.sort === sort }"
+                            :aria-pressed="filters.sort === sort"
+                            @click="applyFilters({ sort })"
+                        >
+                            {{ t(`search.sorts.${sort}`) }}
+                        </button>
+                    </div>
+                </fieldset>
+            </div>
+
+            <p v-if="!found" class="search-results__empty">{{ t('search.no_results') }}</p>
+            <p v-else-if="!results.length" class="search-results__empty">{{ t('search.no_filtered_results') }}</p>
 
             <ul v-else class="search-results__list">
                 <li v-for="game in results" :key="game.itadId" class="search-result">
@@ -175,6 +268,10 @@ function watch(game, platform = null) {
                     </span>
                 </li>
             </ul>
+
+            <button v-if="canShowMore" type="button" class="button search-results__more" @click="applyFilters({ more: true })">
+                {{ t('search.show_more') }}
+            </button>
         </section>
     </AppLayout>
 </template>

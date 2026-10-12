@@ -14,6 +14,7 @@ namespace App\Domain\Pricing;
 
 use App\Domain\Currency\ExchangeRates;
 use App\Enums\Platform;
+use App\Enums\PriceBasis;
 use App\Enums\PriceScope;
 use App\Enums\PriceSource;
 use App\Models\CurrentPrice;
@@ -67,6 +68,25 @@ final class PriceBoard
             $keyshops === null => $best,
             default => $keyshops['effectiveCents'] < $best['effectiveCents'] ? $keyshops : $best,
         };
+    }
+
+    /**
+     * Cena, podle které přehled řadí a filtruje (R30): oficiální nabídka,
+     * nejlevnější včetně klíčů, nebo jen obchody s klíči. Nabídka s klíči má
+     * příznak `keyshops` (karta ji pak ukáže jako hlavní cenu).
+     *
+     * @param  array{best: array<string, mixed>|null, playstation: array<string, mixed>|null, keyshops: array<string, mixed>|null}  $summary
+     * @return array<string, mixed>|null
+     */
+    public function ranked(array $summary, PriceBasis $basis): ?array
+    {
+        $offer = match ($basis) {
+            PriceBasis::Official => $summary['best'],
+            PriceBasis::Cheapest => $this->cheapest($summary),
+            PriceBasis::Keyshops => $summary['keyshops'] === null ? null : [...$summary['keyshops'], 'shopKey' => CurrentPrice::KEYSHOPS_KEY],
+        };
+
+        return $offer === null ? null : [...$offer, 'keyshops' => ($offer['shopKey'] ?? null) === CurrentPrice::KEYSHOPS_KEY];
     }
 
     /**

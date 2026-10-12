@@ -1,6 +1,6 @@
 <!--
     Nastavení účtu — upozornění na ceny (etapa 6, R13, R26): e-mail, PS Plus
-    a upozornění na tomto zařízení (Web Push). Odběr zařízení si stránka
+    a upozornění na tomto zařízení (Web Push); odkaz na stav zdrojů (R29). Odběr zařízení si stránka
     zapíná sama přes resources/js/lib/push.js.
 
     @author Roman Hlaváček
@@ -10,13 +10,14 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/lib/i18n';
 import { currentSubscription, isPushSupported, needsHomeScreen, sendTest, subscribe, unsubscribe } from '@/lib/push';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 
 const props = defineProps({
     settings: { type: Object, required: true },
     push: { type: Object, default: null },
     updateUrl: { type: String, required: true },
+    sourcesUrl: { type: String, required: true },
 });
 
 const t = useTranslations();
@@ -166,6 +167,14 @@ function test() {
                     {{ message.text }}
                 </p>
                 <p v-if="settings.devices" class="settings__hint">{{ t('settings.devices', { count: settings.devices }) }}</p>
+            </section>
+
+            <section class="panel settings__panel">
+                <h2 class="panel__title">{{ t('settings.sources_title') }}</h2>
+                <p class="panel__text">{{ t('settings.sources_text') }}</p>
+                <div class="settings__actions">
+                    <Link :href="sourcesUrl" class="button">{{ t('settings.sources_link') }}</Link>
+                </div>
             </section>
         </div>
     </AppLayout>

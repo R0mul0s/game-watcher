@@ -51,7 +51,7 @@ it('bez filtrů ukáže všechny hry a žánry s počtem her', function (): void
             ->has('games', 3)
             ->where('total', 3)
             ->where('filters.active', false)
-            ->where('filters.sort', 'added')
+            ->where('filters.sort', 'price')
             ->where('genres', [
                 ['name' => 'Akční', 'count' => 2],
                 ['name' => 'RPG', 'count' => 2],
@@ -154,6 +154,56 @@ it('neplatné hodnoty filtrů ignoruje a přehled ukáže', function (): void {
         ->assertInertia(fn (Assert $page) => $page
             ->has('games', 3)
             ->where('filters.platform', null)
-            ->where('filters.sort', 'added')
+            ->where('filters.sort', 'price')
             ->where('filters.active', false));
+});
+
+it('hledá i ve vývojáři, vydavateli a žánru, bez diakritiky a po slovech (R30)', function (string $query, array $titles): void {
+    expect(dashboardTitles(['q' => $query, 'sort' => 'title']))->toBe($titles);
+})->with([
+    'vývojář' => ['remedy', ['Alan Wake 2', 'CONTROL Resonant']],
+    'vydavatel' => ['THQ', ['BIOMUTANT']],
+    'žánr bez diakritiky' => ['dobrodruzne', ['CONTROL Resonant']],
+    'každé slovo někde' => ['remedy rpg', ['CONTROL Resonant']],
+]);
+
+it('cena podle obchodů s klíči řadí i filtruje „cena do“ (R30)', function (string $basis, array $titles): void {
+    // Klíče: BIOMUTANT 5,41 € (132 Kč), CONTROL Resonant 38,98 € (950 Kč), Alan Wake 2 bez klíčů
+    expect(dashboardTitles(['price' => $basis, 'max_price' => 1000, 'sort' => 'price']))->toBe($titles);
+})->with([
+    'oficiální' => ['official', ['BIOMUTANT']],
+    'včetně klíčů' => ['cheapest', ['BIOMUTANT', 'CONTROL Resonant']],
+    'jen klíče' => ['keyshops', ['BIOMUTANT', 'CONTROL Resonant']],
+]);
+
+it('s cenou podle klíčů je hra bez klíčů při řazení na konci a karta ukáže klíče jako hlavní cenu', function (): void {
+    expect(dashboardTitles(['price' => 'keyshops', 'sort' => 'price']))->toBe(['BIOMUTANT', 'CONTROL Resonant', 'Alan Wake 2']);
+
+    $this->actingAs($this->user)
+        ->get('/?price=keyshops&q=biomutant')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('filters.price', 'keyshops')
+            ->where('filters.active', true)
+            ->where('games.0.ranked.keyshops', true)
+            ->where('games.0.ranked.shopKey', 'keyshops')
+            // Oficiální nabídka zůstává pro vedlejší řádek karty
+            ->where('games.0.prices.best.cut', 30));
+});
+
+it('bez volby řadí od nejlevnější (R32)', function (): void {
+    expect(dashboardTitles())->toBe(['BIOMUTANT', 'CONTROL Resonant', 'Alan Wake 2']);
+});
+
+it('řadí podle Metacritic, hra bez hodnocení na konci, a karta hodnocení ukáže (R32)', function (): void {
+    // Metascore: CONTROL Resonant 83, BIOMUTANT 66, Alan Wake 2 jen OpenCritic
+    expect(dashboardTitles(['sort' => 'score']))->toBe(['CONTROL Resonant', 'BIOMUTANT', 'Alan Wake 2']);
+
+    $games = collect($this->actingAs($this->user)->get('/')->viewData('page')['props']['games'])->keyBy('title');
+    expect($games['CONTROL Resonant']['metascore'])->toBe(['score' => 83, 'level' => 'good'])
+        ->and($games['BIOMUTANT']['metascore'])->toBe(['score' => 66, 'level' => 'mixed'])
+        ->and($games['Alan Wake 2']['metascore'])->toBeNull();
+});
+
+it('sleva se i s cenou podle klíčů počítá z oficiálních obchodů', function (): void {
+    expect(dashboardTitles(['price' => 'keyshops', 'min_cut' => 25, 'sort' => 'title']))->toBe(['BIOMUTANT']);
 });

@@ -40,10 +40,21 @@
         }
     }
 
-    // Výběr (select) — šipka prohlížeče, tmavé pozadí z tokenů
+    // Výběr (select) — vlastní neonová šipka odsazená od kraje; šipka prohlížeče
+    // je nalepená na rámečku. Chevron ze dvou přechodů (barva z tokenu — SVG
+    // v data URI by token nepřevzalo).
     &__select {
-        padding-right: var(--space-2);
+        padding-right: calc(var(--space-3) * 2 + var(--select-arrow-size));
+        background-image:
+            linear-gradient(45deg, transparent 50%, var(--color-accent) 50%),
+            linear-gradient(135deg, var(--color-accent) 50%, transparent 50%);
+        background-position:
+            calc(100% - var(--space-3) - var(--select-arrow-size)) 50%,
+            calc(100% - var(--space-3) - var(--select-arrow-size) / 2) 50%;
+        background-repeat: no-repeat;
+        background-size: calc(var(--select-arrow-size) / 2) calc(var(--select-arrow-size) / 2);
         cursor: pointer;
+        appearance: none;
     }
 
     &__error {

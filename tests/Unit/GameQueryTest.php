@@ -46,3 +46,11 @@ it('stejný název s jinou velikostí písmen má stejný klíč cache', functio
     expect(GameQuery::parse('Biomutant')?->cacheKey())->toBe(GameQuery::parse('BIOMUTANT')?->cacheKey())
         ->and(GameQuery::parse('597820')?->cacheKey())->not->toBe(GameQuery::parse('BIOMUTANT')?->cacheKey());
 });
+
+it('z odkazu na IsThereAnyDeal vezme slug a hledá podle něj jako název (R30)', function (): void {
+    $query = GameQuery::parse('https://isthereanydeal.com/game/control-resonant/info/');
+
+    expect($query?->itadSlug)->toBe('control-resonant')
+        ->and($query?->title)->toBe('control resonant')
+        ->and($query?->cacheKey())->toBe('itad:control-resonant');
+});

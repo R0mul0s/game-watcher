@@ -32,13 +32,15 @@ final class SearchGames
     /**
      * Hry odpovídající dotazu.
      *
+     * @param  int|null  $limit  nejvýš výsledků hledání podle názvu; null = games.catalog.search_results
      * @return list<ItadGame>
      *
      * @throws ItadUnavailable
      */
-    public function handle(GameQuery $query): array
+    public function handle(GameQuery $query, ?int $limit = null): array
     {
-        $key = self::CACHE_PREFIX.$query->cacheKey();
+        $limit ??= (int) config('games.catalog.search_results');
+        $key = self::CACHE_PREFIX.$query->cacheKey().':'.$limit;
 
         /** @var list<array{id: string, slug: string, title: string, type: string, mature: bool, boxartUrl: ?string, bannerUrl: ?string, thumbnailUrl: ?string}>|null $cached */
         $cached = Cache::get($key);
@@ -50,7 +52,13 @@ final class SearchGames
             $game = $this->itad->lookupSteamApp($query->steamAppId);
             $games = $game === null ? [] : [$game];
         } else {
-            $games = $this->searchTitle((string) $query->title);
+            $games = $this->searchTitle((string) $query->title, $limit);
+        }
+
+        // Odkaz na ITAD (R30) — hra s přesně tímto slugem, jinak výsledky podle názvu
+        if ($query->itadSlug !== null) {
+            $exact = array_values(array_filter($games, fn (ItadGame $game): bool => $game->slug === $query->itadSlug));
+            $games = $exact === [] ? $games : $exact;
         }
 
         Cache::put(
@@ -71,9 +79,9 @@ final class SearchGames
      *
      * @throws ItadUnavailable
      */
-    private function searchTitle(string $title): array
+    private function searchTitle(string $title, int $limit): array
     {
-        $games = $this->itad->search($title, (int) config('games.catalog.search_results'));
+        $games = $this->itad->search($title, $limit);
         $exact = $this->itad->lookupTitle($title);
         if ($exact === null) {
             return $games;

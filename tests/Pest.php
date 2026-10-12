@@ -71,6 +71,14 @@ function psnFixture(string $name): string
 }
 
 /**
+ * Zkrácená stránka hry na Metacritic zachycená 12. 10. 2026 (jen <title> a JSON-LD).
+ */
+function metacriticFixture(string $slug): string
+{
+    return (string) file_get_contents(fixture("metacritic/game-{$slug}.html"));
+}
+
+/**
  * Skutečná odpověď API zachycená 11. 10. 2026 (bez klíče) — cestu vrací
  * fixture() z Pestu (tests/Fixtures/<cesta>.json).
  *
@@ -134,6 +142,11 @@ function fakeApis(array $overrides = []): void
         'store.playstation.com/cs-cz/product/'.PSN_IT_TAKES_TWO => Http::response(psnFixture('product-it-takes-two')),
         'store.playstation.com/*' => Http::response('Not Found', 404),
         'www.playstation.com/*' => Http::response('Not Found', 404),
+        // Metacritic (R33) — zkrácené skutečné stránky (jen JSON-LD), jiná hra 404
+        'www.metacritic.com/game/saros/' => Http::response(metacriticFixture('saros')),
+        'www.metacritic.com/game/alan-wake-ii/' => Http::response(metacriticFixture('alan-wake-ii')),
+        'www.metacritic.com/game/intergalactic-the-heretic-prophet/' => Http::response(metacriticFixture('intergalactic-the-heretic-prophet')),
+        'www.metacritic.com/*' => Http::response('Not Found', 404),
     ];
 
     Http::swap(new HttpFactory);

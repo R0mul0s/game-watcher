@@ -177,6 +177,88 @@ it('hru s připojeným PlayStation Store označí, i když se na PC neprodává'
             ->where('results.0.bestPrice', null));
 });
 
+it('výsledky filtruje podle druhu a platformy, stav je v adrese (R30)', function (string $query, array $titles): void {
+    $props = $this->actingAs(user())
+        ->get('/hry/pridat?q=control+resonant&'.$query)
+        ->assertOk()
+        ->viewData('page')['props'];
+
+    // „found“ je počet před filtry — stránka pozná „nic jsme nenašli“ od „nic filtrům“
+    expect($props['found'])->toBe(3)
+        ->and(array_column($props['results'], 'title'))->toBe($titles);
+})->with([
+    'jen hry (i edice)' => ['type=game', ['CONTROL Resonant', 'CONTROL Resonant Digital Deluxe Edition']],
+    'DLC a další' => ['type=other', ['CONTROL Resonant Digital Deluxe Upgrade']],
+    'v obchodech pro PC' => ['platform=pc', ['CONTROL Resonant']],
+    'na PlayStationu nic' => ['platform=playstation', []],
+]);
+
+it('změna filtru vezme hledání i obchody z cache', function (): void {
+    $user = user();
+    $this->actingAs($user)->get('/hry/pridat?q=control+resonant')->assertOk();
+    $sent = count(Http::recorded());
+
+    $this->actingAs($user)->get('/hry/pridat?q=control+resonant&type=game&platform=pc&sort=price')->assertOk();
+
+    expect(count(Http::recorded()))->toBe($sent);
+});
+
+it('řadí výsledky od nejlevnější, hry bez ceny na konci', function (): void {
+    app(ImportExchangeRates::class)->handle();
+    // Skutečné objekty z ITAD: BIOMUTANT (od 24,96 €) za výsledky CONTROL Resonant (od 49,18 €)
+    fakeApis(['api.isthereanydeal.com/games/search/v1*' => Http::response([
+        ...jsonFixture('itad/search-control-resonant'),
+        jsonFixture('itad/lookup-biomutant')['game'],
+    ])]);
+
+    $titles = fn (string $sort): array => array_column(
+        $this->actingAs(user())->get('/hry/pridat?q=control&sort='.$sort)->viewData('page')['props']['results'],
+        'title',
+    );
+
+    expect($titles('relevance'))->toBe(['CONTROL Resonant', 'CONTROL Resonant Digital Deluxe Edition', 'CONTROL Resonant Digital Deluxe Upgrade', 'BIOMUTANT'])
+        ->and($titles('price'))->toBe(['BIOMUTANT', 'CONTROL Resonant', 'CONTROL Resonant Digital Deluxe Edition', 'CONTROL Resonant Digital Deluxe Upgrade']);
+});
+
+it('„Zobrazit víc“ si od ITAD řekne o víc výsledků', function (): void {
+    $this->actingAs(user())
+        ->get('/hry/pridat?q=control+resonant&more=1')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('filters.more', true)
+            ->where('canShowMore', false));
+
+    Http::assertSent(fn (Request $request): bool => str_contains($request->url(), '/games/search/v1')
+        && (int) $request['results'] === (int) config('games.catalog.search_results_more'));
+});
+
+it('plný počet výsledků nabídne víc', function (): void {
+    config(['games.catalog.search_results' => 3]);
+
+    $this->actingAs(user())
+        ->get('/hry/pridat?q=control+resonant')
+        ->assertInertia(fn (Assert $page) => $page->where('canShowMore', true));
+});
+
+it('podle odkazu na IsThereAnyDeal najde přesně tu hru (R30)', function (): void {
+    $this->actingAs(user())
+        ->get('/hry/pridat?q='.urlencode('https://isthereanydeal.com/game/control-resonant/info/'))
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('results', 1)
+            ->where('results.0.itadId', CONTROL_RESONANT_ID));
+
+    Http::assertSent(fn (Request $request): bool => str_contains($request->url(), '/games/search/v1')
+        && $request['title'] === 'control resonant');
+});
+
+it('neplatné filtry hledání ignoruje', function (): void {
+    $this->actingAs(user())
+        ->get('/hry/pridat?q=control+resonant&type=hry&platform=xbox&sort=nahodne&more=snad')
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('results', 3)
+            ->where('filters', ['type' => null, 'platform' => null, 'sort' => 'relevance', 'more' => false]));
+});
+
 it('výpadek cen ITAD výsledky neskryje, jen bez obchodů', function (): void {
     fakeApis(['api.isthereanydeal.com/games/prices/v3*' => apiError(503)]);
 

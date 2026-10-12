@@ -15,6 +15,7 @@ namespace App\Domain\Watchlist\Actions;
 use App\Domain\Catalog\Actions\ImportGame;
 use App\Domain\Catalog\Actions\RefreshGameDetails;
 use App\Domain\Itad\Exceptions\ItadUnavailable;
+use App\Domain\Metacritic\Actions\RefreshMetascores;
 use App\Domain\Pricing\Actions\RefreshPrices;
 use App\Domain\Watchlist\Exceptions\GameNotFound;
 use App\Enums\Platform;
@@ -33,6 +34,7 @@ final class WatchGame
         private readonly ImportGame $importGame,
         private readonly RefreshPrices $refreshPrices,
         private readonly RefreshGameDetails $refreshGameDetails,
+        private readonly RefreshMetascores $refreshMetascores,
     ) {}
 
     /**
@@ -60,6 +62,12 @@ final class WatchGame
         // Žánry a režimy ze Steamu pro filtry (R25) — výpadek přidání nezastaví, doplní je cron
         if ($game->steam_app_id !== null && $game->steam_details_at === null) {
             $this->refreshGameDetails->handle(collect([$game]));
+        }
+
+        // Metascore z Metacritic pro hru, které ho ITAD nedává (R33) — výpadek
+        // přidání nezastaví, doplní ho cron
+        if ($game->metacritic_checked_at === null && $game->itadMetascore() === null) {
+            $this->refreshMetascores->handle(collect([$game]));
         }
 
         return $game;

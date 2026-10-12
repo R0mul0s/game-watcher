@@ -63,34 +63,44 @@ final class RefreshPrices
         $fetchedAt = CarbonImmutable::now();
         $updated = [];
         $failed = [];
+        $errors = [];
+        $expected = [
+            PriceSource::Itad->value => $games->count(),
+            PriceSource::GgDeals->value => $games->whereNotNull('steam_app_id')->count(),
+        ];
 
         try {
             $updated[PriceSource::Itad->value] = $this->refreshItad($games, $fetchedAt);
-        } catch (ItadUnavailable) {
+        } catch (ItadUnavailable $e) {
             $failed[] = PriceSource::Itad;
+            $errors[PriceSource::Itad->value] = $e->getMessage();
         }
 
         try {
             $updated[PriceSource::GgDeals->value] = $this->refreshGgDeals($games, $fetchedAt);
-        } catch (GgDealsUnavailable) {
+        } catch (GgDealsUnavailable $e) {
             $failed[] = PriceSource::GgDeals;
+            $errors[PriceSource::GgDeals->value] = $e->getMessage();
         }
 
-        [$updated[PriceSource::PlayStation->value], $playStationFailed] = $this->refreshPlayStation($games, $fetchedAt);
-        if ($playStationFailed) {
+        [$updated[PriceSource::PlayStation->value], $expected[PriceSource::PlayStation->value], $playStationError]
+            = $this->refreshPlayStation($games, $fetchedAt);
+        if ($playStationError !== null) {
             $failed[] = PriceSource::PlayStation;
+            $errors[PriceSource::PlayStation->value] = $playStationError;
         }
 
-        return new PriceRefreshResult($updated, $failed);
+        return new PriceRefreshResult($updated, $failed, $expected, $errors);
     }
 
     /**
      * Ceny produktů PlayStation Store propojených s hrami (R20) — po jedné
      * stránce s pauzou. Výpadek jednoho produktu ostatní nezastaví; vrátí počet
-     * aktualizovaných produktů a jestli některý selhal.
+     * aktualizovaných produktů, počet propojených produktů a zprávu poslední
+     * chyby (null, když žádný produkt neselhal).
      *
      * @param  Collection<int, Game>  $games
-     * @return array{0: int, 1: bool}
+     * @return array{0: int, 1: int, 2: string|null}
      */
     private function refreshPlayStation(Collection $games, CarbonImmutable $fetchedAt): array
     {
@@ -101,7 +111,7 @@ final class RefreshPrices
             ->get();
 
         $count = 0;
-        $failed = false;
+        $error = null;
         foreach ($listings as $index => $listing) {
             if ($index > 0) {
                 Sleep::usleep((int) config('games.sources.playstation.request_delay_ms') * self::MICROSECONDS_PER_MILLISECOND);
@@ -109,8 +119,8 @@ final class RefreshPrices
 
             try {
                 $product = $this->playStation->product($listing->external_id);
-            } catch (PlayStationUnavailable) {
-                $failed = true;
+            } catch (PlayStationUnavailable $e) {
+                $error = $e->getMessage();
 
                 continue;
             }
@@ -123,12 +133,12 @@ final class RefreshPrices
             }
 
             $this->storePrices->storePlayStation($listing, $product, $fetchedAt);
-            // Počet hráčů pro filtr přehledu (R25) — obchod ho může doplnit později
-            $listing->update(['local_players' => $product->localPlayers, 'online_players' => $product->onlinePlayers]);
+            // Počet hráčů pro filtr přehledu (R25) a hodnocení hráčů (R33) — obchod je mění
+            $listing->update($product->listingDetails());
             $count++;
         }
 
-        return [$count, $failed];
+        return [$count, $listings->count(), $error];
     }
 
     /**

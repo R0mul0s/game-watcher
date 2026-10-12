@@ -10,10 +10,11 @@
 -->
 <script setup>
 import GameBadges from '@/Components/GameBadges.vue';
+import GameRatings from '@/Components/GameRatings.vue';
 import PricePanel from '@/Components/PricePanel.vue';
 import StoreListings from '@/Components/StoreListings.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { formatDate, formatInteger } from '@/lib/format';
+import { formatDate } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
 import { Deferred, Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { defineAsyncComponent, ref } from 'vue';
@@ -195,21 +196,7 @@ function toggleWatch() {
                 </Deferred>
                 <StoreListings :listings="game.listings" :connect-url="game.connectUrl" class="game-detail__prices" />
 
-                <section v-if="game.reviews.length" class="panel">
-                    <h2 class="panel__title">{{ t('game.reviews') }}</h2>
-                    <ul class="reviews">
-                        <li v-for="review in game.reviews" :key="review.source" class="reviews__item">
-                            <span class="reviews__score" :class="`reviews__score--${review.level}`">{{ review.score }}</span>
-                            <span class="reviews__source">
-                                <a v-if="review.url" :href="review.url" target="_blank" rel="noopener noreferrer">{{ review.source }}</a>
-                                <template v-else>{{ review.source }}</template>
-                                <span v-if="review.count" class="reviews__count">
-                                    {{ t('game.reviews_count', { count: formatInteger(review.count, page.props.locale) }) }}
-                                </span>
-                            </span>
-                        </li>
-                    </ul>
-                </section>
+                <GameRatings :reviews="game.reviews" :player-ratings="game.playerRatings" :metacritic="game.metacritic" />
 
                 <section v-if="game.tags.length" class="panel">
                     <h2 class="panel__title">{{ t('game.tags') }}</h2>

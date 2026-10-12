@@ -13,16 +13,19 @@ declare(strict_types=1);
 namespace App\Domain\Pricing;
 
 use App\Enums\Platform;
+use App\Enums\PriceBasis;
 
 /**
- * Platforma z filtru přehledu nebo hlídaná u hry (R21, R24) a volba „mám
- * PS Plus“ — s ní se u PlayStation Store počítá cena pro předplatitele (R20).
+ * Platforma z filtru přehledu nebo hlídaná u hry (R21, R24), volba „mám
+ * PS Plus“ — s ní se u PlayStation Store počítá cena pro předplatitele (R20) —
+ * a zdroj ceny, podle které přehled řadí a filtruje (R30).
  */
 final readonly class PriceFilter
 {
     public function __construct(
         public ?Platform $platform = null,
         public bool $withPlus = false,
+        public PriceBasis $basis = PriceBasis::Official,
     ) {}
 
     /**
@@ -40,7 +43,7 @@ final readonly class PriceFilter
      */
     public function restrictedTo(?Platform $platform): self
     {
-        return $platform === null || $this->platform !== null ? $this : new self($platform, $this->withPlus);
+        return $platform === null || $this->platform !== null ? $this : new self($platform, $this->withPlus, $this->basis);
     }
 
     /**

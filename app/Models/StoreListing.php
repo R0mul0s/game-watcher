@@ -28,6 +28,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $platforms
  * @property int|null $local_players
  * @property int|null $online_players
+ * @property string|null $star_rating
+ * @property int|null $star_ratings_count
  * @property string $url
  */
 class StoreListing extends Model
@@ -46,6 +48,8 @@ class StoreListing extends Model
         'platforms',
         'local_players',
         'online_players',
+        'star_rating',
+        'star_ratings_count',
         'url',
     ];
 
@@ -60,6 +64,8 @@ class StoreListing extends Model
             'source' => PriceSource::class,
             'local_players' => 'integer',
             'online_players' => 'integer',
+            'star_rating' => 'decimal:2',
+            'star_ratings_count' => 'integer',
         ];
     }
 

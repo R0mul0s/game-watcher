@@ -48,6 +48,8 @@ class SettingsController extends Controller
                 'testUrl' => route('push.test', absolute: false),
             ] : null,
             'updateUrl' => route('settings.update', absolute: false),
+            // Stav zdrojů (R29) — v hlavní navigaci se na mobilu nevejde
+            'sourcesUrl' => route('sources.show', absolute: false),
         ]);
     }
 

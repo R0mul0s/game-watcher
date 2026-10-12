@@ -16,6 +16,7 @@
 }
 
 .game-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -23,9 +24,13 @@
     border: var(--border-width) solid var(--color-border);
     color: var(--color-text);
     text-decoration: none;
+    // Nad kulisou s podlahou zůstane karta čitelná (R6)
+    backdrop-filter: blur(var(--space-1));
     transition:
         border-color var(--duration-fast),
         box-shadow var(--duration-fast);
+
+    @include hud-corners;
 
     &:hover {
         border-color: var(--color-accent);
@@ -73,6 +78,31 @@
         font-size: var(--font-size-sm);
     }
 
+    // Metascore (R32) — barva podle úrovně jako hodnocení na detailu
+    &__score {
+        padding: 0 var(--space-1);
+        border: var(--border-width) solid currentcolor;
+        font-weight: var(--font-weight-strong);
+
+        &--good {
+            color: var(--color-neon-green);
+        }
+
+        &--mixed {
+            color: var(--color-neon-amber);
+        }
+
+        &--bad {
+            color: var(--color-danger);
+        }
+    }
+
+    // Hodnocení hráčů na PS Store (R33) — barva PlayStationu, hvězdičky ne body
+    &__stars {
+        color: var(--color-playstation);
+        font-weight: var(--font-weight-strong);
+    }
+
     // Nejlevnější cena — dole na kartě, aby ceny všech karet byly v řadě
     &__price {
         display: flex;
@@ -88,6 +118,12 @@
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-strong);
         text-shadow: 0 0 var(--space-2) var(--color-success-soft);
+
+        // Hlavní cenou jsou obchody s klíči (volba „Cena“, R30) — barva klíčů
+        &--keyshops {
+            color: var(--color-neon-magenta);
+            text-shadow: var(--text-glow-magenta);
+        }
     }
 
     &__cut {
@@ -121,6 +157,13 @@
 
     &__keyshops {
         color: var(--color-neon-magenta);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+    }
+
+    // Oficiální nabídka pod hlavní cenou z obchodů s klíči (R30)
+    &__official {
+        color: var(--color-neon-green);
         font-family: var(--font-mono);
         font-size: var(--font-size-xs);
     }

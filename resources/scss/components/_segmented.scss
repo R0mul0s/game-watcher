@@ -1,5 +1,6 @@
 // _segmented.scss
-// Přepínač z několika voleb vedle sebe (měna cen v hlavičce, CurrencySwitch.vue).
+// Přepínač z několika voleb vedle sebe (měna cen v hlavičce, filtry přehledu
+// a hledání).
 //
 // @author Roman Hlaváček
 // @created 2026-10-11
@@ -34,5 +35,17 @@
             color: var(--color-accent);
             text-shadow: var(--text-glow-accent);
         }
+    }
+
+    // Přes celou šířku (filtry přehledu) — volné místo se rozdělí poměrem
+    // k délce voleb, text uprostřed
+    &--fill {
+        display: flex;
+        width: 100%;
+    }
+
+    &--fill &__option {
+        flex: 1 1 auto;
+        text-align: center;
     }
 }

@@ -12,10 +12,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Currency\Exceptions;
 
+use App\Domain\Monitoring\SourceUnavailable;
 use RuntimeException;
 
 /**
  * Výpadek ČNB nebo změněný formát lístku — převod jede dál s posledním
  * uloženým kurzem (R14).
  */
-final class ExchangeRatesUnavailable extends RuntimeException {}
+final class ExchangeRatesUnavailable extends RuntimeException implements SourceUnavailable {}
