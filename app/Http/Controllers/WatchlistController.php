@@ -22,6 +22,7 @@ use App\Domain\Watchlist\Exceptions\GameNotFound;
 use App\Enums\Platform;
 use App\Http\Requests\WatchGameRequest;
 use App\Http\Requests\WatchPlatformRequest;
+use App\Http\Requests\WatchTargetRequest;
 use App\Models\Game;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -92,6 +93,26 @@ class WatchlistController extends Controller
         $unwatchGame->handle($this->user($request), $game);
 
         return Inertia::flash('success', __('app.watchlist.removed', ['title' => $game->title]))->back();
+    }
+
+    /**
+     * Uloží cílovou cenu v měně zobrazení účtu (R26); stav posledního
+     * upozornění smaže — nový cíl se vyhodnotí od začátku.
+     */
+    public function target(WatchTargetRequest $request, Game $game): RedirectResponse
+    {
+        $user = $this->user($request);
+        $item = $user->watchlistItemFor($game) ?? abort(404);
+        $target = $request->target($user->displayCurrency());
+
+        $item->update([
+            'target_amount' => $target?->toDecimal(),
+            'target_currency' => $target?->currency,
+            'notified_amount' => null,
+            'notified_currency' => null,
+        ]);
+
+        return Inertia::flash('success', __($target === null ? 'app.alerts.target_cleared' : 'app.alerts.target_saved'))->back();
     }
 
     /**

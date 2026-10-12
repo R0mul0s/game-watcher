@@ -124,4 +124,16 @@
         font-family: var(--font-mono);
         font-size: var(--font-size-xs);
     }
+
+    // Cílová cena (R26) — splněná zeleně jako nejlevnější cena
+    &__target {
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+
+        &--reached {
+            color: var(--color-neon-green);
+            text-shadow: 0 0 var(--space-2) var(--color-success-soft);
+        }
+    }
 }

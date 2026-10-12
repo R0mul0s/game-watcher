@@ -30,7 +30,7 @@ Postup pro shared hosting **Websupport** a subdoménu `game-watcher.rhsoft.cz`
 - **Subdoména `game-watcher.rhsoft.cz`** založená ve WebAdminu, **document root** nasměrovaný do `public/`
   (WebAdmin → Web → Služby → Upravit). Přesměrování na HTTPS ve WebAdminu může zůstat
   zapnuté — na rozdíl od Počasí sem nic neposílá HTTP zařízení; `public/.htaccess` přesměrovává i tak
-- *(etapa 6)* **SMTP schránka** pro odesílání upozornění e-mailem (R13) — `MAIL_*` v `.env`
+- **SMTP schránka** pro odesílání upozornění e-mailem (R13, R26) — ve WebAdminu → E-maily založ schránku (např. `game-watcher@rhsoft.cz`), údaje do `MAIL_*` v `.env`
 - `mod_rewrite` a `mod_headers` (HTTPS přesměrování a bezpečnostní hlavičky v `public/.htaccess`)
 
 ---
@@ -78,6 +78,8 @@ a vyplň místa `<…>`:
 - `DB_*` — z detailu databáze ve WebAdminu
 - `GAMES_ITAD_API_KEY`, `GAMES_GGDEALS_API_KEY` — klíče zdrojů cen (R9); pro produkci ideálně vlastní aplikace/klíč, ne vývojový
 - `GAMES_CRON_TOKEN` — token cron URL (viz *Cron: stahování cen*)
+- `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS` — schránka pro upozornění e-mailem (R26)
+- `GAMES_PUSH_PUBLIC_KEY`, `GAMES_PUSH_PRIVATE_KEY` — `docker compose exec app php artisan games:push-keys`; `GAMES_PUSH_SUBJECT` = `mailto:` adresa schránky. Klíče se nemění — po změně je potřeba upozornění na zařízeních zapnout znovu
 
 > **Ladění bez SSH:** chyby jsou v `storage/logs/laravel-RRRR-MM-DD.log` —
 > stáhni ho přes FTP. `APP_DEBUG=true` na produkci nezapínej ani dočasně:
@@ -111,7 +113,7 @@ curl -I "https://game-watcher.rhsoft.cz/prihlaseni"
 
 ## Cron: stahování cen
 
-Kurzy ČNB, ceny sledovaných her a úklid cache obstarává URL volaná cronem
+Kurzy ČNB, ceny sledovaných her, žánry ze Steamu, upozornění na ceny a úklid cache obstarává URL volaná cronem
 ve WebAdminu (R19) — hosting nemá scheduler ani artisan.
 
 1. V `.env` na hostingu vyplň `GAMES_CRON_TOKEN` — náhodný řetězec:
@@ -121,7 +123,9 @@ ve WebAdminu (R19) — hosting nemá scheduler ani artisan.
 3. Ověř v prohlížeči stejnou URL — odpověď je prostý text:
    ```
    kurzy ČNB — uložen lístek z 9. 10. 2026
-   ceny — ITAD her: 4, gg.deals her: 3
+   ceny — ITAD her: 4, gg.deals her: 3, PlayStation Store produktů: 1
+   žánry a režimy ze Steamu — her: 2
+   upozornění — her: 1, e-mailů: 1, na zařízení: 1
    cache — smazáno prošlých záznamů: 6
    ```
    Špatný nebo chybějící token vrací **404**.
@@ -132,6 +136,8 @@ neplatný klíč), ostatní proběhnou, místo čísla je „chyba“ a URL vrá
 vrátí **409** a nic neudělá; zámek po pádu PHP vyprší sám za 10 minut
 (`games.cron.lock_seconds`). Ceny se stahují jen hrám, které někdo sleduje;
 kurz ČNB jen tehdy, když uložený není dnešní (o víkendu platí páteční).
+Upozornění, které nedoručil žádný kanál (chyba SMTP i push), se v souhrnu
+ukáže jako „nedoručeno“, URL vrátí **500** a zkusí ho další běh (R26).
 
 ---
 
@@ -171,6 +177,7 @@ je jediná cesta, jak ji neztratit.
 | `migrations-2026-10-12-playstation.sql` | PlayStation Store (R20): tabulka `store_listings`, v `current_prices` sloupce `platform`, `edition`, `member_amount`, `member_included`; opakovatelný, pustit **po** cenách a **před** nahráním kódu | 2026-10-12 |
 | `migrations-2026-10-12-watch-platform.sql` | hlídaná platforma (R24): ve `watchlist_items` sloupec `platform` (NULL = všude, i pro dosud sledované hry); opakovatelný, pustit **po** PlayStation a **před** nahráním kódu | 2026-10-12 |
 | `migrations-2026-10-12-game-details.sql` | žánry a režimy (R25): v `games` sloupce `genres`, `modes`, `steam_details_at`, ve `store_listings` `local_players`, `online_players` — prázdné, doplní je cron; opakovatelný, pustit **po** hlídané platformě a **před** nahráním kódu | 2026-10-12 |
+| `migrations-2026-10-12-price-alerts.sql` | hlídání cen (R26): ve `watchlist_items` cílová cena a poslední upozornění, v `users` `notify_email` (zapnuto) a `has_ps_plus`, tabulka `push_subscriptions`; opakovatelný, pustit **po** žánrech a **před** nahráním kódu | |
 
 ## Nasazené verze
 

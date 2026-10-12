@@ -1,7 +1,8 @@
 <!--
     Detail hry z katalogu — údaje z IsThereAnyDeal (R10), sledování a odkazy.
     Ceny v měně účtu (R14) — panel PricePanel. U sledované hry jde zvolit,
-    kde se hlídá (R24) — ceny ostatních platforem se ztlumí.
+    kde se hlídá (R24) — ceny ostatních platforem se ztlumí — a cílovou
+    cenu pro upozornění (etapa 6, R26).
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -13,7 +14,7 @@ import StoreListings from '@/Components/StoreListings.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { formatDate, formatInteger } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
-import { Head, router, usePage } from '@inertiajs/vue3';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -27,6 +28,24 @@ const processing = ref(false);
 
 /** Volby hlídané platformy — null = všude (enum Platform). */
 const WATCH_PLATFORMS = [null, 'pc', 'playstation'];
+
+/** Cílová cena v měně zobrazení; prázdná = upozornit na historické minimum. */
+const targetForm = useForm({ target_price: props.game.target?.amount ?? '' });
+
+/**
+ * Uloží cílovou cenu.
+ */
+function saveTarget() {
+    targetForm.put(props.game.targetUrl, { preserveScroll: true });
+}
+
+/**
+ * Zruší cílovou cenu.
+ */
+function clearTarget() {
+    targetForm.target_price = '';
+    saveTarget();
+}
 
 /** Volby požadavku — tlačítko se do odpovědi zablokuje. */
 const requestOptions = {
@@ -128,6 +147,32 @@ function toggleWatch() {
                             </button>
                         </div>
                     </div>
+
+                    <form v-if="game.watching" class="game-detail__target" @submit.prevent="saveTarget">
+                        <label class="game-detail__watch-label" for="target-price">{{ t('game.target_label') }}</label>
+                        <div class="game-detail__target-row">
+                            <input
+                                id="target-price"
+                                v-model="targetForm.target_price"
+                                class="field__input game-detail__target-input"
+                                :class="{ 'field__input--invalid': targetForm.errors.target_price }"
+                                type="number"
+                                min="0.01"
+                                step="0.01"
+                                inputmode="decimal"
+                                aria-describedby="target-hint"
+                            />
+                            <span class="game-detail__target-unit">{{ page.props.currency?.current }}</span>
+                            <button type="submit" class="button button--small" :disabled="targetForm.processing || !targetForm.isDirty">
+                                {{ t('game.target_save') }}
+                            </button>
+                            <button v-if="game.target" type="button" class="button button--ghost button--small" :disabled="targetForm.processing" @click="clearTarget">
+                                {{ t('game.target_clear') }}
+                            </button>
+                        </div>
+                        <p v-if="targetForm.errors.target_price" class="field__error">{{ targetForm.errors.target_price }}</p>
+                        <p id="target-hint" class="field__hint game-detail__target-hint">{{ t('game.target_hint') }}</p>
+                    </form>
                 </div>
             </header>
 

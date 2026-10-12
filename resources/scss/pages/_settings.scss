@@ -1,0 +1,44 @@
+// _settings.scss
+// Nastavení upozornění (Settings.vue, etapa 6).
+//
+// @author Roman Hlaváček
+// @created 2026-10-12
+
+@use '../abstracts/mixins' as *;
+
+.settings {
+    display: grid;
+    gap: var(--space-4);
+
+    @include from-md {
+        grid-template-columns: repeat(2, 1fr);
+        align-items: start;
+    }
+
+    &__hint {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+    }
+
+    &__status {
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+        letter-spacing: var(--letter-spacing-caps);
+        text-transform: uppercase;
+
+        &--on {
+            color: var(--color-neon-green);
+        }
+    }
+
+    &__message {
+        margin-bottom: 0;
+    }
+}

@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\Platform;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -21,12 +20,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
 
 /**
- * Účet zakládá správce (games:create-user), registrace není (R4).
+ * Účet zakládá správce (games:create-user), registrace není (R4). Upozornění
+ * na cenu chodí e-mailem (notify_email) a na zařízení s odběrem Web Push (R13).
  *
  * @property int $id
  * @property string $name
  * @property string $email
  * @property string $display_currency
+ * @property bool $notify_email
+ * @property bool $has_ps_plus
  */
 class User extends Authenticatable
 {
@@ -41,6 +43,19 @@ class User extends Authenticatable
         'email',
         'password',
         'display_currency',
+        'notify_email',
+        'has_ps_plus',
+    ];
+
+    /**
+     * Výchozí hodnoty jako v databázi — platí i pro nově vytvořený model
+     * před znovunačtením.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'notify_email' => true,
+        'has_ps_plus' => false,
     ];
 
     /**
@@ -60,7 +75,19 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'notify_email' => 'boolean',
+            'has_ps_plus' => 'boolean',
         ];
+    }
+
+    /**
+     * Zařízení s odběrem upozornění (Web Push, R13).
+     *
+     * @return HasMany<PushSubscription, $this>
+     */
+    public function pushSubscriptions(): HasMany
+    {
+        return $this->hasMany(PushSubscription::class);
     }
 
     /**
@@ -116,13 +143,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Hlídaná platforma podle ID hry (R24); null = všude.
+     * Položky seznamu podle ID hry — hlídaná platforma (R24) a cílová cena (R26).
      *
-     * @return Collection<int, Platform|null>
+     * @return Collection<int, WatchlistItem>
      */
-    public function watchPlatforms(): Collection
+    public function watchlistItemsByGame(): Collection
     {
-        return $this->watchlistItems()->get(['game_id', 'platform'])
-            ->mapWithKeys(fn (WatchlistItem $item): array => [$item->game_id => $item->platform]);
+        return $this->watchlistItems()->get()->keyBy('game_id');
     }
 }

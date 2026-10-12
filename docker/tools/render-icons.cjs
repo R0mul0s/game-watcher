@@ -16,8 +16,8 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '../..');
 const SOURCE = path.join(ROOT, 'resources/images/logo.svg');
 const TARGET_DIR = path.join(ROOT, 'storage/icons');
-/** Velikosti v px: 180 = apple-touch-icon, ostatní do favicon.ico. */
-const SIZES = [180, 48, 32, 16];
+/** Velikosti v px: 180 = apple-touch-icon, 192 a 512 = manifest aplikace (R27), ostatní do favicon.ico. */
+const SIZES = [512, 192, 180, 48, 32, 16];
 
 fs.mkdirSync(TARGET_DIR, { recursive: true });
 const svg = fs.readFileSync(SOURCE);

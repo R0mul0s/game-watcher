@@ -51,6 +51,25 @@ final class PriceBoard
     }
 
     /**
+     * Nejlevnější nabídka souhrnu včetně obchodů s klíči (upozornění, slevy
+     * dne — R26); nabídka s klíči dostane klíč obchodu, ať jde dohledat zdroj.
+     *
+     * @param  array{best: array<string, mixed>|null, playstation: array<string, mixed>|null, keyshops: array<string, mixed>|null}  $summary
+     * @return array<string, mixed>|null
+     */
+    public function cheapest(array $summary): ?array
+    {
+        $best = $summary['best'];
+        $keyshops = $summary['keyshops'] === null ? null : [...$summary['keyshops'], 'shopKey' => CurrentPrice::KEYSHOPS_KEY];
+
+        return match (true) {
+            $best === null => $keyshops,
+            $keyshops === null => $best,
+            default => $keyshops['effectiveCents'] < $best['effectiveCents'] ? $keyshops : $best,
+        };
+    }
+
+    /**
      * Všechny ceny pro detail hry.
      *
      * @return array<string, mixed>

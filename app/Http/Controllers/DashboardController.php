@@ -33,12 +33,13 @@ class DashboardController extends Controller
         $filters = $request->filters();
         $watchlist = $user instanceof User
             ? $view->build($user, $filters, $user->displayCurrency())
-            : ['games' => [], 'total' => 0, 'genres' => []];
+            : ['games' => [], 'total' => 0, 'genres' => [], 'dailyDeals' => []];
 
         return Inertia::render('Dashboard', [
             'games' => $watchlist['games'],
             'total' => $watchlist['total'],
             'genres' => $watchlist['genres'],
+            'dailyDeals' => $watchlist['dailyDeals'],
             'filters' => $filters->toArray(),
             'dashboardUrl' => route('dashboard', absolute: false),
             'searchUrl' => route('games.search', absolute: false),

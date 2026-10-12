@@ -17,6 +17,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
+use Minishlink\WebPush\VAPID;
 use Tests\TestCase;
 
 pest()->extend(TestCase::class)
@@ -162,4 +163,41 @@ function watcherOf(array $itadIds, array $attributes = []): User
     }
 
     return $user;
+}
+
+/**
+ * Zapne upozornění na telefon — vygeneruje klíče VAPID (v phpunit.xml jsou
+ * prázdné). Převzato z Počasí.
+ */
+function enablePush(): void
+{
+    $keys = VAPID::createVapidKeys();
+
+    config([
+        'games.push.public_key' => $keys['publicKey'],
+        'games.push.private_key' => $keys['privateKey'],
+        'games.push.subject' => 'mailto:test@example.com',
+    ]);
+}
+
+/**
+ * Odběr Web Push, jak ho pošle prohlížeč (PushSubscription.toJSON() + kódování),
+ * se skutečnými klíči P-256 — jinak by zprávu nešlo zašifrovat. Z Počasí.
+ *
+ * @return array{endpoint: string, keys: array{p256dh: string, auth: string}, content_encoding: string}
+ */
+function browserSubscription(string $endpoint = 'https://fcm.googleapis.com/fcm/send/test-device'): array
+{
+    $key = openssl_pkey_new(['curve_name' => 'prime256v1', 'private_key_type' => OPENSSL_KEYTYPE_EC]);
+    $ec = openssl_pkey_get_details($key)['ec'];
+    $base64Url = fn (string $bytes): string => rtrim(strtr(base64_encode($bytes), '+/', '-_'), '=');
+
+    return [
+        'endpoint' => $endpoint,
+        'keys' => [
+            'p256dh' => $base64Url("\x04".str_pad($ec['x'], 32, "\0", STR_PAD_LEFT).str_pad($ec['y'], 32, "\0", STR_PAD_LEFT)),
+            'auth' => $base64Url(random_bytes(16)),
+        ],
+        'content_encoding' => 'aes128gcm',
+    ];
 }

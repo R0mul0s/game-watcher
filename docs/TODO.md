@@ -50,11 +50,12 @@ v [PLAN.md](PLAN.md); větší celky se z toho stávají etapou.
 **Odkud:** R13 v PLAN.md, etapa 6.
 
 - souhrnný přehled „co zlevnilo za týden“ (e-mailem jednou týdně)
-- upozornění na **historické minimum** (ITAD vrací `historyLow`), nejen na cílovou cenu
+- upozornění na Epic zdarma a měsíční hry PS Plus (viz Další obchody)
+- historické minimum PS Store z cizího zdroje (dnes vlastní historie, platí až po 30 dnech, R26)
 
 ## Přehled a zobrazení
 
-- **PWA / aplikace na ploše telefonu** — manifest jako v Počasí (R43 tam)
+- **PWA** — manifest a service worker pro upozornění jsou (R27); zkratky aplikace a odznak s počtem slev jako v Počasí zatím ne
 - porovnání regionů (stejná hra na PS Store v CZ vs. TR/AR) — zajímavé, ale na hranici pravidel obchodů
 
 ## Provoz

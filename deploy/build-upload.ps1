@@ -66,7 +66,7 @@ if (Test-Path $upload) { Remove-Item $upload -Recurse -Force }
 
 # Co na hostingu potřebuje běžící aplikace. Seznam povoleného místo seznamu
 # zakázaného — nový pracovní soubor v repu se tak na hosting nedostane omylem.
-$appDirs = @('app', 'bootstrap', 'config', 'database', 'lang', 'public', 'resources\views', 'routes')
+$appDirs = @('app', 'bootstrap', 'config', 'database', 'lang', 'public', 'resources\service-worker', 'resources\views', 'routes')
 $appFiles = @('artisan', 'composer.json', 'composer.lock')
 # Soubory, které vznikají lokálně a nahrát se nesmí.
 $excludeFiles = @('hot', '*.php.tmp')

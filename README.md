@@ -66,6 +66,8 @@ volume (`docker compose down -v`).
 | `GAMES_ITAD_URL`, `GAMES_GGDEALS_URL`, `GAMES_CNB_URL` | ne | adresy API a kurzovního lístku ČNB, jen když se mají měnit výchozí |
 | `GAMES_DISPLAY_TIMEZONE` | ne (`Europe/Prague`) | zóna pro zobrazení a místní den historie cen; data jsou v UTC |
 | `GAMES_PLAYSTATION_URL`, `GAMES_PLAYSTATION_SITE_URL`, `GAMES_PLAYSTATION_DELAY_MS` | ne | adresa PlayStation Store, webu playstation.com (stránky her) a pauza mezi stránkami produktů (výchozí 500 ms; testy 0) |
+| `GAMES_PUSH_PUBLIC_KEY`, `GAMES_PUSH_PRIVATE_KEY`, `GAMES_PUSH_SUBJECT` | pro upozornění na zařízení | klíče VAPID (`php artisan games:push-keys`) a kontakt `mailto:`; prázdné = upozornění na zařízení se nenabízí (R27) |
+| `MAIL_*` | pro e-mail na produkci | SMTP schránka Websupportu (šablona v `deploy/.env.production.example`); lokálně `MAIL_MAILER=log` — e-maily v `storage/logs` |
 | `GAMES_STEAM_URL`, `GAMES_STEAM_DELAY_MS` | ne | adresa API obchodu Steam (žánry a režimy her, R25) a pauza mezi hrami (výchozí 500 ms; testy 0) |
 
 Bez platného `GAMES_ITAD_API_KEY` přidávání her hlásí, že katalog neodpovídá (podrobnost v `storage/logs`).

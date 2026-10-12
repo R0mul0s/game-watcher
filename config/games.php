@@ -89,6 +89,51 @@ return [
     ],
 
     /*
+    | Hlídání cen (etapa 6, R13, R26). Upozornění vyhodnocuje a posílá cron URL
+    | po stažení cen — synchronně, bez fronty (R2). Historické minimum PS Store
+    | (ITAD ho nezná) se počítá z vlastní historie, až když je dost dlouhá.
+    */
+    'alerts' => [
+        // Nejkratší vlastní historie ceny PS Store pro „historické minimum“ [dny]
+        'min_history_days' => 30,
+        // Nejvyšší cílová cena (v měně zobrazení) — jen hrubá mez proti překlepům
+        'max_target_price' => 100000,
+        // Slevy dne na přehledu — nejvýš tolik her a jen pokles aspoň o tolik
+        // procent (drobné výkyvy ceny v eurech nejsou sleva)
+        'daily_deals_limit' => 8,
+        'daily_deals_min_drop' => 5,
+        // Víc her najednou přijde na telefon jako jedna souhrnná zpráva
+        'max_push_messages' => 3,
+    ],
+
+    /*
+    | Upozornění na telefon (Web Push, R13) — převzato z Počasí. Klíče VAPID
+    | vygeneruje games:push-keys; bez nich se upozornění na telefon nenabízí.
+    */
+    'push' => [
+        'public_key' => env('GAMES_PUSH_PUBLIC_KEY', ''),
+        'private_key' => env('GAMES_PUSH_PRIVATE_KEY', ''),
+        // Kontakt pro push službu, když by aplikace posílala nesmysly (mailto: nebo https:)
+        'subject' => env('GAMES_PUSH_SUBJECT', ''),
+        // Jak dlouho push služba drží zprávu pro vypnutý telefon — sleva vydrží déle než den
+        'ttl_seconds' => 86400,
+        'timeout_seconds' => 10,
+        // Odběr jen u známých push služeb — jinak by server posílal požadavky na
+        // libovolnou podstrčenou adresu (SSRF). Vzory pro Str::is (Chrome a Android,
+        // Firefox, Safari, Edge na Windows)
+        'allowed_hosts' => [
+            'fcm.googleapis.com',
+            '*.push.services.mozilla.com',
+            'web.push.apple.com',
+            '*.notify.windows.com',
+        ],
+        // Nejvýš tolik zařízení na účet
+        'max_subscriptions_per_user' => 10,
+        // Požadavků na odběr a zkušebních upozornění za minutu
+        'max_attempts_per_minute' => 10,
+    ],
+
+    /*
     | Propojení her s produkty obchodů odkazem (R20) — každé propojení stahuje
     | stránku obchodu, proto omezený počet za minutu.
     */

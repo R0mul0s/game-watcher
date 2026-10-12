@@ -1,11 +1,13 @@
 <!--
     Přehled po přihlášení — osobní seznam sledovaných her (R11) s pokročilými
-    filtry (R21). U každé hry nejlevnější cena v měně účtu (R14).
+    filtry (R21). U každé hry nejlevnější cena v měně účtu (R14); nad filtry
+    slevy dne (R26).
 
     @author Roman Hlaváček
     @created 2026-10-11
 -->
 <script setup>
+import DailyDeals from '@/Components/DailyDeals.vue';
 import GameCard from '@/Components/GameCard.vue';
 import WatchlistFilters from '@/Components/WatchlistFilters.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
@@ -16,6 +18,7 @@ defineProps({
     games: { type: Array, required: true },
     total: { type: Number, required: true },
     genres: { type: Array, default: () => [] },
+    dailyDeals: { type: Array, default: () => [] },
     filters: { type: Object, required: true },
     dashboardUrl: { type: String, required: true },
     searchUrl: { type: String, required: true },
@@ -37,6 +40,7 @@ const t = useTranslations();
         </header>
 
         <template v-if="total">
+            <DailyDeals v-if="dailyDeals.length" :deals="dailyDeals" />
             <WatchlistFilters :filters="filters" :genres="genres" :shown="games.length" :total="total" :url="dashboardUrl" />
 
             <ul v-if="games.length" class="game-grid">

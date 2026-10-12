@@ -89,6 +89,35 @@
         font-size: var(--font-size-sm);
     }
 
+    // Cílová cena pro upozornění (etapa 6, R26)
+    &__target {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        margin-top: var(--space-3);
+    }
+
+    &__target-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    &__target-input {
+        width: var(--filter-number-width);
+    }
+
+    &__target-unit {
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+    }
+
+    &__target-hint {
+        max-width: var(--target-hint-width);
+    }
+
     &__panels {
         display: grid;
         gap: var(--space-4);

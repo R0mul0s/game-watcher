@@ -50,14 +50,23 @@ final class GamePresenter
      *
      * @return array<string, mixed>
      */
-    public function card(Game $game, string $currency, PriceFilter $filter, ?Platform $watchPlatform = null): array
+    public function card(Game $game, string $currency, PriceFilter $filter, ?WatchlistItem $item = null): array
     {
+        $summary = $this->priceBoard->summary($game, $currency, $filter);
+        $watchPlatform = $item?->platform;
+        // Cílová cena v měně zobrazení; bez kurzu se neukáže (R26)
+        $target = ($itemTarget = $item?->target()) === null ? null : $this->rates->convert($itemTarget, $currency);
+        $cheapest = $this->priceBoard->cheapest($summary);
+
         return [
             ...$this->basics($game),
             'isMature' => $game->is_mature,
-            'prices' => $this->priceBoard->summary($game, $currency, $filter),
+            'prices' => $summary,
             'watchPlatform' => $watchPlatform?->value,
             'needsPlayStation' => $watchPlatform === Platform::PlayStation && $game->storeListings->isEmpty(),
+            'target' => $target?->toArray(),
+            // Stejné pravidlo jako upozornění — nejlevnější včetně obchodů s klíči
+            'targetReached' => $target !== null && $cheapest !== null && $cheapest['effectiveCents'] <= $target->cents,
         ];
     }
 
@@ -75,6 +84,9 @@ final class GamePresenter
             'prices' => $this->priceBoard->detail($game, $currency),
             'watchPlatform' => $watch?->platform?->value,
             'watchPlatformUrl' => route('watchlist.update', $game, absolute: false),
+            // Cílová cena v měně zobrazení (zadaná v jiné měně se převede, R26)
+            'target' => ($target = $watch?->target()) === null ? null : ($this->rates->convert($target, $currency) ?? $target)->toArray(),
+            'targetUrl' => route('watchlist.target', $game, absolute: false),
             'itadId' => $game->itad_id,
             'boxartUrl' => $game->boxart_url,
             'isMature' => $game->is_mature,

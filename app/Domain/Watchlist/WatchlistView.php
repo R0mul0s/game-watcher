@@ -17,6 +17,7 @@ use App\Enums\Platform;
 use App\Enums\WatchlistSort;
 use App\Models\Game;
 use App\Models\User;
+use App\Models\WatchlistItem;
 use Illuminate\Support\Collection;
 
 /**
@@ -28,18 +29,22 @@ use Illuminate\Support\Collection;
  */
 final class WatchlistView
 {
-    public function __construct(private readonly GamePresenter $presenter) {}
+    public function __construct(
+        private readonly GamePresenter $presenter,
+        private readonly DailyDeals $dailyDeals,
+    ) {}
 
     /**
      * Karty her podle filtrů, počet všech sledovaných a nabídka žánrů pro filtr.
      *
-     * @return array{games: list<array<string, mixed>>, total: int, genres: list<array{name: string, count: int}>}
+     * @return array{games: list<array<string, mixed>>, total: int, genres: list<array{name: string, count: int}>, dailyDeals: list<array<string, mixed>>}
      */
     public function build(User $user, WatchlistFilters $filters, string $currency): array
     {
         $games = $user->watchedGames()->with(['currentPrices', 'priceLows', 'storeListings'])->get();
         $priceFilter = $filters->priceFilter();
-        $watchPlatforms = $user->watchPlatforms();
+        $items = $user->watchlistItemsByGame();
+        $watchPlatforms = $items->map(fn (WatchlistItem $item): ?Platform => $item->platform);
 
         // Hra hlídaná jen na jedné platformě počítá jen s jejími cenami (R24)
         $cards = $games
@@ -48,7 +53,7 @@ final class WatchlistView
                 $game,
                 $currency,
                 $priceFilter->restrictedTo($watchPlatforms->get($game->id)),
-                $watchPlatforms->get($game->id),
+                $items->get($game->id),
             ))
             ->filter(fn (array $card): bool => $this->matchesPrice($card, $filters));
 
@@ -56,6 +61,8 @@ final class WatchlistView
             'games' => array_values($this->sorted($cards, $filters->sort)->all()),
             'total' => $games->count(),
             'genres' => $this->genres($games),
+            // Slevy dne nezávisí na filtrech — sekce nad nimi (R26)
+            'dailyDeals' => $this->dailyDeals->handle($games, $watchPlatforms, $currency),
         ];
     }
 

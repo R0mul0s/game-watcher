@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Domain\Alerts\Actions\SendPriceAlerts;
 use App\Domain\Catalog\Actions\RefreshGameDetails;
 use App\Domain\Currency\Actions\ImportExchangeRates;
 use App\Domain\Maintenance\PruneExpiredCache;
@@ -45,6 +46,7 @@ class CronController extends Controller
         ImportExchangeRates $importExchangeRates,
         RefreshPrices $refreshPrices,
         RefreshGameDetails $refreshGameDetails,
+        SendPriceAlerts $sendPriceAlerts,
         PruneExpiredCache $pruneExpiredCache,
     ): Response {
         $lock = Cache::lock(self::LOCK_KEY, (int) config('games.cron.lock_seconds'));
@@ -86,6 +88,18 @@ class CronController extends Controller
                     [$count, $steamFailed] = $refreshGameDetails->handle($refreshGameDetails->pending());
 
                     return __($steamFailed ? 'app.cron.details_failed' : 'app.cron.details', ['count' => $count]);
+                }),
+                // Upozornění až po cenách (R26) — porovnávají čerstvé ceny. Nedoručené
+                // upozornění (chyba SMTP i push) označí běh jako chybný, zkusí ho další běh
+                $this->attempt('alerts', $failed, function () use ($sendPriceAlerts, &$failed): string {
+                    $result = $sendPriceAlerts->handle();
+                    $failed = $failed || $result->undelivered > 0;
+
+                    return __('app.cron.alerts', [
+                        'alerts' => $result->alerts,
+                        'emails' => $result->emails,
+                        'pushes' => $result->pushes,
+                    ]).($result->undelivered > 0 ? __('app.cron.alerts_undelivered', ['count' => $result->undelivered]) : '');
                 }),
                 $this->attempt('cache', $failed, fn (): string => __('app.cron.cache_pruned', ['count' => $pruneExpiredCache->handle()])),
             ];

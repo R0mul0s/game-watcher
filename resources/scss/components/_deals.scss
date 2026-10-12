@@ -1,0 +1,105 @@
+// _deals.scss
+// Slevy dne nad přehledem — vodorovný pruh karet (DailyDeals.vue, R26).
+//
+// @author Roman Hlaváček
+// @created 2026-10-12
+
+@use '../abstracts/mixins' as *;
+
+.deals {
+    margin-bottom: var(--space-4);
+
+    &__title {
+        @include display-caps;
+
+        margin-bottom: var(--space-2);
+        color: var(--color-neon-green);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-display);
+    }
+
+    // Na mobilu posuv do strany, od md řádek karet, které se zalomí
+    &__list {
+        display: flex;
+        gap: var(--space-2);
+        margin: 0;
+        padding: 0 0 var(--space-1);
+        overflow-x: auto;
+        list-style: none;
+        scroll-snap-type: x mandatory;
+
+        @include from-md {
+            flex-wrap: wrap;
+            overflow-x: visible;
+        }
+    }
+
+    &__item {
+        flex: 0 0 var(--deal-card-width);
+        scroll-snap-align: start;
+    }
+}
+
+.deal {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--color-panel);
+    border: var(--border-width) solid var(--color-neon-green);
+    color: var(--color-text);
+    text-decoration: none;
+
+    &:hover {
+        box-shadow: 0 0 var(--space-2) var(--color-success-soft);
+    }
+
+    @include neon-focus;
+
+    &__image {
+        width: 100%;
+        aspect-ratio: var(--thumbnail-aspect);
+        object-fit: cover;
+
+        &--empty {
+            background: var(--color-accent-soft);
+        }
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        padding: var(--space-2);
+    }
+
+    &__title {
+        font-family: var(--font-display);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-display);
+    }
+
+    &__prices {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-2);
+    }
+
+    &__price {
+        color: var(--color-neon-green);
+        font-family: var(--font-mono);
+        font-weight: var(--font-weight-strong);
+    }
+
+    &__drop {
+        color: var(--color-neon-green);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+    }
+
+    &__previous {
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+        text-decoration: line-through;
+    }
+}

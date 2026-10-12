@@ -29,6 +29,7 @@ class HandleInertiaRequests extends Middleware
     private const NAVIGATION = [
         'dashboard' => 'dashboard',
         'games.search' => 'add_game',
+        'settings.show' => 'settings',
     ];
 
     /**

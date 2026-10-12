@@ -64,13 +64,47 @@ return [
         'prices' => 'ceny — ITAD her: :itad, gg.deals her: :ggdeals, PlayStation Store produktů: :playstation',
         'details' => 'žánry a režimy ze Steamu — her: :count',
         'details_failed' => 'žánry a režimy ze Steamu — her: :count, Steam neodpovídá (doplní další běh)',
+        'alerts' => 'upozornění — her: :alerts, e-mailů: :emails, na zařízení: :pushes',
+        'alerts_undelivered' => ', nedoručeno: :count (zkusí další běh, podrobnosti v logu)',
         'cache_pruned' => 'cache — smazáno prošlých záznamů: :count',
         'steps' => [
             'exchange_rates' => 'kurzy ČNB',
             'prices' => 'ceny',
             'details' => 'žánry a režimy',
+            'alerts' => 'upozornění',
             'cache' => 'cache',
         ],
+    ],
+
+    // Upozornění na ceny (etapa 6, R26) — e-mail, telefon a hlášky ze serveru
+    'alerts' => [
+        'subject_one' => ':title za :price',
+        'subject_many' => 'Zlevnila :count sledovaná hra|Zlevnily :count sledované hry|Zlevnilo :count sledovaných her',
+        'mail_heading' => 'Hry, které sleduješ, zlevnily',
+        'in_shop' => 'v obchodě :shop',
+        'in_keyshops' => 'v obchodech s klíči (podle gg.deals)',
+        'keyshops' => 'obchody s klíči',
+        'reason_target' => 'pod cílovou cenou :target',
+        'reason_low' => 'historické minimum',
+        'open_shop' => 'Do obchodu',
+        'open_app' => 'Otevřít Game Watcher',
+        'mail_footer' => 'Upozornění chodí na hry z tvého seznamu — cílovou cenu nastavíš na detailu hry, e-mail a telefon v',
+        'settings' => 'Nastavení',
+        'push_title' => ':title za :price',
+        'push_body' => ':reason · :shop',
+        'test_title' => 'Game Watcher',
+        'test_body' => 'Zkušební upozornění — tohle zařízení je připravené.',
+        'device_limit' => 'Na účtu je už moc zařízení. Upozornění na některém vypni a zkus to znovu.',
+        'settings_saved' => 'Nastavení je uložené.',
+        'target_saved' => 'Cílová cena je uložená.',
+        'target_cleared' => 'Cílová cena je zrušená — upozorníme na historické minimum.',
+        'target_invalid' => 'Zadej cenu jako číslo, nejvýš se dvěma desetinnými místy.',
+        'keys_generated' => 'Klíče VAPID — vlož je do .env (veřejný i soukromý). Po změně klíčů je potřeba upozornění na zařízeních zapnout znovu.',
+    ],
+
+    'validation' => [
+        'push_endpoint' => 'Adresa odběru musí být HTTPS u známé push služby.',
+        'push_key' => 'Klíč odběru nemá správný tvar.',
     ],
 
     // Zakládání účtů (games:create-user) — jen konzole
@@ -94,6 +128,7 @@ return [
             'label' => 'Hlavní navigace',
             'dashboard' => 'Přehled',
             'add_game' => 'Přidat hru',
+            'settings' => 'Nastavení',
         ],
 
         'flash' => [
@@ -201,6 +236,15 @@ return [
             'empty_title' => 'Zatím nic nesleduješ',
             'empty_text' => 'Najdi hru podle názvu nebo odkazu na Steam a přidej si ji na seznam.',
             'connect_playstation' => 'Připoj PlayStation Store',
+            'target' => 'cíl :price',
+            'target_reached' => 'Pod cílovou cenou',
+        ],
+
+        // Slevy dne nad přehledem (R26)
+        'deals' => [
+            'title' => 'Zlevnilo od včerejška',
+            'previous' => 'včera :price',
+            'drop' => '−:drop %',
         ],
 
         'search' => [
@@ -260,12 +304,42 @@ return [
             'unwatch' => 'Přestat sledovat',
             'watching' => 'Sleduješ',
             'watch_platform' => 'Hlídat ceny',
+            'target_label' => 'Cílová cena',
+            'target_hint' => 'Upozorníme, až nejlevnější nabídka (i s klíči) klesne na cíl nebo pod něj. Bez cíle upozorníme na historické minimum ve slevě.',
+            'target_save' => 'Uložit',
+            'target_clear' => 'Zrušit cíl',
             'watch_platforms' => [
                 'all' => 'Všude',
                 'pc' => 'Jen PC',
                 'playstation' => 'Jen PlayStation',
             ],
             'source' => 'Údaje o hře: :source',
+        ],
+
+        // Nastavení upozornění (etapa 6, R13, R26)
+        'settings' => [
+            'title' => 'Nastavení',
+            'alerts_title' => 'Upozornění na ceny',
+            'alerts_text' => 'Kontrolujeme ceny s každým stažením (každé 4 hodiny). Upozorníme, když hra klesne na cílovou cenu, a u her bez cíle, když je ve slevě na historickém minimu. Stejnou cenu podruhé neposíláme.',
+            'email' => 'Posílat e-mailem na :email',
+            'ps_plus' => 'Mám PS Plus',
+            'ps_plus_hint' => 'Upozornění u PlayStation Store počítají cenu pro předplatitele.',
+            'save' => 'Uložit',
+            'push_title' => 'Upozornění na tomto zařízení',
+            'push_text' => 'Zpráva přijde hned do telefonu nebo počítače, i když je stránka zavřená.',
+            'push_unsupported' => 'Tenhle prohlížeč upozornění neumí.',
+            'push_ios' => 'Na iPhonu fungují upozornění jen v aplikaci přidané na plochu: v Safari Sdílet → Přidat na plochu, pak otevřít z plochy (iOS 16.4 a novější).',
+            'push_disabled_server' => 'Upozornění na zařízení zatím nejsou na serveru zapnutá.',
+            'push_on' => 'Zapnuto na tomto zařízení',
+            'push_off' => 'Na tomto zařízení vypnuto',
+            'push_enable' => 'Zapnout',
+            'push_disable' => 'Vypnout',
+            'push_test' => 'Poslat zkušební',
+            'push_denied' => 'Prohlížeč upozornění zakázal — povol je v nastavení stránky a zkus to znovu.',
+            'push_error' => 'Upozornění se nepodařilo zapnout. Zkus to znovu.',
+            'push_test_sent' => 'Zkušební upozornění je odeslané.',
+            'push_test_failed' => 'Zkušební upozornění se nepodařilo doručit — zkus upozornění vypnout a zapnout.',
+            'devices' => 'Upozornění máš zapnutá na :count zařízení|Upozornění máš zapnutá na :count zařízeních|Upozornění máš zapnutá na :count zařízeních',
         ],
     ],
 

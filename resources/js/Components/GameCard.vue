@@ -66,6 +66,11 @@ const playstation = computed(() => {
             <span v-if="game.prices.keyshops" class="game-card__keyshops">
                 {{ t('prices.keyshops_short', { price: formatPrice(game.prices.keyshops.price, page.props.locale) }) }}
             </span>
+            <!-- Cílová cena pro upozornění (R26) — splněná svítí -->
+            <span v-if="game.target" class="game-card__target" :class="{ 'game-card__target--reached': game.targetReached }">
+                <template v-if="game.targetReached">{{ t('dashboard.target_reached') }} · </template>
+                {{ t('dashboard.target', { price: formatPrice(game.target, page.props.locale) }) }}
+            </span>
         </span>
     </Link>
 </template>

@@ -17,9 +17,18 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DisplayCurrencyController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameSearchController;
+use App\Http\Controllers\ManifestController;
+use App\Http\Controllers\PushSubscriptionController;
+use App\Http\Controllers\ServiceWorkerController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StoreListingController;
 use App\Http\Controllers\WatchlistController;
 use Illuminate\Support\Facades\Route;
+
+// Aplikace na ploše a upozornění na telefon (R13) — bez přihlášení: prohlížeč
+// je stahuje i mimo přihlášenou stránku (aktualizace service workeru)
+Route::get('/manifest.webmanifest', ManifestController::class)->name('manifest');
+Route::get('/sw.js', ServiceWorkerController::class)->name('service-worker');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/prihlaseni', [LoginController::class, 'create'])->name('login');
@@ -41,6 +50,8 @@ Route::middleware('auth')->group(function (): void {
         ->name('watchlist.store');
     Route::get('/hry/{game}', [GameController::class, 'show'])->name('games.show');
     Route::put('/hry/{game}/sledovani', [WatchlistController::class, 'update'])->name('watchlist.update');
+    // Cílová cena pro upozornění (etapa 6, R26)
+    Route::put('/hry/{game}/cil', [WatchlistController::class, 'target'])->name('watchlist.target');
     Route::delete('/hry/{game}/sledovani', [WatchlistController::class, 'destroy'])->name('watchlist.destroy');
 
     // Produkty PlayStation Store připojené ke hře odkazem (R20); propojení patří hře
@@ -53,4 +64,13 @@ Route::middleware('auth')->group(function (): void {
 
     // Měna zobrazení cen (R14)
     Route::put('/nastaveni/mena', DisplayCurrencyController::class)->name('settings.currency');
+
+    // Nastavení upozornění a zařízení s Web Push (etapa 6, R13, R26)
+    Route::get('/nastaveni', [SettingsController::class, 'show'])->name('settings.show');
+    Route::put('/nastaveni', [SettingsController::class, 'update'])->name('settings.update');
+    Route::middleware('throttle:'.config('games.push.max_attempts_per_minute').',1')->group(function (): void {
+        Route::post('/nastaveni/zarizeni', [PushSubscriptionController::class, 'store'])->name('push.store');
+        Route::delete('/nastaveni/zarizeni', [PushSubscriptionController::class, 'destroy'])->name('push.destroy');
+        Route::post('/nastaveni/zarizeni/test', [PushSubscriptionController::class, 'test'])->name('push.test');
+    });
 });
