@@ -50,6 +50,67 @@ export function formatDate(value, locale) {
 }
 
 /**
+ * Desetinná místa ceny podle měny — koruny bez haléřů (ceny her se v nich
+ * neuvádějí), ostatní měny na centy.
+ */
+const PRICE_FRACTION_DIGITS = { CZK: 0 };
+const DEFAULT_PRICE_FRACTION_DIGITS = 2;
+
+/**
+ * Cena s měnou („608 Kč", „24,96 €"); chybějící cenu jako pomlčku.
+ *
+ * @param {{amount: number, currency: string}|null} price
+ * @param {string} locale
+ * @returns {string}
+ */
+export function formatPrice(price, locale) {
+    if (!price) {
+        return EMPTY_VALUE;
+    }
+
+    const digits = PRICE_FRACTION_DIGITS[price.currency] ?? DEFAULT_PRICE_FRACTION_DIGITS;
+
+    return cachedFormatter(Intl.NumberFormat, locale, {
+        style: 'currency',
+        currency: price.currency,
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+    }).format(price.amount);
+}
+
+/**
+ * Datum a čas z ISO 8601 v zadané zóně („11. 10. 2026 18:30").
+ *
+ * @param {string|null} iso
+ * @param {string} locale
+ * @param {string} timeZone
+ * @returns {string}
+ */
+export function formatDateTime(iso, locale, timeZone) {
+    if (!iso) {
+        return EMPTY_VALUE;
+    }
+
+    return cachedFormatter(Intl.DateTimeFormat, locale, { dateStyle: 'short', timeStyle: 'short', timeZone }).format(new Date(iso));
+}
+
+/**
+ * Datum z ISO 8601 v zadané zóně („31. 10. 2026") — konec slevy.
+ *
+ * @param {string|null} iso
+ * @param {string} locale
+ * @param {string} timeZone
+ * @returns {string}
+ */
+export function formatDateInZone(iso, locale, timeZone) {
+    if (!iso) {
+        return EMPTY_VALUE;
+    }
+
+    return cachedFormatter(Intl.DateTimeFormat, locale, { day: 'numeric', month: 'numeric', year: 'numeric', timeZone }).format(new Date(iso));
+}
+
+/**
  * Celé číslo s oddělením tisíců („8 194").
  *
  * @param {number|null} value

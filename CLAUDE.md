@@ -81,6 +81,7 @@ MariaDB 11.4. **Není tam SSH ani composer** — nic z `php artisan` se na produ
 PHP 8.4 · Laravel 13 · Inertia 3 · Vue 3 · SCSS (BEM + CSS tokeny) · Fontsource (Oxanium,
 Chakra Petch, JetBrains Mono) · MariaDB 11.4 · Pest 4 · Larastan · Pint.
 Zdroje cen: IsThereAnyDeal API, gg.deals API, přímo PlayStation Store, Kinguin, Eneba (R9).
+Kurzy: ČNB (textový lístek bez klíče, R14).
 
 ## Nejčastější zdroje chyb v tomhle projektu
 
@@ -98,7 +99,10 @@ Zdroje cen: IsThereAnyDeal API, gg.deals API, přímo PlayStation Store, Kinguin
 12. **Limit ITAD je 100 požadavků za 5 minut pro celý klíč** — nic nesmí volat ITAD v cyklu po hrách, když jde dávka (prices až 200 her), a hledání jde přes cache (R15)
 13. **Cache neumí objekty** (`cache.serializable_classes = false`) — do cache jen pole (`ItadGame::toArray()`), jinak se vrátí `__PHP_Incomplete_Class`
 14. **Hlášky po akci přes `Inertia::flash()`** a ve Vue `page.flash` (komponenta `FlashMessage` v `AppLayout`), ne `session()->flash()` (R16)
-15. **V testech `Http::fake()` nepřebije dřívější podvrh** — výpadek ITAD přes `fakeItadFailure()`; vlastní funkce se nesmí jmenovat `fixture()` (má ji Pest)
+15. **V testech `Http::fake()` nepřebije dřívější podvrh** — všechna API přes `fakeApis()`, výpadek zdroje `fakeApis([… => apiError(503)])`; vlastní funkce se nesmí jmenovat `fixture()` (má ji Pest)
+16. **Částky v PHP jen jako `Money` (setiny, int)** — žádný float; převod měn jen `ExchangeRates`, řazení a „nejlevněji“ jen `PriceBoard` (R14, R18). Hra pro `PriceBoard` musí mít načtené `currentPrices` a `priceLows` (jinak dotazy v cyklu přes karty)
+17. **Klíč gg.deals je v URL** (API jinak neumí) — zprávy do logu jdou jen přes `GgDealsClient::fail()`, který klíč maže; výjimku s původní výjimkou (a URL) nikdy nevyhazovat ani nereportovat (R18)
+18. **Cron URL `/cron/ceny` je mimo skupinu `web`** (`routes/cron.php`) — bez session a CSRF; nový periodický krok patří do `CronController` jako další nezávislý krok (R19)
 
 ## Jazyk
 

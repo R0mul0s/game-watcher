@@ -24,6 +24,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property int $id
  * @property string $name
  * @property string $email
+ * @property string $display_currency
  */
 class User extends Authenticatable
 {
@@ -37,6 +38,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'display_currency',
     ];
 
     /**
@@ -80,6 +82,19 @@ class User extends Authenticatable
             ->withTimestamps()
             ->orderByPivot('created_at', 'desc')
             ->orderByPivot('id', 'desc');
+    }
+
+    /**
+     * Měna zobrazení cen (R14); neznámá hodnota = výchozí měna z konfigurace.
+     */
+    public function displayCurrency(): string
+    {
+        /** @var list<string> $options */
+        $options = config('games.prices.display_currencies');
+
+        return in_array($this->display_currency, $options, true)
+            ? $this->display_currency
+            : (string) config('games.prices.default_currency');
     }
 
     /**

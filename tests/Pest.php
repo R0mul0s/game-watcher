@@ -10,9 +10,12 @@
 
 declare(strict_types=1);
 
+use App\Domain\Watchlist\Actions\WatchGame;
 use App\Models\User;
+use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Factory as HttpFactory;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -50,29 +53,63 @@ function jsonFixture(string $path): array
 }
 
 /**
- * Podvrhne IsThereAnyDeal API — hledání, lookup a detail her ze zachycených
- * odpovědí. Neznámé ITAD ID vrátí 404 jako skutečné API.
+ * Podvrhne všechna externí API ze zachycených odpovědí — IsThereAnyDeal
+ * (hledání, lookup, detail, ceny), gg.deals a kurzy ČNB. Neznámé ITAD ID
+ * vrátí 404 jako skutečné API.
+ *
+ * Volá se i opakovaně: nahradí dřívější podvrhy — další Http::fake() by se jen
+ * přidal za ně a vyhrála by první shoda. $overrides mají přednost (výpadek
+ * jednoho zdroje: apiError()).
+ *
+ * @param  array<string, mixed>  $overrides
  */
-function fakeItad(): void
+function fakeApis(array $overrides = []): void
 {
-    Http::fake([
+    $defaults = [
         'api.isthereanydeal.com/games/search/v1*' => Http::response(jsonFixture('itad/search-control-resonant')),
         'api.isthereanydeal.com/games/lookup/v1?appid=597820' => Http::response(jsonFixture('itad/lookup-biomutant')),
         'api.isthereanydeal.com/games/lookup/v1*' => Http::response(jsonFixture('itad/lookup-not-found')),
         'api.isthereanydeal.com/games/info/v2?id='.CONTROL_RESONANT_ID => Http::response(jsonFixture('itad/info-control-resonant')),
         'api.isthereanydeal.com/games/info/v2?id='.BIOMUTANT_ID => Http::response(jsonFixture('itad/info-biomutant')),
         'api.isthereanydeal.com/games/info/v2?id='.ALAN_WAKE_2_ID => Http::response(jsonFixture('itad/info-alan-wake-2')),
-        'api.isthereanydeal.com/games/info/v2*' => Http::response(['status_code' => 404, 'reason_phrase' => 'Not Found'], 404),
-    ]);
+        'api.isthereanydeal.com/games/info/v2*' => apiError(404, 'Not Found'),
+        // Zachycené ceny tří her — vrátí jen hry, na které se požadavek ptá, jako skutečné API
+        'api.isthereanydeal.com/games/prices/v3*' => fn (Request $request): PromiseInterface => Http::response(array_values(array_filter(
+            jsonFixture('itad/prices'),
+            fn (array $game): bool => in_array($game['id'], $request->data(), true),
+        ))),
+        'api.gg.deals/*' => Http::response(jsonFixture('ggdeals/prices')),
+        'www.cnb.cz/*' => Http::response((string) file_get_contents(fixture('cnb/denni_kurz.txt'))),
+    ];
+
+    Http::swap(new HttpFactory);
+    Http::preventStrayRequests();
+    // Přepsání napřed (vyhrává první shoda); výchozí podvrh se stejným klíčem by
+    // v poli přepsal hodnotu přepsání, proto se vynechá
+    Http::fake([...$overrides, ...array_diff_key($defaults, $overrides)]);
 }
 
 /**
- * IsThereAnyDeal odpovídá jen chybou (výpadek, neplatný klíč). Nahradí dřívější
- * podvrhy — další Http::fake() by se jen přidal za ně a vyhrála by první shoda.
+ * Chybová odpověď API ve tvaru ITAD (`status_code`, `reason_phrase`).
  */
-function fakeItadFailure(int $status, string $reason): void
+function apiError(int $status, string $reason = 'Service Unavailable'): PromiseInterface
 {
-    Http::swap(new HttpFactory);
-    Http::preventStrayRequests();
-    Http::fake(['api.isthereanydeal.com/*' => Http::response(['status_code' => $status, 'reason_phrase' => $reason], $status)]);
+    return Http::response(['status_code' => $status, 'reason_phrase' => $reason], $status);
+}
+
+/**
+ * Účet, který sleduje hry z fixtures — převezme je do katalogu i s cenami
+ * (přes podvržená API, fakeApis()).
+ *
+ * @param  list<string>  $itadIds
+ * @param  array<string, mixed>  $attributes
+ */
+function watcherOf(array $itadIds, array $attributes = []): User
+{
+    $user = user($attributes);
+    foreach ($itadIds as $itadId) {
+        app(WatchGame::class)->handle($user, $itadId);
+    }
+
+    return $user;
 }

@@ -21,6 +21,45 @@ return [
     'theme_color' => '#070b16',
 
     /*
+    | Časová zóna pro zobrazení a místní den (historie cen, platnost kurzu).
+    | Aplikace i databáze pracují v UTC.
+    */
+    'display_timezone' => env('GAMES_DISPLAY_TIMEZONE', 'Europe/Prague'),
+
+    /*
+    | Cron hostingu volá URL s tokenem (R2) — stahování kurzů a cen. Prázdný
+    | token URL vypíná (404). Zámek brání souběhu, když předchozí běh trvá déle.
+    */
+    'cron' => [
+        'token' => env('GAMES_CRON_TOKEN'),
+        'lock_seconds' => 600,
+        'max_attempts_per_minute' => 10,
+    ],
+
+    /*
+    | Ceny (etapa 3, R9, R14). Dávky odpovídají limitům API: ITAD bere až 200
+    | her v jednom požadavku; gg.deals limit nezveřejňuje — 100 je opatrný odhad.
+    | Zobrazovací měny přepíná uživatel v hlavičce (users.display_currency).
+    */
+    'prices' => [
+        'itad_batch_size' => 200,
+        'ggdeals_batch_size' => 100,
+        'display_currencies' => ['CZK', 'EUR'],
+        'default_currency' => 'CZK',
+    ],
+
+    /*
+    | Denní kurzy ČNB (R14) — textový lístek bez klíče. Stahuje se, jen když
+    | uložený kurz není dnešní, nejvýš jednou za retry_minutes (ČNB vyhlašuje
+    | v pracovní dny odpoledne).
+    */
+    'exchange_rates' => [
+        'url' => env('GAMES_CNB_URL', 'https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt'),
+        'timeout_seconds' => 10,
+        'retry_minutes' => 60,
+    ],
+
+    /*
     | Přihlášení (R4). Pokusy o přihlášení se počítají na kombinaci e-mailu a IP;
     | po vyčerpání je přihlášení zablokované na lockout_seconds.
     */
@@ -65,8 +104,12 @@ return [
         ],
         'ggdeals' => [
             'url' => env('GAMES_GGDEALS_URL', 'https://api.gg.deals/v1'),
+            // Jen v URL (hlavičku API nezná) — GgDealsClient ho z logu maže
             'key' => env('GAMES_GGDEALS_API_KEY'),
             'region' => 'eu',
+            'timeout_seconds' => 10,
+            // Stránka gg.deals — povinný odkaz u zobrazených dat
+            'site_url' => 'https://gg.deals',
         ],
     ],
 

@@ -21,7 +21,7 @@ use Inertia\Response;
 
 /**
  * Katalog je společný (R11) — detail vidí každý přihlášený, i když hru nesleduje.
- * Ceny přibudou v etapě 3.
+ * Ceny v měně účtu (R14).
  */
 class GameController extends Controller
 {
@@ -31,9 +31,14 @@ class GameController extends Controller
     public function show(Request $request, Game $game, GamePresenter $presenter): Response
     {
         $user = $request->user();
+        $game->load(['currentPrices', 'priceLows']);
 
         return Inertia::render('Games/Show', [
-            'game' => $presenter->detail($game, $user instanceof User && $user->isWatching($game)),
+            'game' => $presenter->detail(
+                $game,
+                $user instanceof User && $user->isWatching($game),
+                $user instanceof User ? $user->displayCurrency() : (string) config('games.prices.default_currency'),
+            ),
             'watchUrl' => route('watchlist.store', absolute: false),
         ]);
     }

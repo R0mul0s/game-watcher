@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(function (): void {
-    fakeItad();
+    fakeApis();
 });
 
 it('vyžaduje přihlášení', function (): void {
@@ -96,7 +96,7 @@ it('stejné hledání podruhé vezme z cache', function (): void {
 });
 
 it('výpadek ITAD ukáže hlášku místo chyby stránky', function (): void {
-    fakeItadFailure(503, 'Service Unavailable');
+    fakeApis(['api.isthereanydeal.com/*' => apiError(503, 'Service Unavailable')]);
 
     $this->actingAs(user())
         ->get('/hry/pridat?q=control')

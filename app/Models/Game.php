@@ -103,6 +103,26 @@ class Game extends Model
     }
 
     /**
+     * Aktuální ceny v obchodech (R9).
+     *
+     * @return HasMany<CurrentPrice, $this>
+     */
+    public function currentPrices(): HasMany
+    {
+        return $this->hasMany(CurrentPrice::class);
+    }
+
+    /**
+     * Historická minima — oficiální obchody a obchody s klíči.
+     *
+     * @return HasMany<PriceLow, $this>
+     */
+    public function priceLows(): HasMany
+    {
+        return $this->hasMany(PriceLow::class);
+    }
+
+    /**
      * Adresa hry v obchodě Steam, když ji Steam prodává.
      */
     public function steamUrl(): ?string

@@ -14,6 +14,7 @@ namespace App\Domain\Watchlist\Actions;
 
 use App\Domain\Catalog\Actions\ImportGame;
 use App\Domain\Itad\Exceptions\ItadUnavailable;
+use App\Domain\Pricing\Actions\RefreshPrices;
 use App\Domain\Watchlist\Exceptions\GameNotFound;
 use App\Models\Game;
 use App\Models\User;
@@ -21,10 +22,15 @@ use App\Models\User;
 /**
  * Hru, kterou katalog ještě nemá, nejdřív převezme z ITAD; hru z katalogu
  * jen přidá na seznam (katalog je společný, R11). Opakované přidání nic nezdvojí.
+ * Hra bez cen dostane ceny hned (dva požadavky na API) — jinak by na ně
+ * uživatel čekal do dalšího běhu cronu; výpadek zdroje přidání nezastaví.
  */
 final class WatchGame
 {
-    public function __construct(private readonly ImportGame $importGame) {}
+    public function __construct(
+        private readonly ImportGame $importGame,
+        private readonly RefreshPrices $refreshPrices,
+    ) {}
 
     /**
      * Sledovaná hra.
@@ -39,6 +45,10 @@ final class WatchGame
             ?? throw new GameNotFound($itadId);
 
         $user->watchlistItems()->firstOrCreate(['game_id' => $game->id]);
+
+        if ($game->currentPrices()->doesntExist()) {
+            $this->refreshPrices->handle(collect([$game]));
+        }
 
         return $game;
     }

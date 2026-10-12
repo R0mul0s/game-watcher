@@ -52,6 +52,7 @@
 
     &__body {
         display: flex;
+        flex: 1;
         flex-direction: column;
         gap: var(--space-2);
         padding: var(--space-3);
@@ -70,5 +71,39 @@
         color: var(--color-text-muted);
         font-family: var(--font-mono);
         font-size: var(--font-size-sm);
+    }
+
+    // Nejlevnější cena — dole na kartě, aby ceny všech karet byly v řadě
+    &__price {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--space-2);
+        margin-top: auto;
+    }
+
+    &__amount {
+        color: var(--color-neon-green);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-strong);
+        text-shadow: 0 0 var(--space-2) var(--color-success-soft);
+    }
+
+    &__cut {
+        color: var(--color-neon-green);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+    }
+
+    &__shop {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+    }
+
+    &__keyshops {
+        color: var(--color-neon-magenta);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
     }
 }

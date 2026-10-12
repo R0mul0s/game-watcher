@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Currency\ExchangeRates;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -21,11 +22,12 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Registrace služeb — zatím žádné.
+     * Registrace služeb.
      */
     public function register(): void
     {
-        //
+        // Kurzovní lístek se načte jednou za požadavek, ne pro každou cenu (R14)
+        $this->app->scoped(ExchangeRates::class);
     }
 
     /**

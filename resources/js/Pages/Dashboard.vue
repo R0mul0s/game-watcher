@@ -1,6 +1,6 @@
 <!--
     Přehled po přihlášení — osobní seznam sledovaných her (R11).
-    Ceny přibudou s etapou 3 (docs/PLAN.md).
+    U každé hry nejlevnější cena v měně účtu (R14).
 
     @author Roman Hlaváček
     @created 2026-10-11

@@ -1,0 +1,36 @@
+// _segmented.scss
+// Přepínač z několika voleb vedle sebe (měna cen v hlavičce, CurrencySwitch.vue).
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.segmented {
+    display: inline-flex;
+    border: var(--border-width) solid var(--color-border);
+
+    &__option {
+        min-height: var(--control-size-small);
+        padding: 0 var(--space-2);
+        background: transparent;
+        border: 0;
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+        cursor: pointer;
+        transition: color var(--duration-fast);
+
+        &:hover {
+            color: var(--color-text);
+        }
+
+        @include neon-focus;
+
+        &--active {
+            background: var(--color-accent-soft);
+            color: var(--color-accent);
+            text-shadow: var(--text-glow-accent);
+        }
+    }
+}

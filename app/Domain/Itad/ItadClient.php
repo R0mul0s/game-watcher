@@ -32,6 +32,8 @@ final class ItadClient
 
     private const INFO_PATH = '/games/info/v2';
 
+    private const PRICES_PATH = '/games/prices/v3';
+
     /**
      * Hry podle názvu, v pořadí relevance podle ITAD.
      *
@@ -85,6 +87,43 @@ final class ItadClient
     }
 
     /**
+     * Aktuální ceny her v zemi z konfigurace (R9) — jeden požadavek na dávku
+     * až games.prices.itad_batch_size her. Hry, které ITAD nezná, ve výsledku chybí.
+     *
+     * @param  list<string>  $itadIds
+     * @return array<string, ItadGamePrices> podle ITAD ID
+     *
+     * @throws ItadUnavailable
+     */
+    public function prices(array $itadIds): array
+    {
+        $path = self::PRICES_PATH.'?'.http_build_query(['country' => config('games.sources.itad.country')]);
+
+        try {
+            $response = $this->request()->post($path, $itadIds);
+        } catch (ConnectionException $e) {
+            Log::warning('IsThereAnyDeal '.self::PRICES_PATH.' neodpovídá: '.$e->getMessage());
+
+            throw new ItadUnavailable($e->getMessage(), previous: $e);
+        }
+
+        $data = $this->decode($response, self::PRICES_PATH);
+        if (! array_is_list($data)) {
+            throw $this->unexpectedShape(self::PRICES_PATH);
+        }
+
+        $prices = [];
+        foreach ($data as $item) {
+            $gamePrices = is_array($item) ? ItadGamePrices::fromApi($item) : null;
+            if ($gamePrices !== null) {
+                $prices[$gamePrices->itadId] = $gamePrices;
+            }
+        }
+
+        return $prices;
+    }
+
+    /**
      * GET na API; vrátí dekódovaný JSON, při 404 (je-li dovolena) null.
      *
      * @param  array<string, string|int>  $query
@@ -106,6 +145,18 @@ final class ItadClient
             return null;
         }
 
+        return $this->decode($response, $path);
+    }
+
+    /**
+     * JSON úspěšné odpovědi; chybový stav nebo jiný obsah než JSON = výjimka.
+     *
+     * @return array<mixed>
+     *
+     * @throws ItadUnavailable
+     */
+    private function decode(Response $response, string $path): array
+    {
         if (! $response->successful()) {
             Log::warning("IsThereAnyDeal {$path} vrátil HTTP {$response->status()}: ".$this->reason($response));
 

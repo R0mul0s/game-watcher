@@ -21,7 +21,7 @@ use Inertia\Response;
 
 /**
  * Úvodní stránka po přihlášení — osobní seznam sledovaných her (R11),
- * naposledy přidané první. Ceny přibudou s etapou 3.
+ * naposledy přidané první, u každé nejlevnější cena v měně účtu (R14).
  */
 class DashboardController extends Controller
 {
@@ -31,10 +31,11 @@ class DashboardController extends Controller
     public function __invoke(Request $request, GamePresenter $presenter): Response
     {
         $user = $request->user();
-        $games = $user instanceof User ? $user->watchedGames()->get() : collect();
+        $games = $user instanceof User ? $user->watchedGames()->with(['currentPrices', 'priceLows'])->get() : collect();
+        $currency = $user instanceof User ? $user->displayCurrency() : (string) config('games.prices.default_currency');
 
         return Inertia::render('Dashboard', [
-            'games' => $games->map(fn (Game $game): array => $presenter->card($game))->values()->all(),
+            'games' => $games->map(fn (Game $game): array => $presenter->card($game, $currency))->values()->all(),
             'searchUrl' => route('games.search', absolute: false),
         ]);
     }

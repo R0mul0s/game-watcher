@@ -40,6 +40,22 @@ return [
         'removed' => '„:title“ už nesleduješ.',
     ],
 
+    // Odpověď cron URL (prostý text) — čte jen server
+    'cron' => [
+        'already_running' => 'Předchozí běh ještě neskončil — nic se nestalo.',
+        'step_failed' => ':step — chyba, podrobnosti v logu aplikace',
+        'source_failed' => 'chyba',
+        'exchange_rates_current' => 'kurzy ČNB — aktuální',
+        'exchange_rates_imported' => 'kurzy ČNB — uložen lístek z :day',
+        'prices' => 'ceny — ITAD her: :itad, gg.deals her: :ggdeals',
+        'cache_pruned' => 'cache — smazáno prošlých záznamů: :count',
+        'steps' => [
+            'exchange_rates' => 'kurzy ČNB',
+            'prices' => 'ceny',
+            'cache' => 'cache',
+        ],
+    ],
+
     // Zakládání účtů (games:create-user) — jen konzole
     'users' => [
         'password_prompt' => 'Heslo',
@@ -65,6 +81,33 @@ return [
 
         'flash' => [
             'dismiss' => 'Zavřít hlášku',
+        ],
+
+        'currency' => [
+            'label' => 'Měna cen',
+        ],
+
+        'prices' => [
+            'title' => 'Ceny',
+            'best' => 'Nejlevněji',
+            'keyshops' => 'Obchody s klíči',
+            'keyshops_hint' => 'Nejnižší cena napříč obchody s klíči (G2A, Loaded, Kinguin, Eneba…) podle gg.deals',
+            'keyshops_short' => 'klíče od :price',
+            'shop' => 'Obchod',
+            'price' => 'Cena',
+            'regular' => 'Běžně :price',
+            'cut' => '−:cut %',
+            'until' => 'do :date',
+            'drm' => 'Aktivace: :drm',
+            'open_shop' => 'Do obchodu',
+            'original' => 'v obchodě :price',
+            'lows' => 'Historická minima',
+            'low_official' => 'Oficiální obchody',
+            'low_keyshops' => 'Obchody s klíči',
+            'none' => 'Žádný obchod teď hru neprodává — nebo se ceny ještě nestáhly.',
+            'no_price' => 'bez ceny',
+            'updated' => 'Aktualizováno :time',
+            'sources' => 'Zdroj cen:',
         ],
 
         'auth' => [
@@ -120,8 +163,6 @@ return [
             'watch' => 'Sledovat',
             'unwatch' => 'Přestat sledovat',
             'watching' => 'Sleduješ',
-            'prices_title' => 'Ceny',
-            'prices_soon' => 'Stahování cen z obchodů se připravuje.',
             'source' => 'Údaje o hře: :source',
         ],
     ],

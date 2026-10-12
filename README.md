@@ -62,7 +62,9 @@ volume (`docker compose down -v`).
 |---|---|---|
 | `GAMES_ITAD_API_KEY` | od etapy 2 | klíč IsThereAnyDeal API — katalog her a ceny oficiálních obchodů (isthereanydeal.com → Developer → My Apps; OAuth není potřeba) |
 | `GAMES_GGDEALS_API_KEY` | od etapy 3 | klíč gg.deals API — nejnižší cena obchodů s klíči (nastavení účtu → API; data se zobrazují s odkazem na gg.deals) |
-| `GAMES_ITAD_URL`, `GAMES_GGDEALS_URL` | ne | adresy API, jen když se mají měnit výchozí |
+| `GAMES_CRON_TOKEN` | jen produkce | token cron URL `/cron/ceny` (kurzy ČNB, ceny, úklid); prázdný = URL vypnutá |
+| `GAMES_ITAD_URL`, `GAMES_GGDEALS_URL`, `GAMES_CNB_URL` | ne | adresy API a kurzovního lístku ČNB, jen když se mají měnit výchozí |
+| `GAMES_DISPLAY_TIMEZONE` | ne (`Europe/Prague`) | zóna pro zobrazení a místní den historie cen; data jsou v UTC |
 
 Bez platného `GAMES_ITAD_API_KEY` přidávání her hlásí, že katalog neodpovídá (podrobnost v `storage/logs`).
 
@@ -92,6 +94,10 @@ app/
   Domain/Itad/      klient IsThereAnyDeal API (katalog, později ceny)
   Domain/Catalog/   katalog her — hledání, převzetí hry z ITAD, data pro stránky
   Domain/Watchlist/ osobní seznam sledovaných her
+  Domain/GgDeals/   klient gg.deals API (nejnižší cena obchodů s klíči)
+  Domain/Pricing/   ceny — stažení, uložení, příprava pro stránky v měně účtu
+  Domain/Currency/  kurzy ČNB a převod CZK / EUR
+  Domain/Maintenance/ úklid volaný z cron URL
   Http/             tenké kontrolery, Form Requesty (LoginRequest), sdílená data Inertie
 config/games.php    konstanty projektu, katalog (limity hledání) a zdroje cen
 database/           migrace
@@ -103,6 +109,7 @@ resources/images/   logo.svg — zdroj ikon
 resources/js/       Inertia stránky, rozvržení a Vue komponenty
 resources/scss/     styly (tokeny, rozvržení, komponenty)
 routes/web.php      přihlášení a stránky za přihlášením
+routes/cron.php     cron URL /cron/ceny (mimo skupinu web, token)
 tests/              Pest — Feature a Unit
 ```
 

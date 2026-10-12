@@ -104,11 +104,14 @@ Eloquent model                 ← perzistence
 | Složka | Obsah |
 |---|---|
 | `app/Domain/Accounts` | účty (`Actions/CreateUser`) |
-| `app/Domain/Itad` | HTTP klient IsThereAnyDeal (`ItadClient`) a jeho datové třídy (`ItadGame`, `ItadGameInfo`) — katalog teď, ceny oficiálních obchodů v etapě 3 |
+| `app/Domain/Itad` | HTTP klient IsThereAnyDeal (`ItadClient`) a jeho datové třídy (`ItadGame`, `ItadGameInfo`, `ItadGamePrices`, `ItadDeal`) — katalog i ceny oficiálních obchodů |
+| `app/Domain/GgDeals` | HTTP klient gg.deals (`GgDealsClient`, `GgDealsPrices`) — nejnižší cena obchodů s klíči; klíč maže z logu (R18) |
+| `app/Domain/Currency` | kurzy ČNB — lístek (`CnbRateSheet`), stažení (`Actions/ImportExchangeRates`), převod (`ExchangeRates`, jeden za požadavek) (R14) |
 | `app/Domain/Catalog` | katalog her — dotaz (`GameQuery`), hledání (`Actions/SearchGames`), převzetí hry (`Actions/ImportGame`), data pro stránky (`GamePresenter`) |
 | `app/Domain/Watchlist` | osobní seznam sledovaných her (`Actions/WatchGame`, `Actions/UnwatchGame`); upozornění v etapě 6 |
-| `app/Domain/Pricing` | *(etapa 3, 5)* stahování a ukládání cen; klient každého zdroje zvlášť (`Sources/GgDeals`, `Sources/PlayStation`, `Sources/Kinguin`, `Sources/Eneba`), ITAD přes `app/Domain/Itad` |
-| `app/Enums` | výčty (zdroj ceny, obchod) |
+| `app/Domain/Pricing` | ceny — částka (`Money`), stažení (`Actions/RefreshPrices`), uložení (`StorePrices`), data pro stránky v měně účtu (`PriceBoard`) (R18); přímé zdroje v etapě 5 |
+| `app/Domain/Maintenance` | úklid volaný z cron URL (`PruneExpiredCache`) — hosting nemá scheduler |
+| `app/Enums` | výčty (`PriceSource`, `PriceScope`) |
 | `app/Http/Controllers` | tenké kontrolery |
 | `app/Http/Requests` | Form Requesty (včetně `LoginRequest`) |
 | `app/Console/Commands` | Artisan příkazy — jen obálka nad Action |
@@ -132,7 +135,8 @@ Eloquent model                 ← perzistence
 ### Peníze a měny
 - **Částky se ukládají v měně zdroje** jako `decimal(10,2)` + sloupec `currency` (ISO 4217) — nikdy `float`
 - **Nikdy nesčítat ani neporovnávat částky v různých měnách** bez převodu — zobrazuje se v CZK nebo EUR podle volby účtu, převádí se až při zobrazení denním kurzem ČNB (`exchange_rates`, R14); částka v měně zdroje zůstává uložená beze změny
-- Zdroje vrací ceny různě: ITAD jako `amount` i `amountInt` (centy), Kinguin v centech, PlayStation v setinách CZK — převod do `decimal` na jednom místě v klientovi zdroje
+- **V PHP jsou částky `Money` v setinách** (celé číslo) — z API přes `amountInt` nebo `Money::fromDecimal()` (řetězec, ne float), do DB `toDecimal()`, na stránku `toArray()`. Převod měn jen `ExchangeRates::convert()`, řazení a „nejlevněji“ jen `PriceBoard` — komponenta nic nepřevádí
+- Zdroje vrací ceny různě: ITAD `amountInt` (centy), gg.deals řetězec „38.98“, Kinguin v centech (`1000000` = bez nabídky), PlayStation `discountedValue` v haléřích — převod na `Money` na jednom místě v klientovi zdroje
 
 ### Externí zdroje a stahování
 - **Všechna volání přes HTTP klienta Laravelu** (`Http::`) s timeoutem z konfigurace — jinak nejdou testovat přes `Http::fake()`
@@ -153,7 +157,8 @@ Eloquent model                 ← perzistence
 - Testy běží proti MariaDB `games_test`, ne SQLite — stejně jako produkce
 - **Žádný test nevolá skutečné API ani obchod** — `Http::preventStrayRequests()` v `TestCase`. Odpovědi zdrojů jsou **skutečné, zachycené odpovědi** uložené v `tests/Fixtures/<zdroj>/` (zkrácené, bez klíčů) — nové testy je používají, nevymýšlí vlastní tvar dat
 - Účty v testech přes `user()` z `tests/Pest.php`, heslo `UserFactory::PASSWORD`
-- Zachycené odpovědi načítá `jsonFixture('itad/…')` (nad `fixture()` z Pestu — vlastní funkce se tak jmenovat nesmí); ITAD podvrhne `fakeItad()`, výpadek `fakeItadFailure()`. Další `Http::fake()` v testu dřívější podvrhy **nepřebije** (vyhraje první shoda), proto `fakeItadFailure()` vymění celý HTTP klient
+- Zachycené odpovědi načítá `jsonFixture('itad/…')` (nad `fixture()` z Pestu — vlastní funkce se tak jmenovat nesmí). Všechna API (ITAD, gg.deals, ČNB) podvrhne `fakeApis()`; výpadek zdroje `fakeApis(['api.gg.deals/*' => apiError(503)])`. Další `Http::fake()` v testu dřívější podvrhy **nepřebije** (vyhraje první shoda), proto `fakeApis()` vymění celý HTTP klient
+- Účet se sledovanými hrami i s cenami z fixtures: `watcherOf([BIOMUTANT_ID, …])`
 
 ### Error handling
 - Doménové výjimky jako vlastní třídy, ne holé `\Exception`

@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DisplayCurrencyController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameSearchController;
 use App\Http\Controllers\WatchlistController;
@@ -36,4 +37,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/hry', [WatchlistController::class, 'store'])->name('watchlist.store');
     Route::get('/hry/{game}', [GameController::class, 'show'])->name('games.show');
     Route::delete('/hry/{game}/sledovani', [WatchlistController::class, 'destroy'])->name('watchlist.destroy');
+
+    // Měna zobrazení cen (R14)
+    Route::put('/nastaveni/mena', DisplayCurrencyController::class)->name('settings.currency');
 });

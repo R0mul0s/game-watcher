@@ -50,6 +50,13 @@ class HandleInertiaRequests extends Middleware
                 'logoutUrl' => route('logout', absolute: false),
             ] : null,
             'homeUrl' => fn (): string => route('dashboard', absolute: false),
+            'timezone' => config('games.display_timezone'),
+            // Přepínač měny v hlavičce (R14)
+            'currency' => fn (): ?array => $user instanceof User ? [
+                'current' => $user->displayCurrency(),
+                'options' => config('games.prices.display_currencies'),
+                'updateUrl' => route('settings.currency', absolute: false),
+            ] : null,
             'navigation' => fn (): array => $user === null ? [] : array_map(
                 fn (string $routeName, string $labelKey): array => [
                     'url' => route($routeName, absolute: false),

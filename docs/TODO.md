@@ -31,7 +31,7 @@ v [PLAN.md](PLAN.md); větší celky se z toho stávají etapou.
 
 **Odkud:** etapa 2 v PLAN.md, R15, R16.
 
-- **obnova údajů her** — `info_refreshed_at` je připravené; cron (etapa 3) by obnovil snímek
+- **obnova údajů her** — `info_refreshed_at` je připravené; další krok cron URL (R19) by obnovil snímek
   starší než např. 30 dní (datum vydání neohlášených her, hodnocení, obrázky). Pozor na limit ITAD
   (R15) — po pár hrách za běh
 - hledání i podle **odkazu na IsThereAnyDeal** (`isthereanydeal.com/game/<slug>/`) — ITAD nemá

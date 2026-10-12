@@ -1,12 +1,13 @@
 <!--
     Detail hry z katalogu — údaje z IsThereAnyDeal (R10), sledování a odkazy.
-    Ceny přibudou v etapě 3 (docs/PLAN.md).
+    Ceny v měně účtu (R14) — panel PricePanel.
 
     @author Roman Hlaváček
     @created 2026-10-11
 -->
 <script setup>
 import GameBadges from '@/Components/GameBadges.vue';
+import PricePanel from '@/Components/PricePanel.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { formatDate, formatInteger } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
@@ -91,10 +92,7 @@ function toggleWatch() {
             </header>
 
             <div class="game-detail__panels">
-                <section class="panel">
-                    <h2 class="panel__title">{{ t('game.prices_title') }}</h2>
-                    <p class="panel__text">{{ t('game.prices_soon') }}</p>
-                </section>
+                <PricePanel :prices="game.prices" class="game-detail__prices" />
 
                 <section v-if="game.reviews.length" class="panel">
                     <h2 class="panel__title">{{ t('game.reviews') }}</h2>

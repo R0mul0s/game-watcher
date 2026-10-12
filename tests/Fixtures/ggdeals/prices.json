@@ -1,0 +1,28 @@
+{
+    "success": true,
+    "data": {
+        "597820": {
+            "title": "BIOMUTANT",
+            "url": "https://gg.deals/game/biomutant/",
+            "prices": {
+                "currentRetail": "24.98",
+                "currentKeyshops": "5.41",
+                "historicalRetail": "6.73",
+                "historicalKeyshops": "5.24",
+                "currency": "EUR"
+            }
+        },
+        "3669870": {
+            "title": "CONTROL Resonant",
+            "url": "https://gg.deals/game/control-resonant/",
+            "prices": {
+                "currentRetail": "49.18",
+                "currentKeyshops": "38.98",
+                "historicalRetail": "28.79",
+                "historicalKeyshops": "37.07",
+                "currency": "EUR"
+            }
+        },
+        "999999999": null
+    }
+}

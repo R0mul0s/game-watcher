@@ -1,0 +1,138 @@
+// _prices.scss
+// Ceny hry na detailu (PricePanel.vue) — nabídky obchodů, obchody s klíči,
+// historická minima. Nejlevnější nabídka svítí zeleně (R6).
+//
+// @author Roman Hlaváček
+// @created 2026-10-11
+
+@use '../abstracts/mixins' as *;
+
+.prices {
+    &__amount {
+        font-family: var(--font-mono);
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-strong);
+
+        &--keyshops {
+            color: var(--color-neon-magenta);
+            text-shadow: var(--text-glow-magenta);
+        }
+    }
+
+    // Souhrnný řádek gg.deals — celý je odkazem na zdroj
+    &__keyshops {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-3);
+        padding: var(--space-2) var(--space-3);
+        border: var(--border-width) dashed var(--color-neon-magenta);
+        color: var(--color-text);
+        text-decoration: none;
+
+        &:hover {
+            box-shadow: var(--glow-magenta);
+        }
+
+        @include neon-focus;
+    }
+
+    &__keyshops-label {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__hint {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+    }
+
+    &__subtitle {
+        @include display-caps;
+
+        margin-bottom: var(--space-2);
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-display);
+    }
+
+    &__footer {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+    }
+}
+
+.offers {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+// Na mobilu obchod nad cenou, od md v jednom řádku: obchod | cena | odkaz
+.offer {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: var(--border-width) solid var(--color-border);
+
+    @include from-md {
+        grid-template-columns: 1fr auto auto;
+    }
+
+    &--best {
+        .prices__amount {
+            color: var(--color-neon-green);
+            text-shadow: 0 0 var(--space-2) var(--color-success-soft);
+        }
+    }
+
+    &__shop {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    &__name {
+        font-weight: var(--font-weight-strong);
+    }
+
+    &__details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 var(--space-2);
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+    }
+
+    &__price {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    &__cut {
+        color: var(--color-neon-green);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+    }
+
+    &__regular {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+        text-decoration: line-through;
+    }
+
+    // Na mobilu odkaz pod cenou přes celou šířku
+    &__link {
+        grid-column: 1 / -1;
+        justify-self: end;
+
+        @include from-md {
+            grid-column: auto;
+        }
+    }
+}

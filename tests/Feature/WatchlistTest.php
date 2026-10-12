@@ -12,11 +12,12 @@ declare(strict_types=1);
 
 use App\Models\Game;
 use App\Models\WatchlistItem;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(function (): void {
-    fakeItad();
+    fakeApis();
 });
 
 it('přidá novou hru — převezme ji z ITAD do katalogu a dá na seznam', function (): void {
@@ -46,7 +47,32 @@ it('hru, kterou katalog má, už z ITAD nestahuje', function (): void {
 
     $this->actingAs(user())->post('/hry', ['itad_id' => BIOMUTANT_ID]);
 
+    Http::assertNotSent(fn (Request $request): bool => str_contains($request->url(), '/games/info/'));
+    expect(WatchlistItem::query()->count())->toBe(1);
+});
+
+it('nové hře rovnou stáhne ceny, hře s cenami už ne', function (): void {
+    watcherOf([BIOMUTANT_ID]);
+    $game = Game::query()->sole();
+
+    expect($game->currentPrices()->count())->toBe(16);
+
+    fakeApis();
+    $this->actingAs(user())->post('/hry', ['itad_id' => BIOMUTANT_ID]);
+
     Http::assertNothingSent();
+});
+
+it('výpadek zdroje cen přidání hry nezastaví', function (): void {
+    fakeApis([
+        'api.isthereanydeal.com/games/prices/*' => apiError(503),
+        'api.gg.deals/*' => apiError(503),
+    ]);
+
+    $this->actingAs(user())
+        ->post('/hry', ['itad_id' => BIOMUTANT_ID])
+        ->assertInertiaFlash('success', __('app.watchlist.added', ['title' => 'BIOMUTANT']));
+
     expect(WatchlistItem::query()->count())->toBe(1);
 });
 
@@ -79,7 +105,7 @@ it('odmítne ITAD ID v nesprávném tvaru', function (): void {
 });
 
 it('výpadek ITAD při přidání ohlásí a nic neuloží', function (): void {
-    fakeItadFailure(403, 'Invalid or expired api key');
+    fakeApis(['api.isthereanydeal.com/*' => apiError(403, 'Invalid or expired api key')]);
 
     $this->actingAs(user())
         ->post('/hry', ['itad_id' => CONTROL_RESONANT_ID])

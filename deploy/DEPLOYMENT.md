@@ -75,6 +75,7 @@ a vyplň místa `<…>`:
 - **`APP_URL`** — produkční adresa s `https://`
 - `DB_*` — z detailu databáze ve WebAdminu
 - `GAMES_ITAD_API_KEY`, `GAMES_GGDEALS_API_KEY` — klíče zdrojů cen (R9); pro produkci ideálně vlastní aplikace/klíč, ne vývojový
+- `GAMES_CRON_TOKEN` — token cron URL (viz *Cron: stahování cen*)
 
 > **Ladění bez SSH:** chyby jsou v `storage/logs/laravel-RRRR-MM-DD.log` —
 > stáhni ho přes FTP. `APP_DEBUG=true` na produkci nezapínej ani dočasně:
@@ -108,8 +109,27 @@ curl -I "https://game-watcher.rhsoft.cz/prihlaseni"
 
 ## Cron: stahování cen
 
-*(etapa 3)* URL `/cron/refresh-prices?token=<GAMES_CRON_TOKEN>` volaná cronem
-ve WebAdminu — postup se doplní s implementací.
+Kurzy ČNB, ceny sledovaných her a úklid cache obstarává URL volaná cronem
+ve WebAdminu (R19) — hosting nemá scheduler ani artisan.
+
+1. V `.env` na hostingu vyplň `GAMES_CRON_TOKEN` — náhodný řetězec:
+   `docker compose exec app php -r "echo bin2hex(random_bytes(24));"`
+2. Ve WebAdminu založ cron s voláním URL **každé 4 hodiny**:
+   `https://game-watcher.rhsoft.cz/cron/ceny?token=<GAMES_CRON_TOKEN>`
+3. Ověř v prohlížeči stejnou URL — odpověď je prostý text:
+   ```
+   kurzy ČNB — uložen lístek z 9. 10. 2026
+   ceny — ITAD her: 4, gg.deals her: 3
+   cache — smazáno prošlých záznamů: 6
+   ```
+   Špatný nebo chybějící token vrací **404**.
+
+Kroky na sobě nezávisí: když jeden selže (výpadek ČNB, ITAD nebo gg.deals,
+neplatný klíč), ostatní proběhnou, místo čísla je „chyba“ a URL vrátí **500**
+(podrobnosti v `storage/logs/laravel-*.log`). Když ještě běží předchozí volání,
+vrátí **409** a nic neudělá; zámek po pádu PHP vyprší sám za 10 minut
+(`games.cron.lock_seconds`). Ceny se stahují jen hrám, které někdo sleduje;
+kurz ČNB jen tehdy, když uložený není dnešní (o víkendu platí páteční).
 
 ---
 
@@ -145,6 +165,7 @@ je jediná cesta, jak ji neztratit.
 |---|---|---|
 | `migrations-2026-10-11-init.sql` | výchozí schéma (users, cache, cache_locks, migrations); opakovatelný, pustit **před** prvním nahráním kódu | |
 | `migrations-2026-10-11-katalog.sql` | katalog her a seznam sledovaných (etapa 2): tabulky `games`, `watchlist_items` — prázdné; opakovatelný, pustit **po** init a **před** nahráním kódu | |
+| `migrations-2026-10-11-ceny.sql` | ceny a měny (etapa 3): tabulky `current_prices`, `price_lows`, `price_history`, `exchange_rates`, sloupec `users.display_currency` — prázdné, naplní je cron; opakovatelný, pustit **po** katalogu a **před** nahráním kódu | |
 
 ## Nasazené verze
 

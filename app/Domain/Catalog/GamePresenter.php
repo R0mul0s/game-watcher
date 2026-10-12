@@ -13,12 +13,14 @@ declare(strict_types=1);
 namespace App\Domain\Catalog;
 
 use App\Domain\Itad\ItadGame;
+use App\Domain\Pricing\PriceBoard;
 use App\Models\Game;
 
 /**
  * Jedno místo, kde se z hry stává tvar pro Vue — komponenty nic nepočítají
  * (docs/CODING_GUIDELINES.md, sekce 5). Datum vydání jde jako Y-m-d, formát
- * dělá prohlížeč (Intl).
+ * dělá prohlížeč (Intl). Ceny chystá PriceBoard v měně zobrazení účtu (R14) —
+ * hra musí mít načtené vazby currentPrices a priceLows.
  */
 final class GamePresenter
 {
@@ -30,32 +32,31 @@ final class GamePresenter
     /** Hodnocení od této hodnoty je smíšené, pod ní záporné (Steam „Mixed“). */
     private const REVIEW_MIXED_FROM = 40;
 
+    public function __construct(private readonly PriceBoard $priceBoard) {}
+
     /**
-     * Karta hry na přehledu sledovaných.
+     * Karta hry na přehledu sledovaných — s nejlevnější cenou.
      *
-     * @return array{slug: string, title: string, type: string, bannerUrl: ?string, releaseDate: ?string, url: string}
+     * @return array<string, mixed>
      */
-    public function card(Game $game): array
+    public function card(Game $game, string $currency): array
     {
         return [
-            'slug' => $game->slug,
-            'title' => $game->title,
-            'type' => $game->type,
-            'bannerUrl' => $game->banner_url ?? $game->boxart_url,
-            'releaseDate' => $game->release_date?->format(self::DATE_FORMAT),
-            'url' => route('games.show', $game, absolute: false),
+            ...$this->basics($game),
+            'prices' => $this->priceBoard->summary($game, $currency),
         ];
     }
 
     /**
-     * Detail hry s akcí sledovat / přestat sledovat.
+     * Detail hry s cenami a akcí sledovat / přestat sledovat.
      *
      * @return array<string, mixed>
      */
-    public function detail(Game $game, bool $watching): array
+    public function detail(Game $game, bool $watching, string $currency): array
     {
         return [
-            ...$this->card($game),
+            ...$this->basics($game),
+            'prices' => $this->priceBoard->detail($game, $currency),
             'itadId' => $game->itad_id,
             'boxartUrl' => $game->boxart_url,
             'isMature' => $game->is_mature,
@@ -75,18 +76,6 @@ final class GamePresenter
     }
 
     /**
-     * Úroveň hodnocení pro barvu skóre: good / mixed / bad.
-     */
-    private function reviewLevel(int $score): string
-    {
-        return match (true) {
-            $score >= self::REVIEW_GOOD_FROM => 'good',
-            $score >= self::REVIEW_MIXED_FROM => 'mixed',
-            default => 'bad',
-        };
-    }
-
-    /**
      * Výsledek hledání — odkaz na detail jen u hry, kterou už katalog má.
      *
      * @return array{itadId: string, title: string, type: string, thumbnailUrl: ?string, isMature: bool, watching: bool, detailUrl: ?string}
@@ -102,5 +91,34 @@ final class GamePresenter
             'watching' => $watching,
             'detailUrl' => $inCatalog === null ? null : route('games.show', $inCatalog, absolute: false),
         ];
+    }
+
+    /**
+     * Údaje hry společné pro kartu i detail.
+     *
+     * @return array{slug: string, title: string, type: string, bannerUrl: ?string, releaseDate: ?string, url: string}
+     */
+    private function basics(Game $game): array
+    {
+        return [
+            'slug' => $game->slug,
+            'title' => $game->title,
+            'type' => $game->type,
+            'bannerUrl' => $game->banner_url ?? $game->boxart_url,
+            'releaseDate' => $game->release_date?->format(self::DATE_FORMAT),
+            'url' => route('games.show', $game, absolute: false),
+        ];
+    }
+
+    /**
+     * Úroveň hodnocení pro barvu skóre: good / mixed / bad.
+     */
+    private function reviewLevel(int $score): string
+    {
+        return match (true) {
+            $score >= self::REVIEW_GOOD_FROM => 'good',
+            $score >= self::REVIEW_MIXED_FROM => 'mixed',
+            default => 'bad',
+        };
     }
 }

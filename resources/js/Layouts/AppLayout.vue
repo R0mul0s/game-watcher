@@ -6,6 +6,7 @@
 -->
 <script setup>
 import BrandLogo from '@/Components/BrandLogo.vue';
+import CurrencySwitch from '@/Components/CurrencySwitch.vue';
 import FlashMessage from '@/Components/FlashMessage.vue';
 import { useTranslations } from '@/lib/i18n';
 import { Link, usePage } from '@inertiajs/vue3';
@@ -35,6 +36,7 @@ const page = usePage();
                 </Link>
             </nav>
             <div v-if="page.props.auth" class="app-header__user">
+                <CurrencySwitch />
                 <span class="app-header__user-name" :title="t('auth.signed_in_as', { name: page.props.auth.name })">
                     {{ page.props.auth.name }}
                 </span>

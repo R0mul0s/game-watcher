@@ -30,11 +30,14 @@ jak se její cena vyvíjí a dostat upozornění, když spadne pod zvolenou mez.
 - Ukazuje ceny **v CZK** (denní kurz ČNB) s přepnutím na **EUR** (R14)
 - Upozorní **e-mailem a přes Web Push**, když cena sledované hry spadne pod cílovou (R13)
 
-### Co už umí (etapy 1–2)
+### Co už umí (etapy 1–3)
 - Přihlášení e-mailem a heslem s ochranou proti hádání hesla, odhlášení, „zůstat přihlášen“ (R4)
 - Zakládání účtů příkazem `games:create-user`, pro produkci jako SQL (`--sql`)
 - Retrofuturistický vzhled (R6)
 - **Přidání hry** — hledání v katalogu IsThereAnyDeal podle názvu, Steam App ID nebo odkazu na Steam (R15)
+- **Ceny** (R18): nejlevnější oficiální obchod a nejnižší cena obchodů s klíči na kartách přehledu; na detailu všechny obchody od nejlevnějšího se slevou, běžnou cenou, aktivací (DRM), koncem slevy a odkazem do obchodu, historická minima
+- **CZK / EUR** přepínačem v hlavičce, převod kurzem ČNB (R14)
+- **Cron URL** `/cron/ceny` — kurz ČNB, ceny sledovaných her, úklid cache (R19)
 - **Přehled** sledovaných her (karty s bannerem a datem vydání) a **detail hry** — obal, vydání, vývojář, vydavatel, hodnocení (Steam, Metacritic, OpenCritic), štítky, odkazy na Steam a ITAD (R16)
 
 ### Co systém nedělá
@@ -93,7 +96,7 @@ obchodu (G2A, Loaded) nedává. Region `cz` nezná, `eu` vrací EUR.
 
 ## 4. Datový model
 
-### Dnes (etapy 1–2)
+### Dnes (etapy 1–3)
 
 | Tabulka | Obsah |
 |---|---|
@@ -101,10 +104,15 @@ obchodu (G2A, Loaded) nedává. Region `cz` nezná, `eu` vrací EUR.
 | `cache`, `cache_locks` | databázová cache a zámky (R2), výsledky hledání v ITAD (R15) |
 | `games` | katalog z ITAD (R10): `itad_id` (UUID, unikátní — identita), `slug` (unikátní, adresa detailu), `title`, `type` (game/dlc…), `is_mature`, `steam_app_id` (prázdné mimo Steam), `release_date`, `developers` / `publishers` / `tags` / `reviews` (JSON), `boxart_url`, `banner_url`, `itad_url`, `info_refreshed_at` |
 | `watchlist_items` | osobní seznam (R11): `user_id` + `game_id` unikátně, mazání kaskádou s účtem i hrou |
+| `current_prices` | poslední cena hry v obchodě (R18): `game_id` + `shop_key` unikátně (`itad-<id obchodu>`, `keyshops` = nejnižší cena obchodů s klíči z gg.deals), `source` (itad/ggdeals), `shop_name`, `amount`, `regular_amount`, `currency`, `cut`, `drm`, `url`, `expires_at`, `fetched_at` |
+| `price_lows` | historická minima ze zdrojů: klíč `game_id` + `scope` (`official` z ITAD, `keyshops` z gg.deals), `amount`, `currency` |
+| `price_history` | nejnižší cena dne po obchodech (klíč `game_id` + `shop_key` + `day`, místní den) — podklad grafu (etapa 7) |
+| `exchange_rates` | denní kurzy ČNB (R14): klíč `day` + `currency`, `rate` = CZK za 1 jednotku |
+| `users.display_currency` | měna zobrazení účtu — `CZK` (výchozí) / `EUR` |
 
 Tabulky `sessions`, `password_reset_tokens` ani tabulky fronty nejsou (R2, R4, R5).
 
-### Návrh pro etapy 3–6 (upřesní se při implementaci)
+### Návrh pro etapy 5–6 (upřesní se při implementaci)
 
 Hra je jedna věc napříč obchody — **identitu jí dává IsThereAnyDeal** (R10), ostatní
 zdroje se k ní připojují:
@@ -119,37 +127,36 @@ users ──< watchlist_items >── games ──< store_listings      (ruční
 | Tabulka | Klíčové sloupce | K čemu |
 |---|---|---|
 | `store_listings` | `game_id`, `source` (playstation/kinguin/eneba), `external_id`, `url`, `label` („Steam klíč EU“) | konkrétní produkt v obchodě bez ITAD; zadává se URL, ne hledáním podle názvu (R10) |
-| `current_prices` | `game_id`, `shop` (steam, epic, gog…, keyshops, playstation…), `source` (itad/ggdeals/přímo), `amount`, `regular_amount`, `currency`, `cut`, `url`, `fetched_at` | co se ukazuje v přehledu |
-| `price_history` | `game_id`, `shop`, `day`, `amount`, `currency` | graf a minima; den, ne každé stažení (jako `daily_summaries` v Počasí) |
+| `current_prices` *(rozšíření v etapě 5)* | `source` = playstation / kinguin / eneba, `shop_key` podle listingu | ceny přímých zdrojů vedle ITAD a gg.deals |
 | `watchlist_items` *(rozšíření v etapě 6)* | `target_price`, `currency`, `notified_at` | mez pro upozornění (R11, R13) |
 
 **Měny (R14):** ITAD (CZ) a gg.deals (eu) vrací EUR, PlayStation Store CZK, Kinguin
 a Eneba EUR (Eneba i CZK). Částky se ukládají **v měně zdroje** — porovnání napříč
-měnami jen přes převod, nikdy přímo. Převádí se při zobrazení kurzem ČNB:
-
-| Tabulka | Klíčové sloupce | K čemu |
-|---|---|---|
-| `exchange_rates` | `day`, `currency` (unikátně spolu), `rate` (CZK za 1 jednotku) | denní kurz ČNB; stahuje ho cron jednou denně |
-| `users.display_currency` | `CZK` / `EUR` | volba měny zobrazení u účtu (výchozí CZK) |
+měnami jen přes převod, nikdy přímo. Převádí se až při zobrazení posledním
+lístkem ČNB (`exchange_rates`, `ExchangeRates`).
 
 **Upozornění (R13):** odběry Web Push (`push_subscriptions` podle uživatele — vzor
 z Počasí) a volba kanálů u účtu (e-mail, push).
 
 ---
 
-## 5. Toky dat (plán)
+## 5. Toky dat
 
 ```
 uživatel ──hledá (název / Steam App ID / URL Steamu)──▶ ITAD search nebo lookup (cache 1 h) ──▶ výsledky
 uživatel ──Sledovat──▶ ITAD info (jen hra mimo katalog) ──▶ games + watchlist_items   (R15, R16)
 uživatel ──vloží URL produktu PSN / Kinguin / Eneba──────▶ ověření hostitele a ID ──▶ store_listings
 
-cron hostingu (URL s tokenem) ──▶ /cron/refresh-prices?token=…
-      ├─ ITAD prices (CZ, po 200 hrách) ─────────────────┐
-      ├─ gg.deals (eu, podle Steam App ID) ───────────────┼──▶ current_prices + price_history
-      ├─ PlayStation / Kinguin / Eneba (po jednom listingu) ┘
-      ├─ kurz ČNB (1× denně) ──▶ exchange_rates
-      └─ porovnání s watchlist_items ──▶ e-mail (SMTP Websupportu) + Web Push   (R13)
+cron hostingu (každé 4 h) ──▶ /cron/ceny?token=…                                   (R19)
+      ├─ kurz ČNB (jen když uložený není dnešní, pokus nejvýš 1× za hodinu) ──▶ exchange_rates
+      ├─ ITAD games/prices (CZ, dávka 200 her) ─────────┐
+      ├─ gg.deals (eu, dávka 100 Steam App ID) ────────┼──▶ current_prices + price_lows + price_history   (R18)
+      ├─ PlayStation / Kinguin / Eneba (etapa 5) ──────┘
+      ├─ úklid prošlé cache
+      └─ porovnání s watchlist_items ──▶ e-mail (SMTP Websupportu) + Web Push   (etapa 6, R13)
+
+uživatel ──Sledovat novou hru──▶ ceny hned (ITAD + gg.deals jen pro tu hru)          (R18)
+stránka ──▶ PriceBoard ──▶ převod do měny účtu kurzem ČNB, řazení od nejlevnější    (R14)
 ```
 
 Jako v Počasí: hosting umí jen zavolat URL, žádný scheduler ani fronta (R2).
@@ -164,7 +171,7 @@ nesmí zastavit ostatní.
 |---|---|---|
 | 1 | **Kostra** — Laravel 13 + Inertia + Vue v Dockeru, dokumentace, přihlášení bez registrace (R4), zakládání účtů příkazem, retrofuturistický vzhled (R6), CI (zrušené, R17), nasazovací skript a SQL skript výchozího schématu | hotovo 2026-10-11, nenasazeno |
 | 2 | **Katalog her z ITAD** — přidání hry podle názvu, Steam App ID nebo URL Steamu; detail hry (obal, vydání, vývojář, hodnocení, štítky, odkazy); osobní seznam sledovaných her na přehledu (R10, R11, R15, R16) | hotovo 2026-10-11, nenasazeno |
-| 3 | **Ceny z API a měny** — ITAD (oficiální obchody, CZ) a gg.deals (obchody s klíči, eu); cron URL s tokenem, zámek a nezávislé kroky; `current_prices` a `price_history`; kurz ČNB a zobrazení v CZK / EUR s přepínačem (R14); přehled s nejnižší cenou a historickým minimem | |
+| 3 | **Ceny z API a měny** — ITAD (oficiální obchody, CZ) a gg.deals (obchody s klíči, eu); cron URL s tokenem, zámek a nezávislé kroky; `current_prices`, `price_lows` a `price_history`; kurz ČNB a zobrazení v CZK / EUR s přepínačem (R14, R18, R19); přehled s nejnižší cenou, detail se všemi obchody a historickými minimy | hotovo 2026-10-11, nenasazeno |
 | 4 | **První nasazení** na `game-watcher.rhsoft.cz` (R12) — subdoména, databáze, SQL skripty, první účet, cron | |
 | 5 | **Přímé zdroje** — PlayStation Store, Kinguin, Eneba: připojení produktu ke hře přes URL, stahování v cronu, testy nad zachycenými odpověďmi, hlídání změny formátu | |
 | 6 | **Hlídání cen** — cílová cena, upozornění e-mailem a Web Push (R13), „slevy dne“ ve sledovaných | |
@@ -181,7 +188,7 @@ nesmí zastavit ostatní.
 | O3 | **Měna zobrazení** — ceny v měně obchodu, nebo vše přepočítat na CZK? | vyřešeno (R14): CZK kurzem ČNB, přepínač na EUR |
 | O4 | **Stačí pro G2A a Loaded souhrnná cena z gg.deals?** Konkrétní cenu z hostingu nezískáme (R7, R8) | |
 | O5 | **Které edice a regiony u obchodů s klíči?** Navrženo: jen klíče platné v ČR/EU pro PC (Steam), bez účtů, darů a „Mystery“ klíčů — gg.deals podle všeho filtruje podobně | |
-| O6 | **Jak často stahovat ceny** — návrh 2× až 4× denně; limit ITAD 100 požadavků / 5 min s dávkou 200 her nevadí, přímé zdroje stahovat šetrně (po jednom listingu, s pauzou) | |
+| O6 | **Jak často stahovat ceny** — limit ITAD 100 požadavků / 5 min s dávkou 200 her nevadí, přímé zdroje stahovat šetrně (po jednom listingu, s pauzou) | rozhodnuto (R19): cron každé 4 hodiny; přímé zdroje (etapa 5) se upřesní |
 
 ---
 
@@ -206,3 +213,5 @@ nesmí zastavit ostatní.
 | R15 | 2026-10-11 | **Přidání hry hledáním v ITAD** (etapa 2): jedno pole pro **název** (`games/search`, 12 výsledků), **Steam App ID** nebo **odkaz na Steam** (`games/lookup` — přesná shoda). Hledá se až po odeslání formuláře, výsledky drží cache 1 h (klíč bez ohledu na velikost písmen), neúspěch se necachuje; nejvýš 20 hledání za minutu na účet (`games.catalog`). **Klíč ITAD jde v hlavičce `ITAD-API-Key`**, ne v URL. Výpadek, neplatný klíč nebo změněný tvar odpovědi = výjimka `ItadUnavailable`, stránka ukáže hlášku a podrobnost je v logu. Výsledky vyznačí hry, které uživatel už sleduje | ITAD povoluje 100 požadavků za 5 minut na klíč pro všechny účty — našeptávání při psaní by limit vyčerpalo. Odkaz na Steam je nejspolehlivější cesta k přesné hře; hledání podle názvu vrací i edice a DLC (u „CONTROL Resonant“ i Deluxe Edition a Upgrade). Adresa požadavku se objevuje v chybových hláškách HTTP klienta a v logu — klíč v ní by unikl. Cache ukládá pole, ne objekty (`cache.serializable_classes = false`). |
 | R16 | 2026-10-11 | **Hra se do katalogu převezme při prvním přidání** (`games/info`: Steam App ID, vydání, vývojáři, vydavatelé, štítky, hodnocení, obal a banner) a ukládá se jako snímek s časem `info_refreshed_at`; další účet ji přidá bez volání ITAD. Detail hry vidí každý přihlášený, odebrání ze seznamu hru v katalogu nechá. Obrázky se nestahují, berou se přímo z CDN ITAD (`img-src https://assets.isthereanydeal.com` v CSP). Hlášky po akci přes `Inertia::flash()` (neukládá se do historie prohlížeče) a návrat na stránku, odkud akce přišla | Údaje hry se mění zřídka; obnova snímku se doplní s cronem (etapa 3, TODO). Hra v katalogu bude mít historii cen nezávisle na tom, kdo ji zrovna sleduje (R11). Kopírovat obrázky na sdílený hosting by zabíralo místo a CDN ITAD je rychlejší. Návrat zpět s hláškou dovolí z jednoho hledání přidat víc her za sebou. |
 | R17 | 2026-10-11 | **CI v GitHub Actions zrušené** (`.github/workflows/ci.yml` smazán), stejně jako v Počasí (R59 tam); kontrola kvality je jen ruční před commitem (CODING_GUIDELINES, sekce 9) | Rozhodnutí správce — jeden vývojář, který kontroly pouští sám před každým commitem; workflow by se muselo průběžně udržovat (verze akcí GitHubu, konec Node 20, přechod `ubuntu-latest` na Ubuntu 26). |
+| R18 | 2026-10-11 | **Ceny z API** (etapa 3): ITAD `games/prices` pro zemi CZ (dávka až 200 her v jednom POST) a gg.deals podle Steam App ID (dávka 100, region eu). **Nabídky zdroje se při každém stažení nahradí celé** (`current_prices`, klíč obchodu `itad-<id>` / `keyshops`) — obchod, který hru přestal nabízet, zmizí. **Historická minima přebírá ze zdrojů** (`price_lows`: ITAD `historyLow.all`, gg.deals `historicalKeyshops`), aplikace je nepočítá. **Denní historie** `price_history` drží nejnižší cenu dne po obchodech (upsert s `LEAST`). Částky v setinách (`Money`, žádný float), v DB jako decimal v měně zdroje. Ceny se stahují **jen hrám, které někdo sleduje**; nově sledovaná hra bez cen je dostane hned při přidání (výpadek zdroje přidání nezastaví). Zdroje na sobě nezávisí — výpadek jednoho zaloguje klient a druhý proběhne. **Klíč gg.deals jde jen v URL** (hlavičku API nezná) — `GgDealsClient` ho z každé zprávy do logu maže a jeho výjimka nenese původní výjimku. Odkazy do obchodů jsou partnerské odkazy ITAD (`rel="sponsored"`, nesmí se měnit); u cen je uvedený zdroj s odkazem na ITAD a gg.deals | Dávky a jen sledované hry drží požadavky hluboko pod limity API. Historické minimum z vlastních dat by bylo jen od začátku sledování — zdroje ho znají za celou dobu. Denní historie místo každého stažení: graf (etapa 7) potřebuje den, ne šest bodů denně. Bez okamžitého stažení by nově přidaná hra až 4 hodiny ukazovala „bez ceny“. Edice se stejným Steam App ID dostanou od gg.deals stejnou cenu — rozlišit je neumí. |
+| R19 | 2026-10-11 | **Cron URL `/cron/ceny?token=…`** (`routes/cron.php` mimo skupinu `web`, token `GAMES_CRON_TOKEN`, špatný = 404, rate limit): kroky **kurzy ČNB → ceny → úklid prošlé cache**, každý zvlášť (chyba se zaloguje, místo řádku „chyba“, URL vrátí 500; výpadek zdroje cen také 500), celé volání drží `Cache::lock` (10 min), souběh odpoví 409. **Cron ve WebAdminu každé 4 hodiny.** Kurz ČNB se stahuje, jen když uložený není dnešní, a nejvýš jednou za hodinu (o víkendu platí páteční lístek) | Vzor z projektu Počasí (R14, R27, R58 tam) — osvědčený na stejném hostingu. Šest stažení denně stačí na zachycení slev s rezervou v limitech API a prošlá cache hledání se průběžně uklidí. Kurz před cenami, aby přehled hned převáděl novým kurzem. |
