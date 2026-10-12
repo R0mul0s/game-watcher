@@ -165,12 +165,12 @@ je jediná cesta, jak ji neztratit.
 
 | Skript | Obsah | Nasazeno |
 |---|---|---|
-| `migrations-2026-10-11-init.sql` | výchozí schéma (users, cache, cache_locks, migrations); opakovatelný, pustit **před** prvním nahráním kódu | |
-| `migrations-2026-10-11-katalog.sql` | katalog her a seznam sledovaných (etapa 2): tabulky `games`, `watchlist_items` — prázdné; opakovatelný, pustit **po** init a **před** nahráním kódu | |
-| `migrations-2026-10-11-ceny.sql` | ceny a měny (etapa 3): tabulky `current_prices`, `price_lows`, `price_history`, `exchange_rates`, sloupec `users.display_currency` — prázdné, naplní je cron; opakovatelný, pustit **po** katalogu a **před** nahráním kódu | |
-| `migrations-2026-10-12-playstation.sql` | PlayStation Store (R20): tabulka `store_listings`, v `current_prices` sloupce `platform`, `edition`, `member_amount`, `member_included`; opakovatelný, pustit **po** cenách a **před** nahráním kódu | |
-| `migrations-2026-10-12-watch-platform.sql` | hlídaná platforma (R24): ve `watchlist_items` sloupec `platform` (NULL = všude, i pro dosud sledované hry); opakovatelný, pustit **po** PlayStation a **před** nahráním kódu | |
-| `migrations-2026-10-12-game-details.sql` | žánry a režimy (R25): v `games` sloupce `genres`, `modes`, `steam_details_at`, ve `store_listings` `local_players`, `online_players` — prázdné, doplní je cron; opakovatelný, pustit **po** hlídané platformě a **před** nahráním kódu | |
+| `migrations-2026-10-11-init.sql` | výchozí schéma (users, cache, cache_locks, migrations); opakovatelný, pustit **před** prvním nahráním kódu | 2026-10-12 |
+| `migrations-2026-10-11-katalog.sql` | katalog her a seznam sledovaných (etapa 2): tabulky `games`, `watchlist_items` — prázdné; opakovatelný, pustit **po** init a **před** nahráním kódu | 2026-10-12 |
+| `migrations-2026-10-11-ceny.sql` | ceny a měny (etapa 3): tabulky `current_prices`, `price_lows`, `price_history`, `exchange_rates`, sloupec `users.display_currency` — prázdné, naplní je cron; opakovatelný, pustit **po** katalogu a **před** nahráním kódu | 2026-10-12 |
+| `migrations-2026-10-12-playstation.sql` | PlayStation Store (R20): tabulka `store_listings`, v `current_prices` sloupce `platform`, `edition`, `member_amount`, `member_included`; opakovatelný, pustit **po** cenách a **před** nahráním kódu | 2026-10-12 |
+| `migrations-2026-10-12-watch-platform.sql` | hlídaná platforma (R24): ve `watchlist_items` sloupec `platform` (NULL = všude, i pro dosud sledované hry); opakovatelný, pustit **po** PlayStation a **před** nahráním kódu | 2026-10-12 |
+| `migrations-2026-10-12-game-details.sql` | žánry a režimy (R25): v `games` sloupce `genres`, `modes`, `steam_details_at`, ve `store_listings` `local_players`, `online_players` — prázdné, doplní je cron; opakovatelný, pustit **po** hlídané platformě a **před** nahráním kódu | 2026-10-12 |
 
 ## Nasazené verze
 
@@ -179,4 +179,4 @@ Co běží na produkci — pro `git log <commit>..HEAD` při dalším nasazení
 
 | Datum | Commit | Co |
 |---|---|---|
-| | | zatím nenasazeno |
+| 2026-10-12 | `28d1a3b` | první nasazení — etapy 1–3 (přihlášení, katalog z ITAD, ceny ITAD a gg.deals, kurzy ČNB, PlayStation Store, filtry přehledu, hlídaná platforma, žánry a hráči ze Steamu); všechny SQL skripty spojené v jednom importu, cron každé 4 hodiny |

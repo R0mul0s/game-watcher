@@ -176,11 +176,11 @@ nesmí zastavit ostatní.
 
 | # | Obsah | Stav |
 |---|---|---|
-| 1 | **Kostra** — Laravel 13 + Inertia + Vue v Dockeru, dokumentace, přihlášení bez registrace (R4), zakládání účtů příkazem, retrofuturistický vzhled (R6), CI (zrušené, R17), nasazovací skript a SQL skript výchozího schématu | hotovo 2026-10-11, nenasazeno |
-| 2 | **Katalog her z ITAD** — přidání hry podle názvu, Steam App ID nebo URL Steamu; detail hry (obal, vydání, vývojář, hodnocení, štítky, odkazy); osobní seznam sledovaných her na přehledu (R10, R11, R15, R16) | hotovo 2026-10-11, nenasazeno |
-| 3 | **Ceny z API a měny** — ITAD (oficiální obchody, CZ) a gg.deals (obchody s klíči, eu); cron URL s tokenem, zámek a nezávislé kroky; `current_prices`, `price_lows` a `price_history`; kurz ČNB a zobrazení v CZK / EUR s přepínačem (R14, R18, R19); přehled s nejnižší cenou, detail se všemi obchody a historickými minimy | hotovo 2026-10-11, nenasazeno |
-| 4 | **První nasazení** na `game-watcher.rhsoft.cz` (R12) — subdoména, databáze, SQL skripty, první účet, cron | |
-| 5 | **Přímé zdroje** — PlayStation Store, Kinguin, Eneba: připojení produktu ke hře přes URL, stahování v cronu, testy nad zachycenými odpověďmi, hlídání změny formátu. Spolu s PS Store pokročilé filtry přehledu (R21) | PlayStation Store a filtry hotovo 2026-10-12 (R20, R21), nenasazeno; Kinguin a Eneba zbývá |
+| 1 | **Kostra** — Laravel 13 + Inertia + Vue v Dockeru, dokumentace, přihlášení bez registrace (R4), zakládání účtů příkazem, retrofuturistický vzhled (R6), CI (zrušené, R17), nasazovací skript a SQL skript výchozího schématu | hotovo 2026-10-11, nasazeno 2026-10-12 |
+| 2 | **Katalog her z ITAD** — přidání hry podle názvu, Steam App ID nebo URL Steamu; detail hry (obal, vydání, vývojář, hodnocení, štítky, odkazy); osobní seznam sledovaných her na přehledu (R10, R11, R15, R16) | hotovo 2026-10-11, nasazeno 2026-10-12 |
+| 3 | **Ceny z API a měny** — ITAD (oficiální obchody, CZ) a gg.deals (obchody s klíči, eu); cron URL s tokenem, zámek a nezávislé kroky; `current_prices`, `price_lows` a `price_history`; kurz ČNB a zobrazení v CZK / EUR s přepínačem (R14, R18, R19); přehled s nejnižší cenou, detail se všemi obchody a historickými minimy | hotovo 2026-10-11, nasazeno 2026-10-12 |
+| 4 | **První nasazení** na `game-watcher.rhsoft.cz` (R12) — subdoména, databáze, SQL skripty, první účet, cron | hotovo 2026-10-12 (`28d1a3b`) |
+| 5 | **Přímé zdroje** — PlayStation Store, Kinguin, Eneba: připojení produktu ke hře přes URL, stahování v cronu, testy nad zachycenými odpověďmi, hlídání změny formátu. Spolu s PS Store pokročilé filtry přehledu (R21) | PlayStation Store a filtry hotovo a nasazeno 2026-10-12 (R20–R25); Kinguin a Eneba zbývá |
 | 6 | **Hlídání cen** — cílová cena, upozornění e-mailem a Web Push (R13), „slevy dne“ ve sledovaných | |
 | 7 | **Historie cen** — graf vývoje ceny (ECharts) | |
 
