@@ -11,6 +11,12 @@
     padding: var(--space-6) var(--space-4);
     text-align: center;
 
+    // Prázdný výsledek filtrů — jen věta
+    &--compact {
+        padding: var(--space-4);
+        color: var(--color-text-muted);
+    }
+
     &__radar {
         position: relative;
         width: var(--radar-size);

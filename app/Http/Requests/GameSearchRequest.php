@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Domain\Catalog\GameQuery;
+use App\Domain\PlayStation\PlayStationUrl;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -59,5 +60,15 @@ class GameSearchRequest extends FormRequest
     public function gameQuery(): ?GameQuery
     {
         return GameQuery::parse($this->string('q')->toString());
+    }
+
+    /**
+     * Odkaz na PS Store nebo stránku hry na playstation.com (R24), jinak null.
+     */
+    public function playStationUrl(): ?string
+    {
+        $url = trim($this->string('q')->toString());
+
+        return PlayStationUrl::parse($url) === null ? null : $url;
     }
 }

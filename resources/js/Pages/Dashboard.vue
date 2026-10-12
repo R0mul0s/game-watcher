@@ -1,18 +1,23 @@
 <!--
-    Přehled po přihlášení — osobní seznam sledovaných her (R11).
-    U každé hry nejlevnější cena v měně účtu (R14).
+    Přehled po přihlášení — osobní seznam sledovaných her (R11) s pokročilými
+    filtry (R21). U každé hry nejlevnější cena v měně účtu (R14).
 
     @author Roman Hlaváček
     @created 2026-10-11
 -->
 <script setup>
 import GameCard from '@/Components/GameCard.vue';
+import WatchlistFilters from '@/Components/WatchlistFilters.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useTranslations } from '@/lib/i18n';
 import { Head, Link } from '@inertiajs/vue3';
 
 defineProps({
     games: { type: Array, required: true },
+    total: { type: Number, required: true },
+    genres: { type: Array, default: () => [] },
+    filters: { type: Object, required: true },
+    dashboardUrl: { type: String, required: true },
     searchUrl: { type: String, required: true },
 });
 
@@ -26,16 +31,21 @@ const t = useTranslations();
         <header class="page__header">
             <div>
                 <h1 class="page__title">{{ t('dashboard.title') }}</h1>
-                <p v-if="games.length" class="page__subtitle">{{ t('dashboard.subtitle', { count: games.length }) }}</p>
+                <p v-if="total" class="page__subtitle">{{ t('dashboard.subtitle', { count: total }) }}</p>
             </div>
-            <Link v-if="games.length" :href="searchUrl" class="button button--primary">{{ t('dashboard.add_game') }}</Link>
+            <Link v-if="total" :href="searchUrl" class="button button--primary">{{ t('dashboard.add_game') }}</Link>
         </header>
 
-        <ul v-if="games.length" class="game-grid">
-            <li v-for="game in games" :key="game.slug" class="game-grid__item">
-                <GameCard :game="game" />
-            </li>
-        </ul>
+        <template v-if="total">
+            <WatchlistFilters :filters="filters" :genres="genres" :shown="games.length" :total="total" :url="dashboardUrl" />
+
+            <ul v-if="games.length" class="game-grid">
+                <li v-for="game in games" :key="game.slug" class="game-grid__item">
+                    <GameCard :game="game" />
+                </li>
+            </ul>
+            <p v-else class="panel empty-state empty-state--compact">{{ t('filters.empty') }}</p>
+        </template>
 
         <section v-else class="panel empty-state">
             <!-- Prázdný „radar" — dekorace prázdného seznamu -->

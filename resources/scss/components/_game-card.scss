@@ -101,6 +101,24 @@
         font-size: var(--font-size-sm);
     }
 
+    // Hra jen na PlayStationu bez připojeného PS Store (R24)
+    &__connect {
+        color: var(--color-playstation);
+        font-size: var(--font-size-sm);
+    }
+
+    &__plus {
+        color: var(--color-plus);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+    }
+
+    &__playstation {
+        color: var(--color-playstation);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+    }
+
     &__keyshops {
         color: var(--color-neon-magenta);
         font-family: var(--font-mono);

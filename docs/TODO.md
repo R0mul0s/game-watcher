@@ -23,8 +23,9 @@ v [PLAN.md](PLAN.md); větší celky se z toho stávají etapou.
 - **Konkrétní cena G2A a Loaded** — z hostingu nejde (R7, R8). Kdyby souhrn z gg.deals nestačil
   (O4): malý pomocník na domácím PC (Plánovač úloh + skutečný prohlížeč), který ceny pošle na
   hosting přes URL s tokenem. Složitější provoz — až když bude opravdu potřeba
-- **PlayStation Plus** — PSN vrací i cenu pro předplatitele (`serviceBranding`, `upsell`) a hry
-  v katalogu PS Plus; ukazovat zvlášť
+- **PlayStation Store — další** (R20 je hotové): výběr edice přímo z produktů konceptu (dnes se bere
+  výchozí produkt, jinou edici připojí odkaz na produkt); rozlišit katalog PS Plus Extra a Premium
+  (`tierLabel`); hry zdarma s PS Plus Essential (měsíční hry) jako upozornění
 - **Epic zdarma** — týdenní hry zdarma z Epicu (`freeGamesPromotions`) jako upozornění
 
 ## Katalog a seznam her

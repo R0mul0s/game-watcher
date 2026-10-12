@@ -96,3 +96,87 @@
         text-transform: uppercase;
     }
 }
+
+// Kde se hra prodává (R23) — štítky obchodů a nejnižší cena
+.search-result {
+    &__availability {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-1) var(--space-2);
+    }
+
+    &__shops {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: var(--space-1);
+    }
+
+    &__no-shops {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+    }
+
+    &__price {
+        color: var(--color-neon-cyan);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+    }
+}
+
+.shop-chip {
+    display: inline-block;
+    padding: 0 var(--space-2);
+    border: var(--border-width) solid var(--color-border);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+
+    &--playstation {
+        border-color: var(--color-playstation);
+        background: var(--color-playstation-soft);
+        color: var(--color-playstation);
+    }
+
+    &--more {
+        border-style: dashed;
+    }
+}
+
+// Hledání podle odkazu z PS Store (R24) — produkt, ke kterému se hledalo
+.search-results__source {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-1) var(--space-2);
+    margin-bottom: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-playstation-soft);
+    border: var(--border-width) solid var(--color-playstation);
+}
+
+.search-results__source-label {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.search-results__source-name {
+    color: var(--color-playstation);
+    font-family: var(--font-display);
+    font-weight: var(--font-weight-display);
+}
+
+.search-results__source-hint {
+    flex-basis: 100%;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+// Štítek „PC“ před obchody — ITAD zná jen obchody pro PC
+.search-result__platform {
+    align-self: center;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    letter-spacing: var(--letter-spacing-caps);
+}

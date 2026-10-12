@@ -20,6 +20,8 @@ const KINGUIN_NO_OFFER = 1000000;
 
 const STEAM_APP_ID = 597820;
 const PSN_CONCEPT_URL = 'https://store.playstation.com/cs-cz/concept/229899';
+// Stránka hry na playstation.com (R22, R24) — z ní se bere koncept a hledání podle ní pozná hru na PS
+const PSN_GAME_PAGE_URL = 'https://www.playstation.com/cs-cz/games/until-dawn/';
 const SEARCH_TERM = 'biomutant';
 const G2A_PRODUCT_URL = 'https://www.g2a.com/biomutant-steam-key-europe-i10000190196001';
 const G2A_ATTEMPTS = 3;
@@ -117,6 +119,21 @@ function checkPsn(): string
     $r = httpRequest(PSN_CONCEPT_URL);
     if (preg_match('/\\\\?"discountedValue\\\\?":(\d+)/', $r['body'], $m)) {
         return sprintf('%.2f CZK', (int) $m[1] / CENTS_DIVISOR);
+    }
+
+    return describeFailure($r);
+}
+
+/**
+ * playstation.com – stránka hry s ID konceptu v meta značce (R22, R24).
+ *
+ * @return string ID konceptu nebo popis chyby
+ */
+function checkPsnGamePage(): string
+{
+    $r = httpRequest(PSN_GAME_PAGE_URL);
+    if (preg_match('/<meta\s+name="conceptId"\s+content="(\d+)"/', $r['body'], $m)) {
+        return 'koncept ' . $m[1];
     }
 
     return describeFailure($r);
@@ -226,6 +243,7 @@ function describeFailure(array $r): string
 $checks = [
     'Steam' => 'checkSteam',
     'PlayStation' => 'checkPsn',
+    'PS web' => 'checkPsnGamePage',
     'Kinguin' => 'checkKinguin',
     'Eneba' => 'checkEneba',
     'Ubisoft' => 'checkUbisoft',

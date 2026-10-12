@@ -53,9 +53,11 @@ Skript balí jen **commitnutý** stav — s necommitnutými změnami skončí ch
 
 ## 2) Připrav databázi (jen první nasazení)
 
-Ve WebAdminu založ databázi **MariaDB 11.4** a v phpMyAdminu spusť
-`deploy/migrations-2026-10-11-init.sql`. Založí všechny tabulky a zapíše
-migrace do tabulky `migrations`. Skript je opakovatelný.
+Ve WebAdminu založ databázi **MariaDB 11.4** a v phpMyAdminu spusť **všechny**
+skripty z tabulky *Historie SQL skriptů* **v pořadí shora dolů** (záložka
+*Import*, nebo obsah vložit do *SQL*). Každý založí svoje tabulky a sloupce
+a zapíše migrace do tabulky `migrations`; všechny jsou opakovatelné, takže
+přerušené pořadí jde pustit znovu od začátku.
 
 ## 3) Nahraj soubory
 
@@ -166,6 +168,9 @@ je jediná cesta, jak ji neztratit.
 | `migrations-2026-10-11-init.sql` | výchozí schéma (users, cache, cache_locks, migrations); opakovatelný, pustit **před** prvním nahráním kódu | |
 | `migrations-2026-10-11-katalog.sql` | katalog her a seznam sledovaných (etapa 2): tabulky `games`, `watchlist_items` — prázdné; opakovatelný, pustit **po** init a **před** nahráním kódu | |
 | `migrations-2026-10-11-ceny.sql` | ceny a měny (etapa 3): tabulky `current_prices`, `price_lows`, `price_history`, `exchange_rates`, sloupec `users.display_currency` — prázdné, naplní je cron; opakovatelný, pustit **po** katalogu a **před** nahráním kódu | |
+| `migrations-2026-10-12-playstation.sql` | PlayStation Store (R20): tabulka `store_listings`, v `current_prices` sloupce `platform`, `edition`, `member_amount`, `member_included`; opakovatelný, pustit **po** cenách a **před** nahráním kódu | |
+| `migrations-2026-10-12-watch-platform.sql` | hlídaná platforma (R24): ve `watchlist_items` sloupec `platform` (NULL = všude, i pro dosud sledované hry); opakovatelný, pustit **po** PlayStation a **před** nahráním kódu | |
+| `migrations-2026-10-12-game-details.sql` | žánry a režimy (R25): v `games` sloupce `genres`, `modes`, `steam_details_at`, ve `store_listings` `local_players`, `online_players` — prázdné, doplní je cron; opakovatelný, pustit **po** hlídané platformě a **před** nahráním kódu | |
 
 ## Nasazené verze
 

@@ -12,30 +12,35 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\Catalog\GamePresenter;
-use App\Models\Game;
+use App\Domain\Watchlist\WatchlistView;
+use App\Http\Requests\DashboardRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * Úvodní stránka po přihlášení — osobní seznam sledovaných her (R11),
- * naposledy přidané první, u každé nejlevnější cena v měně účtu (R14).
+ * Úvodní stránka po přihlášení — osobní seznam sledovaných her (R11)
+ * s pokročilými filtry v adrese (R21) a cenami v měně účtu (R14).
  */
 class DashboardController extends Controller
 {
     /**
      * Vykreslí přehled.
      */
-    public function __invoke(Request $request, GamePresenter $presenter): Response
+    public function __invoke(DashboardRequest $request, WatchlistView $view): Response
     {
         $user = $request->user();
-        $games = $user instanceof User ? $user->watchedGames()->with(['currentPrices', 'priceLows'])->get() : collect();
-        $currency = $user instanceof User ? $user->displayCurrency() : (string) config('games.prices.default_currency');
+        $filters = $request->filters();
+        $watchlist = $user instanceof User
+            ? $view->build($user, $filters, $user->displayCurrency())
+            : ['games' => [], 'total' => 0, 'genres' => []];
 
         return Inertia::render('Dashboard', [
-            'games' => $games->map(fn (Game $game): array => $presenter->card($game, $currency))->values()->all(),
+            'games' => $watchlist['games'],
+            'total' => $watchlist['total'],
+            'genres' => $watchlist['genres'],
+            'filters' => $filters->toArray(),
+            'dashboardUrl' => route('dashboard', absolute: false),
             'searchUrl' => route('games.search', absolute: false),
         ]);
     }

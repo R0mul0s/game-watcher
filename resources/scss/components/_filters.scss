@@ -1,0 +1,284 @@
+// _filters.scss
+// Pokročilé filtry přehledu (WatchlistFilters.vue, R21) — lišta s hledáním
+// a řazením, pod ní volby v mřížce. Na mobilu jsou volby sbalené.
+//
+// @author Roman Hlaváček
+// @created 2026-10-12
+
+@use '../abstracts/mixins' as *;
+
+.filters {
+    margin-bottom: var(--space-4);
+
+    &__bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    &__search {
+        flex: 1 1 var(--filter-search-min-width);
+    }
+
+    // Tlačítko sbalení jen na mobilu — od md jsou volby vidět vždy
+    &__toggle {
+        @include from-md {
+            display: none;
+        }
+    }
+
+    &__advanced {
+        display: none;
+        grid-template-columns: 1fr;
+        gap: var(--space-3) var(--space-4);
+        padding-top: var(--space-3);
+        border-top: var(--border-width) dashed var(--color-border);
+
+        @include from-md {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(var(--filter-search-min-width), 1fr));
+        }
+    }
+
+    &--open &__advanced {
+        display: grid;
+    }
+
+    &__group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+
+        &--wide {
+            grid-column: 1 / -1;
+        }
+    }
+
+    &__label {
+        padding: 0;
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+        letter-spacing: var(--letter-spacing-caps);
+        text-transform: uppercase;
+    }
+
+    &__hint {
+        text-transform: none;
+        letter-spacing: normal;
+    }
+
+    &__price {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    &__number {
+        width: var(--filter-number-width);
+    }
+
+    &__unit {
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+    }
+
+    &__switches {
+        justify-content: center;
+        gap: var(--space-2);
+    }
+
+    &__footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-2);
+    }
+
+    &__count {
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+    }
+}
+
+// Výběr žánrů — přepínací štítky s počtem her (R25)
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--control-size-small);
+    padding: 0 var(--space-3);
+    background: transparent;
+    border: var(--border-width) solid var(--color-border);
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition:
+        border-color var(--duration-fast),
+        color var(--duration-fast),
+        box-shadow var(--duration-fast);
+
+    &:hover {
+        color: var(--color-text);
+    }
+
+    @include neon-focus;
+
+    &__count {
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+    }
+
+    &--active {
+        border-color: var(--color-accent);
+        background: var(--color-accent-soft);
+        color: var(--color-accent);
+        box-shadow: var(--glow-accent);
+    }
+}
+
+// Přepínač zapnuto / vypnuto (zaškrtávátko v podobě posuvníku)
+.switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+
+    &__input {
+        @include visually-hidden;
+    }
+
+    &__track {
+        position: relative;
+        flex-shrink: 0;
+        width: var(--switch-width);
+        height: var(--switch-height);
+        border: var(--border-width) solid var(--color-border);
+        background: var(--color-field);
+        transition:
+            border-color var(--duration-fast),
+            box-shadow var(--duration-fast);
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: var(--space-1);
+            width: var(--switch-knob);
+            height: var(--switch-knob);
+            background: var(--color-text-muted);
+            transform: translateY(-50%);
+            transition: left var(--duration-fast), background-color var(--duration-fast);
+        }
+    }
+
+    &__input:checked + &__track {
+        border-color: var(--color-accent);
+        box-shadow: var(--glow-accent);
+
+        &::after {
+            left: calc(100% - var(--switch-knob) - var(--space-1));
+            background: var(--color-accent);
+        }
+    }
+
+    &__input:focus-visible + &__track {
+        box-shadow: var(--glow-accent-strong);
+    }
+
+    &__label {
+        font-size: var(--font-size-sm);
+    }
+}
+
+// Štítek platformy u nabídky (PS5, PS4)
+.platform {
+    display: inline-block;
+    padding: 0 var(--space-1);
+    border: var(--border-width) solid currentcolor;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-strong);
+    vertical-align: middle;
+
+    &--playstation {
+        color: var(--color-playstation);
+        background: var(--color-playstation-soft);
+    }
+
+    // Hra hlídaná jen na PC (R24)
+    &--pc {
+        color: var(--color-accent);
+        background: var(--color-accent-soft);
+    }
+}
+
+// Připojené produkty PlayStation Store na detailu hry
+.listings {
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    &__item {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2) var(--space-3);
+        padding-bottom: var(--space-2);
+        border-bottom: var(--border-width) solid var(--color-border);
+    }
+
+    &__name {
+        flex: 1 1 auto;
+        font-weight: var(--font-weight-strong);
+    }
+
+    &__platforms {
+        margin-left: var(--space-2);
+        color: var(--color-playstation);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+    }
+
+    &__link {
+        font-size: var(--font-size-sm);
+    }
+
+    &__form {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: var(--space-2);
+    }
+
+    &__field {
+        flex: 1 1 var(--filter-search-min-width);
+    }
+
+    // Tlačítko v řádku s polem, ne pod popiskem
+    &__form > .button {
+        margin-top: calc(var(--font-size-xs) * var(--line-height-base) + var(--space-1));
+    }
+}

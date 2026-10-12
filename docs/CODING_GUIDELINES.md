@@ -107,8 +107,10 @@ Eloquent model                 ← perzistence
 | `app/Domain/Itad` | HTTP klient IsThereAnyDeal (`ItadClient`) a jeho datové třídy (`ItadGame`, `ItadGameInfo`, `ItadGamePrices`, `ItadDeal`) — katalog i ceny oficiálních obchodů |
 | `app/Domain/GgDeals` | HTTP klient gg.deals (`GgDealsClient`, `GgDealsPrices`) — nejnižší cena obchodů s klíči; klíč maže z logu (R18) |
 | `app/Domain/Currency` | kurzy ČNB — lístek (`CnbRateSheet`), stažení (`Actions/ImportExchangeRates`), převod (`ExchangeRates`, jeden za požadavek) (R14) |
-| `app/Domain/Catalog` | katalog her — dotaz (`GameQuery`), hledání (`Actions/SearchGames`), převzetí hry (`Actions/ImportGame`), data pro stránky (`GamePresenter`) |
-| `app/Domain/Watchlist` | osobní seznam sledovaných her (`Actions/WatchGame`, `Actions/UnwatchGame`); upozornění v etapě 6 |
+| `app/Domain/Catalog` | katalog her — dotaz (`GameQuery`), hledání (`Actions/SearchGames`), obchody ve výsledcích (`Actions/DescribeAvailability`, R23), hledání podle odkazu z PS Store (`Actions/SearchByPlayStationLink`, R24), žánry a režimy ze Steamu (`Actions/RefreshGameDetails`, R25), převzetí hry (`Actions/ImportGame`), data pro stránky (`GamePresenter`) |
+| `app/Domain/Watchlist` | osobní seznam sledovaných her (`Actions/WatchGame`, `Actions/UnwatchGame`), přehled s filtry (`WatchlistFilters`, `WatchlistView`, R21); upozornění v etapě 6 |
+| `app/Domain/Steam` | Steam appdetails (R25) — žánry a režimy hry (`SteamClient`, `SteamAppDetails`) |
+| `app/Domain/PlayStation` | PlayStation Store (R20, R22) — odkaz z obchodu i ze stránky hry na playstation.com (`PlayStationUrl`, jediné místo ověření hostitele), rozbor stránky (`PlayStationPage`), stahování (`PlayStationClient`), produkt z odkazu (`Actions/FindPlayStationProduct`, R24), stránky her k výsledkům hledání (`Actions/FindPlayStationGamePages`, R24), připojení a odpojení produktu (`Actions/ConnectPlayStationProduct`, `Actions/DisconnectStoreListing`) |
 | `app/Domain/Pricing` | ceny — částka (`Money`), stažení (`Actions/RefreshPrices`), uložení (`StorePrices`), data pro stránky v měně účtu (`PriceBoard`) (R18); přímé zdroje v etapě 5 |
 | `app/Domain/Maintenance` | úklid volaný z cron URL (`PruneExpiredCache`) — hosting nemá scheduler |
 | `app/Enums` | výčty (`PriceSource`, `PriceScope`) |
@@ -159,6 +161,7 @@ Eloquent model                 ← perzistence
 - Účty v testech přes `user()` z `tests/Pest.php`, heslo `UserFactory::PASSWORD`
 - Zachycené odpovědi načítá `jsonFixture('itad/…')` (nad `fixture()` z Pestu — vlastní funkce se tak jmenovat nesmí). Všechna API (ITAD, gg.deals, ČNB) podvrhne `fakeApis()`; výpadek zdroje `fakeApis(['api.gg.deals/*' => apiError(503)])`. Další `Http::fake()` v testu dřívější podvrhy **nepřebije** (vyhraje první shoda), proto `fakeApis()` vymění celý HTTP klient
 - Účet se sledovanými hrami i s cenami z fixtures: `watcherOf([BIOMUTANT_ID, …])`
+- Stránky PS Store jsou zkrácené skutečné stránky (jen JSON skripty `env:*` s položkami Product, Concept a GameCTA) — `psnFixture('product-…')`; nové se dělají stejně, ne ručně psaným JSON
 
 ### Error handling
 - Doménové výjimky jako vlastní třídy, ne holé `\Exception`
@@ -313,7 +316,7 @@ a s omezeným pohybem.
 - **Žádná registrace ani obnova hesla** — účty jen příkazem `games:create-user`; heslo nikdy jako parametr příkazu, nikdy v repu ani v logu (R4)
 - Tajemství v `.env`, nikdy v repu — `.env.example` má prázdné hodnoty
 - CSRF všude kromě cron URL (ta je jen GET a mimo `web`)
-- **CSP bez cizích domén** pro skripty a písma; jedinou výjimkou jsou obrázky her z CDN ITAD (`img-src https://assets.isthereanydeal.com`) — nový zdroj obrázků se přidává jmenovitě
+- **CSP bez cizích domén** pro skripty a písma; výjimkou jsou jen obrázky her z CDN ITAD a z obrázkového API PlayStationu (`img-src https://assets.isthereanydeal.com https://image.api.playstation.com`, R22) — nový zdroj obrázků se přidává jmenovitě
 - **SSRF:** server volá jen adresy zdrojů z konfigurace a URL produktů s povoleným hostitelem (sekce 3)
 
 ---

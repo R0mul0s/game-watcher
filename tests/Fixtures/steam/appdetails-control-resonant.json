@@ -1,0 +1,95 @@
+{
+  "3669870": {
+    "success": true,
+    "data": {
+      "categories": [
+        {
+          "id": 2,
+          "description": "Režim pro jednoho hráče"
+        },
+        {
+          "id": 22,
+          "description": "Achievementy"
+        },
+        {
+          "id": 28,
+          "description": "Plná podpora ovladačů"
+        },
+        {
+          "id": 29,
+          "description": "Sběratelské karty"
+        },
+        {
+          "id": 67,
+          "description": "Nastavení pohybů kamery"
+        },
+        {
+          "id": 66,
+          "description": "Nastavení barev"
+        },
+        {
+          "id": 82,
+          "description": "#category_contrast_controls"
+        },
+        {
+          "id": 68,
+          "description": "Oddělená nastavení hlasitosti"
+        },
+        {
+          "id": 78,
+          "description": "Nastavitelná obtížnost"
+        },
+        {
+          "id": 75,
+          "description": "Možnost ovládání pouze klávesnicí"
+        },
+        {
+          "id": 74,
+          "description": "Možnost hraní bez QTE"
+        },
+        {
+          "id": 57,
+          "description": "Podpora ovladače DualSense"
+        },
+        {
+          "id": 58,
+          "description": "Podpora ovladače DualSense"
+        },
+        {
+          "id": 79,
+          "description": "Neomezené ukládání"
+        },
+        {
+          "id": 65,
+          "description": "Detailní nastavení titulků"
+        },
+        {
+          "id": 23,
+          "description": "Steam Cloud"
+        },
+        {
+          "id": 61,
+          "description": "Technologie HDR"
+        },
+        {
+          "id": 62,
+          "description": "Sdílení v rodině"
+        }
+      ],
+      "genres": [
+        {
+          "id": "1",
+          "description": "Akční"
+        },
+        {
+          "id": "25",
+          "description": "Dobrodružné"
+        },
+        {
+          "id": "3",
+          "description": "RPG"
+        }
+      ]
+    }
+  }
+}

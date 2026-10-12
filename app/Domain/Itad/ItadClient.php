@@ -61,7 +61,31 @@ final class ItadClient
      */
     public function lookupSteamApp(int $appId): ?ItadGame
     {
-        $data = $this->get(self::LOOKUP_PATH, ['appid' => $appId]);
+        return $this->lookup(['appid' => $appId]);
+    }
+
+    /**
+     * Hra s přesně tímto názvem (bez ohledu na velikost písmen); null, když ji
+     * ITAD nezná. Najde i záznamy, které `games/search` vynechává — exkluzivity
+     * konzolí bez obchodů a obrázků (R22).
+     *
+     * @throws ItadUnavailable
+     */
+    public function lookupTitle(string $title): ?ItadGame
+    {
+        return $this->lookup(['title' => $title]);
+    }
+
+    /**
+     * Přesné vyhledání jedné hry (`games/lookup`) podle Steam App ID nebo názvu.
+     *
+     * @param  array<string, string|int>  $query
+     *
+     * @throws ItadUnavailable
+     */
+    private function lookup(array $query): ?ItadGame
+    {
+        $data = $this->get(self::LOOKUP_PATH, $query);
         if (($data['found'] ?? null) !== true) {
             return null;
         }

@@ -1,0 +1,47 @@
+{
+  "597820": {
+    "success": true,
+    "data": {
+      "categories": [
+        {
+          "id": 2,
+          "description": "Režim pro jednoho hráče"
+        },
+        {
+          "id": 22,
+          "description": "Achievementy"
+        },
+        {
+          "id": 28,
+          "description": "Plná podpora ovladačů"
+        },
+        {
+          "id": 29,
+          "description": "Sběratelské karty"
+        },
+        {
+          "id": 23,
+          "description": "Steam Cloud"
+        },
+        {
+          "id": 42,
+          "description": "Remote Play na tabletu"
+        },
+        {
+          "id": 62,
+          "description": "Sdílení v rodině"
+        }
+      ],
+      "genres": [
+        {
+          "id": "1",
+          "description": "Akční"
+        },
+        {
+          "id": "3",
+          "description": "RPG"
+        }
+      ]
+    }
+  }
+}

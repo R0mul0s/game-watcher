@@ -75,6 +75,20 @@
         text-transform: uppercase;
     }
 
+    // Kde se hra hlídá (R24)
+    &__watch-platform {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2);
+        margin-top: var(--space-3);
+    }
+
+    &__watch-label {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+    }
+
     &__panels {
         display: grid;
         gap: var(--space-4);

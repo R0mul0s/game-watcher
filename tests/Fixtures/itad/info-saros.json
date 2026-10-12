@@ -1,0 +1,26 @@
+{
+    "id": "019e509d-2701-7364-a18e-ea16dd3f5aa4",
+    "slug": "saros",
+    "title": "SAROS",
+    "type": null,
+    "mature": false,
+    "assets": [],
+    "earlyAccess": false,
+    "achievements": false,
+    "tradingCards": false,
+    "appid": null,
+    "tags": [],
+    "releaseDate": null,
+    "developers": [],
+    "publishers": [],
+    "reviews": [],
+    "stats": {
+        "rank": 3435,
+        "waitlisted": 1,
+        "collected": 1
+    },
+    "players": null,
+    "urls": {
+        "game": "https://isthereanydeal.com/game/saros/"
+    }
+}

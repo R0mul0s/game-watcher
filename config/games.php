@@ -82,6 +82,18 @@ return [
         // Nejdelší hledaný text — název hry nebo odkaz na Steam
         'max_query_length' => 200,
         'steam_store_url' => 'https://store.steampowered.com/app/%d/',
+        // Obchody ve výsledcích hledání (R23): tyhle se ukazují přednostně
+        // a v tomhle pořadí, ostatní jen počtem („+5“)
+        'highlight_shops' => ['Steam', 'Epic Game Store', 'GOG', 'Ubisoft Store', 'Blizzard', 'EA Store', 'Microsoft Store'],
+        'max_shop_badges' => 4,
+    ],
+
+    /*
+    | Propojení her s produkty obchodů odkazem (R20) — každé propojení stahuje
+    | stránku obchodu, proto omezený počet za minutu.
+    */
+    'listings' => [
+        'max_attempts_per_minute' => 10,
     ],
 
     /*
@@ -110,6 +122,42 @@ return [
             'timeout_seconds' => 10,
             // Stránka gg.deals — povinný odkaz u zobrazených dat
             'site_url' => 'https://gg.deals',
+        ],
+        // Steam — žánry a režimy hry (R25) z veřejného appdetails bez klíče.
+        // Limit Steamu je zhruba 200 požadavků za 5 minut — cron doplní nejvýš
+        // details_per_run her s pauzou a údaje obnovuje po details_refresh_days
+        'steam' => [
+            'url' => env('GAMES_STEAM_URL', 'https://store.steampowered.com/api'),
+            'country' => 'cz',
+            'language' => 'czech',
+            'timeout_seconds' => 10,
+            'request_delay_ms' => (int) env('GAMES_STEAM_DELAY_MS', 500),
+            'details_per_run' => 20,
+            'details_refresh_days' => 30,
+        ],
+        // PlayStation Store (R20) — stránky produktů v české verzi, ceny v CZK.
+        // Hostitel je zároveň jediný, který server z vloženého odkazu zavolá (SSRF).
+        'playstation' => [
+            'url' => env('GAMES_PLAYSTATION_URL', 'https://store.playstation.com'),
+            'host' => 'store.playstation.com',
+            // Prezentační web se stránkami her — z nich se vezme odkaz do obchodu (R22)
+            'site_url' => env('GAMES_PLAYSTATION_SITE_URL', 'https://www.playstation.com'),
+            'site_host' => 'www.playstation.com',
+            'locale' => 'cs-cz',
+            'timeout_seconds' => 15,
+            // Šířka obrázků z obrázkového API PlayStationu (originály až 3840 px) —
+            // obal na výšku jako obal z ITAD (300 × 450), banner jako banner600 z ITAD
+            'cover_width' => 400,
+            'banner_width' => 600,
+            // Pauza mezi stránkami — šetrnost k obchodu (CODING_GUIDELINES, sekce 3)
+            'request_delay_ms' => (int) env('GAMES_PLAYSTATION_DELAY_MS', 500),
+            // Je hra z hledání na PlayStationu? Ověřuje se existence stránky hry
+            // na www.playstation.com dotazem HEAD (R24) — nejvýš tolik souběžně;
+            // výsledek drží cache týden (stránky her se nemění)
+            'game_page_concurrency' => 4,
+            'game_page_cache_seconds' => 604800,
+            // Akamai obchodu odmítá klienty bez hlaviček běžného prohlížeče (R7)
+            'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
         ],
     ],
 

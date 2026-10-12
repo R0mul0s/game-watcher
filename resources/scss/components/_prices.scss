@@ -34,6 +34,11 @@
             box-shadow: var(--glow-magenta);
         }
 
+        // Hra hlídaná jen na PlayStationu — klíče jsou pro PC (R24)
+        &--muted {
+            opacity: var(--opacity-muted);
+        }
+
         @include neon-focus;
     }
 
@@ -90,6 +95,11 @@
         }
     }
 
+    // Nabídka mimo hlídanou platformu (R24)
+    &--muted {
+        opacity: var(--opacity-muted);
+    }
+
     &__shop {
         display: flex;
         flex-direction: column;
@@ -116,6 +126,17 @@
 
     &__cut {
         color: var(--color-neon-green);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+    }
+
+    &__edition {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+    }
+
+    &__plus {
+        color: var(--color-plus);
         font-family: var(--font-mono);
         font-size: var(--font-size-xs);
     }

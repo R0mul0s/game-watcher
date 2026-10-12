@@ -15,11 +15,14 @@ namespace App\Domain\Pricing;
 use App\Domain\GgDeals\GgDealsPrices;
 use App\Domain\Itad\ItadDeal;
 use App\Domain\Itad\ItadGamePrices;
+use App\Domain\PlayStation\PlayStationProduct;
+use App\Enums\Platform;
 use App\Enums\PriceScope;
 use App\Enums\PriceSource;
 use App\Models\CurrentPrice;
 use App\Models\Game;
 use App\Models\PriceLow;
+use App\Models\StoreListing;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
@@ -38,6 +41,11 @@ final class StorePrices
     /** Název řádku gg.deals — v UI se ukazuje přeložený text, tohle je jen záznam zdroje. */
     private const GGDEALS_SHOP_NAME = 'gg.deals';
 
+    private const PLAYSTATION_SHOP_NAME = 'PlayStation Store';
+
+    /** Nejvýš tolik znaků názvu edice (sloupec edition). */
+    private const EDITION_MAX_LENGTH = 160;
+
     /**
      * Uloží nabídky oficiálních obchodů a historické minimum z ITAD.
      */
@@ -48,8 +56,12 @@ final class StorePrices
             'source' => PriceSource::Itad->value,
             'shop_key' => CurrentPrice::ITAD_KEY_PREFIX.$deal->shopId,
             'shop_name' => $deal->shopName,
+            'platform' => Platform::Pc->value,
+            'edition' => null,
             'amount' => $deal->price->toDecimal(),
             'regular_amount' => $deal->regular?->toDecimal(),
+            'member_amount' => null,
+            'member_included' => false,
             'currency' => $deal->price->currency,
             'cut' => max(0, $deal->cut),
             'drm' => $deal->drm === [] ? null : mb_substr(implode(self::DRM_SEPARATOR, $deal->drm), 0, self::DRM_MAX_LENGTH),
@@ -75,8 +87,12 @@ final class StorePrices
             'source' => PriceSource::GgDeals->value,
             'shop_key' => CurrentPrice::KEYSHOPS_KEY,
             'shop_name' => self::GGDEALS_SHOP_NAME,
+            'platform' => Platform::Pc->value,
+            'edition' => null,
             'amount' => $prices->currentKeyshops->toDecimal(),
             'regular_amount' => null,
+            'member_amount' => null,
+            'member_included' => false,
             'currency' => $prices->currentKeyshops->currency,
             'cut' => 0,
             'drm' => null,
@@ -90,6 +106,54 @@ final class StorePrices
             $this->storeLow($game, PriceScope::Keyshops, $prices->historicalKeyshops, $fetchedAt);
             $this->recordHistory($game, $rows, $fetchedAt);
         });
+    }
+
+    /**
+     * Uloží cenu produktu PlayStation Store jako samostatnou položku výpisu (R20) —
+     * běžnou cenu, cenu před slevou, cenu s PS Plus a zařazení do katalogu PS Plus.
+     * Produkt, který se teď koupit nedá, z cen zmizí.
+     */
+    public function storePlayStation(StoreListing $listing, PlayStationProduct $product, CarbonImmutable $fetchedAt): void
+    {
+        $game = $listing->game()->sole();
+        $price = $product->price;
+        if ($price === null) {
+            $this->forgetListing($listing);
+
+            return;
+        }
+
+        $row = [
+            'game_id' => $listing->game_id,
+            'source' => PriceSource::PlayStation->value,
+            'shop_key' => $listing->shopKey(),
+            'shop_name' => self::PLAYSTATION_SHOP_NAME,
+            'platform' => Platform::PlayStation->value,
+            'edition' => mb_substr($product->name, 0, self::EDITION_MAX_LENGTH),
+            'amount' => $price->toDecimal(),
+            'regular_amount' => $product->basePrice?->toDecimal(),
+            'member_amount' => $product->plusPrice?->toDecimal(),
+            'member_included' => $product->inPlusCatalog,
+            'currency' => $price->currency,
+            'cut' => $product->cut(),
+            'drm' => $product->platforms === [] ? null : mb_substr(implode(self::DRM_SEPARATOR, $product->platforms), 0, self::DRM_MAX_LENGTH),
+            'url' => $listing->url,
+            'expires_at' => $product->cut() > 0 ? $product->saleEndsAt : null,
+            'fetched_at' => $fetchedAt,
+        ];
+
+        DB::transaction(function () use ($game, $row, $fetchedAt): void {
+            CurrentPrice::query()->upsert([$row], ['game_id', 'shop_key'], array_keys(array_diff_key($row, array_flip(['game_id', 'shop_key']))));
+            $this->recordHistory($game, [$row], $fetchedAt);
+        });
+    }
+
+    /**
+     * Smaže cenu i historii propojeného produktu (produkt odpojený nebo neprodejný).
+     */
+    public function forgetListing(StoreListing $listing): void
+    {
+        CurrentPrice::query()->where('game_id', $listing->game_id)->where('shop_key', $listing->shopKey())->delete();
     }
 
     /**

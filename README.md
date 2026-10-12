@@ -65,6 +65,8 @@ volume (`docker compose down -v`).
 | `GAMES_CRON_TOKEN` | jen produkce | token cron URL `/cron/ceny` (kurzy ČNB, ceny, úklid); prázdný = URL vypnutá |
 | `GAMES_ITAD_URL`, `GAMES_GGDEALS_URL`, `GAMES_CNB_URL` | ne | adresy API a kurzovního lístku ČNB, jen když se mají měnit výchozí |
 | `GAMES_DISPLAY_TIMEZONE` | ne (`Europe/Prague`) | zóna pro zobrazení a místní den historie cen; data jsou v UTC |
+| `GAMES_PLAYSTATION_URL`, `GAMES_PLAYSTATION_SITE_URL`, `GAMES_PLAYSTATION_DELAY_MS` | ne | adresa PlayStation Store, webu playstation.com (stránky her) a pauza mezi stránkami produktů (výchozí 500 ms; testy 0) |
+| `GAMES_STEAM_URL`, `GAMES_STEAM_DELAY_MS` | ne | adresa API obchodu Steam (žánry a režimy her, R25) a pauza mezi hrami (výchozí 500 ms; testy 0) |
 
 Bez platného `GAMES_ITAD_API_KEY` přidávání her hlásí, že katalog neodpovídá (podrobnost v `storage/logs`).
 
@@ -97,6 +99,7 @@ app/
   Domain/GgDeals/   klient gg.deals API (nejnižší cena obchodů s klíči)
   Domain/Pricing/   ceny — stažení, uložení, příprava pro stránky v měně účtu
   Domain/Currency/  kurzy ČNB a převod CZK / EUR
+  Domain/PlayStation/ PlayStation Store — odkaz, rozbor stránky, stahování, připojení produktu
   Domain/Maintenance/ úklid volaný z cron URL
   Http/             tenké kontrolery, Form Requesty (LoginRequest), sdílená data Inertie
 config/games.php    konstanty projektu, katalog (limity hledání) a zdroje cen

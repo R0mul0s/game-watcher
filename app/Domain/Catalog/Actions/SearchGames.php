@@ -50,7 +50,7 @@ final class SearchGames
             $game = $this->itad->lookupSteamApp($query->steamAppId);
             $games = $game === null ? [] : [$game];
         } else {
-            $games = $this->itad->search((string) $query->title, (int) config('games.catalog.search_results'));
+            $games = $this->searchTitle((string) $query->title);
         }
 
         Cache::put(
@@ -60,5 +60,25 @@ final class SearchGames
         );
 
         return $games;
+    }
+
+    /**
+     * Hledání podle názvu doplněné o hru s přesně tímto názvem na prvním místě —
+     * `games/search` exkluzivity konzolí bez obchodů vynechává (Saros, Ghost of
+     * Yōtei, R22).
+     *
+     * @return list<ItadGame>
+     *
+     * @throws ItadUnavailable
+     */
+    private function searchTitle(string $title): array
+    {
+        $games = $this->itad->search($title, (int) config('games.catalog.search_results'));
+        $exact = $this->itad->lookupTitle($title);
+        if ($exact === null) {
+            return $games;
+        }
+
+        return [$exact, ...array_values(array_filter($games, fn (ItadGame $game): bool => $game->id !== $exact->id))];
     }
 }

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\GameMode;
 use Carbon\CarbonImmutable;
 use Database\Factories\GameFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +21,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Údaje přebírá z IsThereAnyDeal `ImportGame` — identitou je `itad_id` (R10).
- * Katalog je společný pro všechny účty (R11).
+ * Katalog je společný pro všechny účty (R11). Žánry a režimy jsou ze Steamu
+ * (`RefreshGameDetails`, R25).
  *
  * @property int $id
  * @property string $itad_id
@@ -33,11 +35,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property list<string>|null $developers
  * @property list<string>|null $publishers
  * @property list<string>|null $tags
+ * @property list<string>|null $genres
+ * @property list<string>|null $modes
  * @property list<array{source: string, score: int, count: int|null, url: string|null}>|null $reviews
  * @property string|null $boxart_url
  * @property string|null $banner_url
  * @property string|null $itad_url
  * @property CarbonImmutable $info_refreshed_at
+ * @property CarbonImmutable|null $steam_details_at
  */
 class Game extends Model
 {
@@ -58,11 +63,14 @@ class Game extends Model
         'developers',
         'publishers',
         'tags',
+        'genres',
+        'modes',
         'reviews',
         'boxart_url',
         'banner_url',
         'itad_url',
         'info_refreshed_at',
+        'steam_details_at',
     ];
 
     /**
@@ -79,9 +87,43 @@ class Game extends Model
             'developers' => 'array',
             'publishers' => 'array',
             'tags' => 'array',
+            'genres' => 'array',
+            'modes' => 'array',
             'reviews' => 'array',
             'info_refreshed_at' => 'immutable_datetime',
+            'steam_details_at' => 'immutable_datetime',
         ];
+    }
+
+    /**
+     * Režimy hry (R25) — ze Steamu a z počtu hráčů připojených produktů PS Store
+     * (hra musí mít načtenou vazbu storeListings). PS Store „1 hráč“ znamená
+     * hru pro jednoho, víc hráčů u jedné konzole hru u jedné obrazovky.
+     *
+     * @return list<GameMode>
+     */
+    public function playModes(): array
+    {
+        $modes = array_values(array_filter(array_map(GameMode::tryFrom(...), $this->modes ?? [])));
+
+        foreach ($this->storeListings as $listing) {
+            if ($listing->local_players === 1) {
+                $modes[] = GameMode::Single;
+            } elseif ($listing->local_players !== null && $listing->local_players > 1) {
+                $modes[] = GameMode::LocalMulti;
+            }
+
+            if ($listing->online_players !== null && $listing->online_players > 1) {
+                $modes[] = GameMode::Multi;
+            }
+        }
+
+        $unique = [];
+        foreach ($modes as $mode) {
+            $unique[$mode->value] = $mode;
+        }
+
+        return array_values($unique);
     }
 
     /**
@@ -110,6 +152,16 @@ class Game extends Model
     public function currentPrices(): HasMany
     {
         return $this->hasMany(CurrentPrice::class);
+    }
+
+    /**
+     * Produkty v obchodech bez ITAD, připojené odkazem (PlayStation Store, R20).
+     *
+     * @return HasMany<StoreListing, $this>
+     */
+    public function storeListings(): HasMany
+    {
+        return $this->hasMany(StoreListing::class);
     }
 
     /**

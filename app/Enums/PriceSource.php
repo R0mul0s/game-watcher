@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace App\Enums;
 
 /**
- * Zdroje cen (R9). Přímé zdroje (PlayStation, Kinguin, Eneba) přibudou v etapě 5.
+ * Zdroje cen (R9). Přímé zdroje Kinguin a Eneba přibudou později (etapa 5).
  */
 enum PriceSource: string
 {
@@ -22,4 +22,7 @@ enum PriceSource: string
 
     /** gg.deals — jen nejnižší cena obchodů s klíči */
     case GgDeals = 'ggdeals';
+
+    /** PlayStation Store — stránky produktů propojených se hrou (R20) */
+    case PlayStation = 'playstation';
 }

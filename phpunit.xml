@@ -33,6 +33,9 @@
         <!-- Varování z testů (podvržené výpadky API) nemají plnit vývojový log -->
         <env name="LOG_CHANNEL" value="null"/>
         <env name="GAMES_CRON_TOKEN" value="test-cron-token"/>
+        <!-- Testy nečekají mezi stránkami PS Store -->
+        <env name="GAMES_PLAYSTATION_DELAY_MS" value="0"/>
+        <env name="GAMES_STEAM_DELAY_MS" value="0"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>

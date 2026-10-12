@@ -1,6 +1,9 @@
 <!--
     Karta sledované hry na přehledu — banner, název, druh, datum vydání
-    a nejlevnější cena (oficiální obchod a obchody s klíči).
+    a nejlevnější nabídka podle filtrů. Nabídka PlayStation Store je i
+    zvlášť (konzolová verze), obchody s klíči na vlastním řádku (R20, R21).
+    Hra hlídaná jen na jedné platformě má štítek a ceny jen té platformy;
+    bez připojeného PS Store vyzve k připojení (R24).
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -10,13 +13,22 @@ import GameBadges from '@/Components/GameBadges.vue';
 import { formatDate, formatPrice } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
 import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
     game: { type: Object, required: true },
 });
 
 const t = useTranslations();
 const page = usePage();
+
+const best = computed(() => props.game.prices.best);
+/** Nejlevnější PS Store, když už není nejlevnější nabídkou celkem. */
+const playstation = computed(() => {
+    const offer = props.game.prices.playstation;
+
+    return offer && offer.shopKey !== best.value?.shopKey ? offer : null;
+});
 </script>
 
 <template>
@@ -27,17 +39,29 @@ const page = usePage();
         <span class="game-card__body">
             <span class="game-card__title">{{ game.title }}</span>
             <span class="game-card__meta">
-                <GameBadges :type="game.type" />
+                <GameBadges :type="game.type" :mature="game.isMature" />
+                <span v-if="game.watchPlatform" class="platform" :class="`platform--${game.watchPlatform}`">
+                    {{ t(`game.watch_platforms.${game.watchPlatform}`) }}
+                </span>
                 <span v-if="game.releaseDate">{{ formatDate(game.releaseDate, page.props.locale) }}</span>
                 <span v-else>{{ t('game.unreleased') }}</span>
             </span>
             <span class="game-card__price">
-                <template v-if="game.prices.best">
-                    <span class="game-card__amount">{{ formatPrice(game.prices.best.price, page.props.locale) }}</span>
-                    <span v-if="game.prices.best.cut" class="game-card__cut">{{ t('prices.cut', { cut: game.prices.best.cut }) }}</span>
-                    <span class="game-card__shop">{{ game.prices.best.shop }}</span>
+                <template v-if="best">
+                    <span class="game-card__amount">{{ formatPrice(best.price, page.props.locale) }}</span>
+                    <span v-if="best.cut" class="game-card__cut">{{ t('prices.cut', { cut: best.cut }) }}</span>
+                    <span class="game-card__shop">
+                        <span v-if="best.platform === 'playstation'" class="platform platform--playstation">{{ best.drm || t('prices.platforms.playstation') }}</span>
+                        {{ best.shop }}
+                    </span>
                 </template>
+                <span v-else-if="game.needsPlayStation" class="game-card__connect">{{ t('dashboard.connect_playstation') }}</span>
                 <span v-else class="game-card__shop">{{ t('prices.no_price') }}</span>
+            </span>
+            <span v-if="best?.member" class="game-card__plus">{{ t('prices.plus_price', { price: formatPrice(best.member.price, page.props.locale) }) }}</span>
+            <span v-if="playstation" class="game-card__playstation">
+                {{ t('prices.playstation_short', { price: formatPrice(playstation.price, page.props.locale) }) }}
+                <template v-if="playstation.member"> · {{ t('prices.plus_price', { price: formatPrice(playstation.member.price, page.props.locale) }) }}</template>
             </span>
             <span v-if="game.prices.keyshops" class="game-card__keyshops">
                 {{ t('prices.keyshops_short', { price: formatPrice(game.prices.keyshops.price, page.props.locale) }) }}

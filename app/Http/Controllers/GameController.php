@@ -31,12 +31,12 @@ class GameController extends Controller
     public function show(Request $request, Game $game, GamePresenter $presenter): Response
     {
         $user = $request->user();
-        $game->load(['currentPrices', 'priceLows']);
+        $game->load(['currentPrices', 'priceLows', 'storeListings']);
 
         return Inertia::render('Games/Show', [
             'game' => $presenter->detail(
                 $game,
-                $user instanceof User && $user->isWatching($game),
+                $user instanceof User ? $user->watchlistItemFor($game) : null,
                 $user instanceof User ? $user->displayCurrency() : (string) config('games.prices.default_currency'),
             ),
             'watchUrl' => route('watchlist.store', absolute: false),

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Domain\Catalog\Actions\RefreshGameDetails;
 use App\Domain\Currency\Actions\ImportExchangeRates;
 use App\Domain\Maintenance\PruneExpiredCache;
 use App\Domain\Pricing\Actions\RefreshPrices;
@@ -43,6 +44,7 @@ class CronController extends Controller
         CronRequest $request,
         ImportExchangeRates $importExchangeRates,
         RefreshPrices $refreshPrices,
+        RefreshGameDetails $refreshGameDetails,
         PruneExpiredCache $pruneExpiredCache,
     ): Response {
         $lock = Cache::lock(self::LOCK_KEY, (int) config('games.cron.lock_seconds'));
@@ -67,10 +69,23 @@ class CronController extends Controller
                     // Výpadek zdroje zalogoval klient; tady jen označí běh jako neúspěšný
                     $failed = $failed || $result->hasFailures();
 
+                    // U zdroje, který selhal, místo počtu „chyba“
+                    $count = fn (PriceSource $source): int|string => in_array($source, $result->failed, true)
+                        ? (string) __('app.cron.source_failed')
+                        : $result->updatedBy($source);
+
                     return __('app.cron.prices', [
-                        'itad' => in_array(PriceSource::Itad, $result->failed, true) ? (string) __('app.cron.source_failed') : $result->updatedBy(PriceSource::Itad),
-                        'ggdeals' => in_array(PriceSource::GgDeals, $result->failed, true) ? (string) __('app.cron.source_failed') : $result->updatedBy(PriceSource::GgDeals),
+                        'itad' => $count(PriceSource::Itad),
+                        'ggdeals' => $count(PriceSource::GgDeals),
+                        'playstation' => $count(PriceSource::PlayStation),
                     ]);
+                }),
+                // Žánry a režimy pro filtry (R25) — doplňkové údaje, výpadek Steamu
+                // běh neoznačí jako chybný, zbytek dožene další běh
+                $this->attempt('details', $failed, function () use ($refreshGameDetails): string {
+                    [$count, $steamFailed] = $refreshGameDetails->handle($refreshGameDetails->pending());
+
+                    return __($steamFailed ? 'app.cron.details_failed' : 'app.cron.details', ['count' => $count]);
                 }),
                 $this->attempt('cache', $failed, fn (): string => __('app.cron.cache_pruned', ['count' => $pruneExpiredCache->handle()])),
             ];

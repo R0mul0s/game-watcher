@@ -10,6 +10,8 @@
 
 declare(strict_types=1);
 
+use App\Domain\Currency\Actions\ImportExchangeRates;
+use App\Domain\PlayStation\Actions\ConnectPlayStationProduct;
 use App\Models\Game;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
@@ -92,7 +94,9 @@ it('stejné hledání podruhé vezme z cache', function (): void {
     $this->actingAs($user)->get('/hry/pridat?q=Control+Resonant');
     $this->actingAs($user)->get('/hry/pridat?q=control+resonant');
 
-    Http::assertSentCount(1);
+    // Hledání podle názvu = search + lookup přesného názvu (R22) + ceny
+    // pro obchody (R23) + stránky dvou her na playstation.com (R24); podruhé nic
+    Http::assertSentCount(5);
 });
 
 it('výpadek ITAD ukáže hlášku místo chyby stránky', function (): void {
@@ -123,4 +127,64 @@ it('omezí počet hledání za minutu', function (): void {
     }
 
     $this->actingAs($user)->get('/hry/pridat?q=control')->assertTooManyRequests();
+});
+
+it('u výsledků ukáže obchody — hlavní napřed — a nejnižší cenu v měně účtu (R23)', function (): void {
+    app(ImportExchangeRates::class)->handle();
+
+    // CONTROL Resonant: 12 obchodů, nejlevněji AllYouPlay 49,18 €
+    $this->actingAs(user())
+        ->get('/hry/pridat?q=control+resonant')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('results.0.availabilityKnown', true)
+            ->where('results.0.shops', ['Steam', 'Epic Game Store', 'AllYouPlay', 'DLGamer'])
+            ->where('results.0.moreShops', 8)
+            ->where('results.0.bestPrice.currency', 'CZK')
+            ->where('results.0.free', false)
+            ->where('results.0.onPlayStation', false)
+            // Hra jen v obchodech pro PC — „Jen na PS“ se nenabízí (R24)
+            ->where('results.0.offerPlayStation', false)
+            // Edice bez nabídky v obchodech
+            ->where('results.1.shops', [])
+            ->where('results.1.bestPrice', null)
+            ->where('results.1.offerPlayStation', true));
+
+    Http::assertSent(fn (Request $request): bool => str_contains($request->url(), '/games/prices/v3')
+        && in_array(CONTROL_RESONANT_ID, $request->data(), true));
+});
+
+it('cenu v měně zdroje převádět nemusí', function (): void {
+    $this->actingAs(user(['display_currency' => 'EUR']))
+        ->get('/hry/pridat?q=control+resonant')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('results.0.bestPrice', ['amount' => 49.18, 'currency' => 'EUR']));
+});
+
+it('hru s připojeným PlayStation Store označí, i když se na PC neprodává', function (): void {
+    $user = watcherOf([SAROS_ID]);
+    app(ConnectPlayStationProduct::class)->handle(
+        Game::query()->where('itad_id', SAROS_ID)->sole(),
+        'https://store.playstation.com/cs-cz/product/'.PSN_SAROS,
+    );
+
+    $this->actingAs($user)
+        ->get('/hry/pridat?q=Saros')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('results.0.itadId', SAROS_ID)
+            ->where('results.0.onPlayStation', true)
+            ->where('results.0.offerPlayStation', true)
+            ->where('results.0.shops', [])
+            ->where('results.0.bestPrice', null));
+});
+
+it('výpadek cen ITAD výsledky neskryje, jen bez obchodů', function (): void {
+    fakeApis(['api.isthereanydeal.com/games/prices/v3*' => apiError(503)]);
+
+    $this->actingAs(user())
+        ->get('/hry/pridat?q=control+resonant')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('unavailable', false)
+            ->has('results', 3)
+            ->where('results.0.availabilityKnown', false)
+            ->where('results.0.shops', []));
 });

@@ -1,6 +1,7 @@
 <!--
     Detail hry z katalogu — údaje z IsThereAnyDeal (R10), sledování a odkazy.
-    Ceny v měně účtu (R14) — panel PricePanel.
+    Ceny v měně účtu (R14) — panel PricePanel. U sledované hry jde zvolit,
+    kde se hlídá (R24) — ceny ostatních platforem se ztlumí.
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -8,6 +9,7 @@
 <script setup>
 import GameBadges from '@/Components/GameBadges.vue';
 import PricePanel from '@/Components/PricePanel.vue';
+import StoreListings from '@/Components/StoreListings.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { formatDate, formatInteger } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
@@ -23,6 +25,9 @@ const t = useTranslations();
 const page = usePage();
 const processing = ref(false);
 
+/** Volby hlídané platformy — null = všude (enum Platform). */
+const WATCH_PLATFORMS = [null, 'pc', 'playstation'];
+
 /** Volby požadavku — tlačítko se do odpovědi zablokuje. */
 const requestOptions = {
     preserveScroll: true,
@@ -33,6 +38,15 @@ const requestOptions = {
         processing.value = false;
     },
 };
+
+/**
+ * Uloží, kde se hra hlídá.
+ *
+ * @param {string|null} platform
+ */
+function setWatchPlatform(platform) {
+    router.put(props.game.watchPlatformUrl, { platform }, requestOptions);
+}
 
 /**
  * Přidá hru na seznam, nebo ji z něj odebere.
@@ -74,6 +88,14 @@ function toggleWatch() {
                             <dt class="facts__label">{{ t('game.publishers') }}</dt>
                             <dd class="facts__value">{{ game.publishers.join(', ') }}</dd>
                         </div>
+                        <div v-if="game.genres.length" class="facts__item">
+                            <dt class="facts__label">{{ t('game.genres') }}</dt>
+                            <dd class="facts__value">{{ game.genres.join(', ') }}</dd>
+                        </div>
+                        <div v-if="game.modes.length" class="facts__item">
+                            <dt class="facts__label">{{ t('game.modes') }}</dt>
+                            <dd class="facts__value">{{ game.modes.map((mode) => t(`game.mode_names.${mode}`)).join(', ') }}</dd>
+                        </div>
                     </dl>
 
                     <div class="game-detail__actions">
@@ -88,11 +110,30 @@ function toggleWatch() {
                             {{ game.watching ? t('game.unwatch') : t('game.watch') }}
                         </button>
                     </div>
+
+                    <div v-if="game.watching" class="game-detail__watch-platform">
+                        <span id="watch-platform" class="game-detail__watch-label">{{ t('game.watch_platform') }}</span>
+                        <div class="segmented" role="group" aria-labelledby="watch-platform">
+                            <button
+                                v-for="platform in WATCH_PLATFORMS"
+                                :key="platform ?? 'all'"
+                                type="button"
+                                class="segmented__option"
+                                :class="{ 'segmented__option--active': game.watchPlatform === platform }"
+                                :aria-pressed="game.watchPlatform === platform"
+                                :disabled="processing"
+                                @click="setWatchPlatform(platform)"
+                            >
+                                {{ t(`game.watch_platforms.${platform ?? 'all'}`) }}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </header>
 
             <div class="game-detail__panels">
-                <PricePanel :prices="game.prices" class="game-detail__prices" />
+                <PricePanel :prices="game.prices" :focus-platform="game.watchPlatform" class="game-detail__prices" />
+                <StoreListings :listings="game.listings" :connect-url="game.connectUrl" class="game-detail__prices" />
 
                 <section v-if="game.reviews.length" class="panel">
                     <h2 class="panel__title">{{ t('game.reviews') }}</h2>

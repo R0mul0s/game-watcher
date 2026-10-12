@@ -12,11 +12,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Platform;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Collection;
 
 /**
  * Účet zakládá správce (games:create-user), registrace není (R4).
@@ -103,5 +105,24 @@ class User extends Authenticatable
     public function isWatching(Game $game): bool
     {
         return $this->watchlistItems()->where('game_id', $game->id)->exists();
+    }
+
+    /**
+     * Položka seznamu pro hru — null, když ji uživatel nesleduje.
+     */
+    public function watchlistItemFor(Game $game): ?WatchlistItem
+    {
+        return $this->watchlistItems()->where('game_id', $game->id)->first();
+    }
+
+    /**
+     * Hlídaná platforma podle ID hry (R24); null = všude.
+     *
+     * @return Collection<int, Platform|null>
+     */
+    public function watchPlatforms(): Collection
+    {
+        return $this->watchlistItems()->get(['game_id', 'platform'])
+            ->mapWithKeys(fn (WatchlistItem $item): array => [$item->game_id => $item->platform]);
     }
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Domain\Pricing;
 
 use App\Domain\Currency\ExchangeRates;
+use App\Enums\Platform;
 use App\Enums\PriceScope;
 use App\Enums\PriceSource;
 use App\Models\CurrentPrice;
@@ -22,25 +23,30 @@ use App\Models\PriceLow;
 /**
  * Převádí a řadí server, ne Vue (docs/CODING_GUIDELINES.md, sekce 5). Každá
  * cena jde jako `price` v měně zobrazení a `original` v měně obchodu, když se
- * liší (R14); bez kurzu zůstane v měně obchodu. Hra musí mít načtené vazby
- * currentPrices a priceLows (žádné dotazy v cyklu přes karty přehledu).
+ * liší (R14); bez kurzu zůstane v měně obchodu. Oficiální obchody i produkty
+ * PlayStation Store jsou v jednom výpisu jako samostatné položky (R20), obchody
+ * s klíči zvlášť. Hra musí mít načtené vazby currentPrices a priceLows (žádné
+ * dotazy v cyklu přes karty přehledu).
  */
 final class PriceBoard
 {
     public function __construct(private readonly ExchangeRates $rates) {}
 
     /**
-     * Souhrn pro kartu na přehledu — nejlevnější oficiální obchod a obchody s klíči.
+     * Souhrn pro kartu na přehledu — nejlevnější nabídka podle filtru, nejlevnější
+     * produkt PlayStation Store a obchody s klíči.
      *
-     * @return array{best: array<string, mixed>|null, keyshops: array<string, mixed>|null}
+     * @return array{best: array<string, mixed>|null, playstation: array<string, mixed>|null, keyshops: array<string, mixed>|null}
      */
-    public function summary(Game $game, string $currency): array
+    public function summary(Game $game, string $currency, PriceFilter $filter): array
     {
-        $offers = $this->offers($game, $currency);
+        $offers = $this->offers($game, $currency, $filter);
+        $playstation = array_values(array_filter($offers, fn (array $offer): bool => $offer['platform'] === Platform::PlayStation->value));
 
         return [
             'best' => $offers[0] ?? null,
-            'keyshops' => $this->keyshops($game, $currency),
+            'playstation' => $playstation[0] ?? null,
+            'keyshops' => $filter->acceptsKeyshops() ? $this->keyshops($game, $currency) : null,
         ];
     }
 
@@ -52,51 +58,52 @@ final class PriceBoard
     public function detail(Game $game, string $currency): array
     {
         $latest = $game->currentPrices->sortByDesc('fetched_at')->first();
-        $fetchedAt = $latest instanceof CurrentPrice ? $latest->fetched_at : null;
 
         return [
-            'offers' => $this->offers($game, $currency),
+            'offers' => $this->offers($game, $currency, new PriceFilter),
             'keyshops' => $this->keyshops($game, $currency),
             'lows' => [
                 'official' => $this->low($game, PriceScope::Official, $currency),
                 'keyshops' => $this->low($game, PriceScope::Keyshops, $currency),
             ],
-            'fetchedAt' => $fetchedAt?->toIso8601String(),
+            'fetchedAt' => $latest instanceof CurrentPrice ? $latest->fetched_at->toIso8601String() : null,
         ];
     }
 
     /**
-     * Nabídky oficiálních obchodů od nejlevnější (po převodu do měny zobrazení).
+     * Nabídky oficiálních obchodů a PlayStation Store od nejlevnější podle filtru.
+     * S volbou PS Plus se u PS Store počítá cena pro předplatitele.
      *
      * @return list<array<string, mixed>>
      */
-    private function offers(Game $game, string $currency): array
+    private function offers(Game $game, string $currency, PriceFilter $filter): array
     {
-        $offers = $game->currentPrices
-            ->where('source', PriceSource::Itad)
-            ->map(function (CurrentPrice $price) use ($currency): array {
+        return array_values($game->currentPrices
+            ->filter(fn (CurrentPrice $price): bool => $price->source !== PriceSource::GgDeals && $filter->accepts($price->platform))
+            ->map(function (CurrentPrice $price) use ($currency, $filter): array {
                 $converted = $this->converted($price->price(), $currency);
+                $member = ($memberPrice = $price->memberPrice()) === null ? null : $this->converted($memberPrice, $currency);
 
                 return [
+                    'shopKey' => $price->shop_key,
                     'shop' => $price->shop_name,
-                    ...$converted,
+                    'edition' => $price->edition,
+                    'platform' => $price->platform->value,
+                    'price' => $converted['price'],
+                    'original' => $converted['original'],
                     'regular' => ($regular = $price->regularPrice()) === null ? null : $this->converted($regular, $currency)['price'],
                     'cut' => $price->cut,
+                    'member' => $member === null ? null : ['price' => $member['price'], 'original' => $member['original']],
+                    'memberIncluded' => $price->member_included,
                     'drm' => $price->drm,
                     'url' => $price->url,
                     'expiresAt' => $price->expires_at?->toIso8601String(),
-                    'sortCents' => $converted['sortCents'],
+                    // Cena, podle které se řadí a filtruje (v měně zobrazení)
+                    'effectiveCents' => $filter->withPlus && $member !== null ? $member['cents'] : $converted['cents'],
                 ];
             })
-            ->sortBy([['sortCents', 'asc'], ['shop', 'asc']])
-            ->values()
-            ->all();
-
-        return array_values(array_map(function (array $offer): array {
-            unset($offer['sortCents']);
-
-            return $offer;
-        }, $offers));
+            ->sortBy([['effectiveCents', 'asc'], ['shop', 'asc']])
+            ->all());
     }
 
     /**
@@ -116,6 +123,7 @@ final class PriceBoard
         return [
             'price' => $converted['price'],
             'original' => $converted['original'],
+            'effectiveCents' => $converted['cents'],
             'url' => $price->url ?? config('games.sources.ggdeals.site_url'),
         ];
     }
@@ -140,15 +148,15 @@ final class PriceBoard
     /**
      * Cena v měně zobrazení a původní cena, když se měna liší.
      *
-     * @return array{price: array{amount: float, currency: string}, original: array{amount: float, currency: string}|null, sortCents: int}
+     * @return array{price: array{amount: float, currency: string}, original: array{amount: float, currency: string}|null, cents: int}
      */
     private function converted(Money $money, string $currency): array
     {
         $converted = $this->rates->convert($money, $currency);
         if ($converted === null || $converted->currency === $money->currency) {
-            return ['price' => $money->toArray(), 'original' => null, 'sortCents' => ($converted ?? $money)->cents];
+            return ['price' => $money->toArray(), 'original' => null, 'cents' => ($converted ?? $money)->cents];
         }
 
-        return ['price' => $converted->toArray(), 'original' => $money->toArray(), 'sortCents' => $converted->cents];
+        return ['price' => $converted->toArray(), 'original' => $money->toArray(), 'cents' => $converted->cents];
     }
 }

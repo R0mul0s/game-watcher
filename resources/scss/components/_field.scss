@@ -40,6 +40,12 @@
         }
     }
 
+    // Výběr (select) — šipka prohlížeče, tmavé pozadí z tokenů
+    &__select {
+        padding-right: var(--space-2);
+        cursor: pointer;
+    }
+
     &__error {
         color: var(--color-danger);
         font-size: var(--font-size-sm);

@@ -61,6 +61,16 @@
         }
     }
 
+    // Akce jen pro PlayStation (sledovat jen na PS, R24) — barva PS Store
+    &--playstation {
+        border-color: var(--color-playstation);
+        color: var(--color-playstation);
+
+        &:hover:not(:disabled) {
+            box-shadow: var(--glow-playstation);
+        }
+    }
+
     &--small {
         min-height: var(--control-size-small);
         padding: 0 var(--space-3);

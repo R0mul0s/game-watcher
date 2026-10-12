@@ -1,0 +1,75 @@
+{
+  "1426210": {
+    "success": true,
+    "data": {
+      "categories": [
+        {
+          "id": 1,
+          "description": "Režim pro více hráčů"
+        },
+        {
+          "id": 9,
+          "description": "Kooperace"
+        },
+        {
+          "id": 38,
+          "description": "Online kooperace"
+        },
+        {
+          "id": 39,
+          "description": "Kooperace na sdílené/rozdělené obrazovce"
+        },
+        {
+          "id": 24,
+          "description": "Sdílená/rozdělená obrazovka"
+        },
+        {
+          "id": 22,
+          "description": "Achievementy"
+        },
+        {
+          "id": 28,
+          "description": "Plná podpora ovladačů"
+        },
+        {
+          "id": 29,
+          "description": "Sběratelské karty"
+        },
+        {
+          "id": 55,
+          "description": "Podpora ovladače DualShock"
+        },
+        {
+          "id": 57,
+          "description": "Podpora ovladače DualSense"
+        },
+        {
+          "id": 69,
+          "description": "Stereo zvuk"
+        },
+        {
+          "id": 70,
+          "description": "Prostorový zvuk"
+        },
+        {
+          "id": 23,
+          "description": "Steam Cloud"
+        },
+        {
+          "id": 44,
+          "description": "Remote Play Together"
+        }
+      ],
+      "genres": [
+        {
+          "id": "1",
+          "description": "Akční"
+        },
+        {
+          "id": "25",
+          "description": "Dobrodružné"
+        }
+      ]
+    }
+  }
+}

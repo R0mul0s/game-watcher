@@ -16,23 +16,31 @@ use App\Domain\GgDeals\Exceptions\GgDealsUnavailable;
 use App\Domain\GgDeals\GgDealsClient;
 use App\Domain\Itad\Exceptions\ItadUnavailable;
 use App\Domain\Itad\ItadClient;
+use App\Domain\PlayStation\Exceptions\PlayStationUnavailable;
+use App\Domain\PlayStation\PlayStationClient;
 use App\Domain\Pricing\PriceRefreshResult;
 use App\Domain\Pricing\StorePrices;
 use App\Enums\PriceSource;
 use App\Models\Game;
+use App\Models\StoreListing;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Sleep;
 
 /**
  * Oficiální obchody z ITAD, obchody s klíči z gg.deals (R9) — po dávkách,
- * jeden požadavek na dávku. Zdroje na sobě nezávisí: výpadek jednoho
- * (zalogoval ho klient) nezastaví druhý, jen se vrátí ve výsledku.
+ * jeden požadavek na dávku; PlayStation Store po jednotlivých produktech (R20).
+ * Zdroje na sobě nezávisí: výpadek jednoho (zalogoval ho klient) nezastaví
+ * ostatní, jen se vrátí ve výsledku.
  */
 final class RefreshPrices
 {
+    private const MICROSECONDS_PER_MILLISECOND = 1000;
+
     public function __construct(
         private readonly ItadClient $itad,
         private readonly GgDealsClient $ggDeals,
+        private readonly PlayStationClient $playStation,
         private readonly StorePrices $storePrices,
     ) {}
 
@@ -68,7 +76,59 @@ final class RefreshPrices
             $failed[] = PriceSource::GgDeals;
         }
 
+        [$updated[PriceSource::PlayStation->value], $playStationFailed] = $this->refreshPlayStation($games, $fetchedAt);
+        if ($playStationFailed) {
+            $failed[] = PriceSource::PlayStation;
+        }
+
         return new PriceRefreshResult($updated, $failed);
+    }
+
+    /**
+     * Ceny produktů PlayStation Store propojených s hrami (R20) — po jedné
+     * stránce s pauzou. Výpadek jednoho produktu ostatní nezastaví; vrátí počet
+     * aktualizovaných produktů a jestli některý selhal.
+     *
+     * @param  Collection<int, Game>  $games
+     * @return array{0: int, 1: bool}
+     */
+    private function refreshPlayStation(Collection $games, CarbonImmutable $fetchedAt): array
+    {
+        $listings = StoreListing::query()
+            ->whereIn('game_id', $games->pluck('id'))
+            ->where('source', PriceSource::PlayStation->value)
+            ->orderBy('id')
+            ->get();
+
+        $count = 0;
+        $failed = false;
+        foreach ($listings as $index => $listing) {
+            if ($index > 0) {
+                Sleep::usleep((int) config('games.sources.playstation.request_delay_ms') * self::MICROSECONDS_PER_MILLISECOND);
+            }
+
+            try {
+                $product = $this->playStation->product($listing->external_id);
+            } catch (PlayStationUnavailable) {
+                $failed = true;
+
+                continue;
+            }
+
+            if ($product === null) {
+                // Produkt z obchodu zmizel — cena pryč, propojení zůstává (může se vrátit)
+                $this->storePrices->forgetListing($listing);
+
+                continue;
+            }
+
+            $this->storePrices->storePlayStation($listing, $product, $fetchedAt);
+            // Počet hráčů pro filtr přehledu (R25) — obchod ho může doplnit později
+            $listing->update(['local_players' => $product->localPlayers, 'online_players' => $product->onlinePlayers]);
+            $count++;
+        }
+
+        return [$count, $failed];
     }
 
     /**

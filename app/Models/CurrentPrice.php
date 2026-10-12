@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Domain\Pricing\Money;
+use App\Enums\Platform;
 use App\Enums\PriceSource;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
@@ -27,8 +28,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property PriceSource $source
  * @property string $shop_key
  * @property string $shop_name
+ * @property Platform $platform
+ * @property string|null $edition
  * @property string $amount
  * @property string|null $regular_amount
+ * @property string|null $member_amount
+ * @property bool $member_included
  * @property string $currency
  * @property int $cut
  * @property string|null $drm
@@ -54,8 +59,12 @@ class CurrentPrice extends Model
         'source',
         'shop_key',
         'shop_name',
+        'platform',
+        'edition',
         'amount',
         'regular_amount',
+        'member_amount',
+        'member_included',
         'currency',
         'cut',
         'drm',
@@ -75,6 +84,9 @@ class CurrentPrice extends Model
             'source' => PriceSource::class,
             'amount' => 'decimal:2',
             'regular_amount' => 'decimal:2',
+            'platform' => Platform::class,
+            'member_amount' => 'decimal:2',
+            'member_included' => 'boolean',
             'cut' => 'integer',
             'expires_at' => 'immutable_datetime',
             'fetched_at' => 'immutable_datetime',
@@ -97,6 +109,14 @@ class CurrentPrice extends Model
     public function price(): Money
     {
         return Money::fromDecimal($this->amount, $this->currency);
+    }
+
+    /**
+     * Cena pro předplatitele (PS Plus), když je nižší než běžná (R20).
+     */
+    public function memberPrice(): ?Money
+    {
+        return $this->member_amount === null ? null : Money::fromDecimal($this->member_amount, $this->currency);
     }
 
     /**

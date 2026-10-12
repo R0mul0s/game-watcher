@@ -52,6 +52,15 @@ final readonly class GameQuery
     }
 
     /**
+     * Hledání podle názvu bez rozpoznávání Steam App ID — název z PS Store
+     * může být i samé číslo (R24).
+     */
+    public static function title(string $title): self
+    {
+        return new self(trim(preg_replace('/\s+/u', ' ', $title) ?? $title), null);
+    }
+
+    /**
      * Klíč pro cache výsledků — stejný dotaz s jinou velikostí písmen je stejný.
      */
     public function cacheKey(): string

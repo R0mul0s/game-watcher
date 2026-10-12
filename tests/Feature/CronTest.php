@@ -95,3 +95,43 @@ it('když ještě běží předchozí volání, nic neudělá', function (): voi
     Http::assertNothingSent();
     $lock->release();
 });
+
+it('doplní žánry a režimy ze Steamu sledovaným hrám, které je nemají (R25)', function (): void {
+    $user = user();
+    $game = Game::factory()->create(['steam_app_id' => IT_TAKES_TWO_STEAM_ID]);
+    $user->watchlistItems()->create(['game_id' => $game->id]);
+    // Nesledovaná hra se nestahuje
+    Game::factory()->create(['steam_app_id' => 597820]);
+
+    $this->get(CRON_URL)->assertOk()->assertSeeText('žánry a režimy ze Steamu — her: 1');
+
+    expect($game->fresh()?->genres)->toBe(['Akční', 'Dobrodružné'])
+        ->and($game->fresh()?->modes)->toContain('local_coop');
+
+    // Podruhé už má údaje čerstvé
+    $this->get(CRON_URL)->assertSeeText('žánry a režimy ze Steamu — her: 0');
+});
+
+it('hru, kterou Steam nezná, označí a příště se neptá', function (): void {
+    $user = user();
+    $game = Game::factory()->create(['steam_app_id' => 999999]);
+    $user->watchlistItems()->create(['game_id' => $game->id]);
+
+    $this->get(CRON_URL)->assertSeeText('žánry a režimy ze Steamu — her: 1');
+
+    expect($game->fresh()?->steam_details_at)->not->toBeNull()
+        ->and($game->fresh()?->genres)->toBeNull();
+});
+
+it('výpadek Steamu běh neoznačí jako chybný, údaje doplní další běh', function (): void {
+    $user = user();
+    $game = Game::factory()->create(['steam_app_id' => IT_TAKES_TWO_STEAM_ID]);
+    $user->watchlistItems()->create(['game_id' => $game->id]);
+    fakeApis(['store.steampowered.com/*' => Http::response('', 429)]);
+
+    $this->get(CRON_URL)
+        ->assertOk()
+        ->assertSeeText('žánry a režimy ze Steamu — her: 0, Steam neodpovídá');
+
+    expect($game->fresh()?->steam_details_at)->toBeNull();
+});
