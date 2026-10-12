@@ -33,7 +33,10 @@ const DEFAULT_RANGE = 'year';
 const GRID = { left: 56, right: 16, top: 56, bottom: 28 };
 const LINE_WIDTH = 2;
 /** Klíč řady => barva z chartTheme; produkty PS Store mají klíč psn-<id>. */
-const SERIES_COLORS = { official: 'official', steam: 'steam', keyshops: 'keyshops' };
+const SERIES_COLORS = { official: 'official', steam: 'steam', keyshops: 'keyshops', keyshops_low: 'keyshops' };
+/** Řady referenčních hodnot (historické minimum klíčů) — čárkovaně, tence, bez bodů. */
+const REFERENCE_SERIES = ['keyshops_low'];
+const THIN_LINE_WIDTH = 1;
 const PLAYSTATION_COLOR = 'playstation';
 const DAY_MS = 86400000;
 /** Řada s méně body se kreslí i body — jinak by jeden den nebyl vidět (vlastní historie je zatím krátká). */
@@ -132,6 +135,7 @@ const option = computed(() => {
             const color = colors[SERIES_COLORS[series.key] ?? PLAYSTATION_COLOR];
             // Další produkty PS Store (jiná edice, PS4) čárkovaně — barva je stejná
             const extraListing = series.platform === 'playstation' && playstationKeys.value.indexOf(series.key) > 0;
+            const reference = REFERENCE_SERIES.includes(series.key);
             const data = series.data.slice(firstIndex.value);
             const points = data.filter((value) => value !== null).length;
 
@@ -139,13 +143,17 @@ const option = computed(() => {
                 name: seriesName(series),
                 type: 'line',
                 // Cena platí od změny do další — schody, ne šikmé čáry
-                step: 'end',
-                showSymbol: points < SPARSE_POINTS,
+                step: reference ? false : 'end',
+                showSymbol: !reference && points < SPARSE_POINTS,
                 symbolSize: SYMBOL_SIZE,
                 // Den bez záznamu (výpadek cronu) cenu nepřerušuje — platí poslední známá
                 connectNulls: true,
                 data,
-                lineStyle: { width: LINE_WIDTH, color, type: extraListing ? 'dashed' : 'solid' },
+                lineStyle: {
+                    width: reference ? THIN_LINE_WIDTH : LINE_WIDTH,
+                    color,
+                    type: reference || extraListing ? 'dashed' : 'solid',
+                },
                 itemStyle: { color },
                 // Cílová cena u první řady (osa je společná)
                 markLine:

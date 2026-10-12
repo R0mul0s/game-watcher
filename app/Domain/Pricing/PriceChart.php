@@ -17,8 +17,10 @@ use App\Domain\Itad\Exceptions\ItadUnavailable;
 use App\Domain\Itad\ItadClient;
 use App\Domain\Itad\ItadPriceChange;
 use App\Enums\Platform;
+use App\Enums\PriceScope;
 use App\Models\CurrentPrice;
 use App\Models\Game;
+use App\Models\PriceLow;
 use App\Models\StoreListing;
 use App\Models\WatchlistItem;
 use Carbon\CarbonImmutable;
@@ -29,7 +31,8 @@ use Illuminate\Support\Facades\DB;
 /**
  * Denní řady (R28): nejlevnější obchod pro PC a Steam z historie ITAD (zpětně
  * až chart.history_days dní), obchody s klíči a produkty PS Store z vlastní
- * price_history (sbírá se od nasazení cronu). Hodnota dne = nejnižší cena
+ * price_history (sbírá se od nasazení cronu) a jako srovnání historické
+ * minimum obchodů s klíči z gg.deals. Hodnota dne = nejnižší cena
  * toho dne (místní den). Vše v měně zobrazení dnešním kurzem ČNB — historické
  * kurzy se neukládají (R14). Výpadek ITAD graf neskryje, jen bez řad z ITAD.
  * Hra musí mít načtenou vazbu storeListings.
@@ -44,6 +47,9 @@ final class PriceChart
     public const SERIES_STEAM = 'steam';
 
     public const SERIES_KEYSHOPS = 'keyshops';
+
+    /** Historické minimum obchodů s klíči z gg.deals — vodorovná čára (vlastní historie klíčů je krátká). */
+    public const SERIES_KEYSHOPS_LOW = 'keyshops_low';
 
     public function __construct(
         private readonly ItadClient $itad,
@@ -81,6 +87,7 @@ final class PriceChart
                 $zone,
             )),
             $this->series(self::SERIES_KEYSHOPS, null, Platform::Pc, $this->fromOwn($own, CurrentPrice::KEYSHOPS_KEY, $days, $currency)),
+            $this->series(self::SERIES_KEYSHOPS_LOW, null, Platform::Pc, $this->keyshopsLow($game, $days, $currency)),
         ];
 
         foreach ($game->storeListings as $listing) {
@@ -216,6 +223,21 @@ final class PriceChart
         }
 
         return array_map(fn (string $day): ?float => $byDay[$day] ?? null, $days);
+    }
+
+    /**
+     * Historické minimum obchodů s klíči (gg.deals) jako stejná hodnota každý
+     * den — srovnání pro krátkou vlastní historii klíčů; bez minima prázdná řada.
+     *
+     * @param  list<string>  $days
+     * @return list<float|null>
+     */
+    private function keyshopsLow(Game $game, array $days, string $currency): array
+    {
+        $low = $game->loadMissing('priceLows')->priceLows->firstWhere('scope', PriceScope::Keyshops);
+        $converted = $low instanceof PriceLow ? $this->rates->convert($low->price(), $currency) : null;
+
+        return array_fill(0, count($days), $converted === null ? null : $converted->cents / Money::SUBUNITS);
     }
 
     /**

@@ -124,7 +124,7 @@ it('výpadek ITAD graf neskryje — jen bez řad z ITAD', function (): void {
     $chart = app(PriceChart::class)->build($this->game, 'CZK', null);
 
     expect($chart['itadAvailable'])->toBeFalse()
-        ->and(collect($chart['series'])->pluck('key')->all())->toBe([PriceChart::SERIES_KEYSHOPS]);
+        ->and(collect($chart['series'])->pluck('key')->all())->toBe([PriceChart::SERIES_KEYSHOPS, PriceChart::SERIES_KEYSHOPS_LOW]);
 });
 
 it('hra bez historie má prázdný graf', function (): void {
@@ -141,4 +141,12 @@ it('záznam historie ITAD přežije cache jako pole', function (): void {
 
     expect($change)->not->toBeNull()
         ->and(ItadPriceChange::fromArray($change?->toArray() ?? []))->toEqual($change);
+});
+
+it('historické minimum klíčů z gg.deals ukáže jako vodorovnou řadu', function (): void {
+    $chart = app(PriceChart::class)->build($this->game, 'CZK', null);
+
+    // Minimum klíčů 5,24 € = 127,67 Kč — každý den stejně, i když vlastní historie klíčů je krátká
+    expect(chartValue($chart, PriceChart::SERIES_KEYSHOPS_LOW, '2025-10-12'))->toBe(127.67)
+        ->and(chartValue($chart, PriceChart::SERIES_KEYSHOPS_LOW, '2026-10-12'))->toBe(127.67);
 });

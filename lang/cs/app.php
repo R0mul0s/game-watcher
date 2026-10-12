@@ -331,6 +331,7 @@ return [
                 'official' => 'Nejlevněji (PC)',
                 'steam' => 'Steam',
                 'keyshops' => 'Obchody s klíči',
+                'keyshops_low' => 'Minimum klíčů (gg.deals)',
             ],
             'target' => 'cíl :price',
             'note' => 'Nejnižší cena dne v měně účtu, přepočteno dnešním kurzem ČNB. Obchody pro PC podle historie IsThereAnyDeal.',
