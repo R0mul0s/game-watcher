@@ -177,7 +177,7 @@ je jediná cesta, jak ji neztratit.
 | `migrations-2026-10-12-playstation.sql` | PlayStation Store (R20): tabulka `store_listings`, v `current_prices` sloupce `platform`, `edition`, `member_amount`, `member_included`; opakovatelný, pustit **po** cenách a **před** nahráním kódu | 2026-10-12 |
 | `migrations-2026-10-12-watch-platform.sql` | hlídaná platforma (R24): ve `watchlist_items` sloupec `platform` (NULL = všude, i pro dosud sledované hry); opakovatelný, pustit **po** PlayStation a **před** nahráním kódu | 2026-10-12 |
 | `migrations-2026-10-12-game-details.sql` | žánry a režimy (R25): v `games` sloupce `genres`, `modes`, `steam_details_at`, ve `store_listings` `local_players`, `online_players` — prázdné, doplní je cron; opakovatelný, pustit **po** hlídané platformě a **před** nahráním kódu | 2026-10-12 |
-| `migrations-2026-10-12-price-alerts.sql` | hlídání cen (R26): ve `watchlist_items` cílová cena a poslední upozornění, v `users` `notify_email` (zapnuto) a `has_ps_plus`, tabulka `push_subscriptions`; opakovatelný, pustit **po** žánrech a **před** nahráním kódu | |
+| `migrations-2026-10-12-price-alerts.sql` | hlídání cen (R26): ve `watchlist_items` cílová cena a poslední upozornění, v `users` `notify_email` (zapnuto) a `has_ps_plus`, tabulka `push_subscriptions`; opakovatelný, pustit **po** žánrech a **před** nahráním kódu | 2026-10-12 |
 
 ## Nasazené verze
 
@@ -187,3 +187,4 @@ Co běží na produkci — pro `git log <commit>..HEAD` při dalším nasazení
 | Datum | Commit | Co |
 |---|---|---|
 | 2026-10-12 | `28d1a3b` | první nasazení — etapy 1–3 (přihlášení, katalog z ITAD, ceny ITAD a gg.deals, kurzy ČNB, PlayStation Store, filtry přehledu, hlídaná platforma, žánry a hráči ze Steamu); všechny SQL skripty spojené v jednom importu, cron každé 4 hodiny |
+| 2026-10-12 | `b261ed2` | etapa 6 — hlídání cen: cílová cena, upozornění e-mailem (SMTP schránka Websupportu) a na zařízení (Web Push, klíče VAPID), nastavení účtu, slevy dne, aplikace na plochu; SQL `migrations-2026-10-12-price-alerts.sql`, nové `MAIL_*` a `GAMES_PUSH_*` v `.env`, nahrán i `vendor/` (minishlink/web-push) |
