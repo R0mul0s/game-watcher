@@ -188,3 +188,4 @@ Co běží na produkci — pro `git log <commit>..HEAD` při dalším nasazení
 |---|---|---|
 | 2026-10-12 | `28d1a3b` | první nasazení — etapy 1–3 (přihlášení, katalog z ITAD, ceny ITAD a gg.deals, kurzy ČNB, PlayStation Store, filtry přehledu, hlídaná platforma, žánry a hráči ze Steamu); všechny SQL skripty spojené v jednom importu, cron každé 4 hodiny |
 | 2026-10-12 | `b261ed2` | etapa 6 — hlídání cen: cílová cena, upozornění e-mailem (SMTP schránka Websupportu) a na zařízení (Web Push, klíče VAPID), nastavení účtu, slevy dne, aplikace na plochu; SQL `migrations-2026-10-12-price-alerts.sql`, nové `MAIL_*` a `GAMES_PUSH_*` v `.env`, nahrán i `vendor/` (minishlink/web-push) |
+| 2026-10-12 | `3948076` | etapa 7 — graf vývoje ceny na detailu hry (historie ITAD, vlastní historie klíčů a PS Store, minimum klíčů z gg.deals); jen nový build, bez SQL a změn `.env` |

@@ -187,7 +187,7 @@ nesmí zastavit ostatní.
 | 4 | **První nasazení** na `game-watcher.rhsoft.cz` (R12) — subdoména, databáze, SQL skripty, první účet, cron | hotovo 2026-10-12 (`28d1a3b`) |
 | 5 | **Přímé zdroje** — PlayStation Store, Kinguin, Eneba: připojení produktu ke hře přes URL, stahování v cronu, testy nad zachycenými odpověďmi, hlídání změny formátu. Spolu s PS Store pokročilé filtry přehledu (R21) | PlayStation Store a filtry hotovo a nasazeno 2026-10-12 (R20–R25); Kinguin a Eneba zbývá |
 | 6 | **Hlídání cen** — cílová cena, upozornění e-mailem a Web Push (R13), „slevy dne“ ve sledovaných | hotovo a nasazeno 2026-10-12 (R26, R27, `b261ed2`) |
-| 7 | **Historie cen** — graf vývoje ceny (ECharts) | hotovo 2026-10-12 (R28), nenasazeno |
+| 7 | **Historie cen** — graf vývoje ceny (ECharts) | hotovo a nasazeno 2026-10-12 (R28, `3948076`) |
 
 ---
 
