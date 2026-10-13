@@ -80,7 +80,7 @@ MariaDB 11.4. **Není tam SSH ani composer** — nic z `php artisan` se na produ
 
 PHP 8.4 · Laravel 13 · Inertia 3 · Vue 3 · SCSS (BEM + CSS tokeny) · Fontsource (Oxanium,
 Chakra Petch, JetBrains Mono) · MariaDB 11.4 · Pest 4 · Larastan · Pint.
-Zdroje cen: IsThereAnyDeal API, gg.deals API, přímo PlayStation Store, Kinguin, Eneba (R9).
+Zdroje cen: IsThereAnyDeal API, gg.deals API, přímo PlayStation Store, Kinguin, Eneba (R9), krabicové hry PS5 z Xzone a Heureky (R52).
 Doplňkové údaje: Steam (žánry, čeština), Metacritic, HowLongToBeat (délka hraní, R44), IGDB (nadcházející hry, R46).
 Kurzy: ČNB (textový lístek bez klíče, R14).
 
@@ -121,6 +121,7 @@ Kurzy: ČNB (textový lístek bez klíče, R14).
 33. **Objevit volá ITAD `deals/v2` jen přes `DiscoverDeals`** (cache na kombinaci filtrů, R43) — nový filtr stránky musí být ve `DiscoverFilters::cacheKey()`, jinak by se vracel cizí výsledek; hodnoty řazení ITAD ověř požadavkem (neznámou vrátí HTTP 400)
 34. **Délka hraní jen z `HltbClient` přes `RefreshPlaytimes`** (R44) — neveřejné API HowLongToBeat: token vázaný na IP a User-Agent (vždy IPv4), změna formátu = `HltbUnavailable`, nikdy odhad ani mazání údajů. Hra z hledání jen přes `RefreshPlaytimes::match()` (přesná shoda názvu), odkaz od uživatele jen přes `HltbUrl::parse()` (SSRF). Cenu za hodinu počítá jen `GamePresenter`
 35. **Nadcházející hry z IGDB nejsou hry katalogu** (R46) — tabulka `upcoming_releases` mimo `games`, celou ji přepisuje cron (`RefreshUpcomingReleases`, jeden dotaz za běh); s ITAD se páruje až při „Sledovat“ přes `WatchUpcomingRelease`. Vydání se počítá **po platformách** v `IgdbGame` (vyšlo na PC ≠ vyšlo na PS5; alfa, beta, předběžný přístup ani zrušené datum nejsou vydání, budoucí start předběžného přístupu je nadcházející se štítkem) a datum má přesnost (`ReleasePrecision`) — nikdy nezobrazovat „31. 12.“ místo „2026“. Klíč aplikace Twitche jen v těle požadavku na token
+36. **Krabicové hry PS5 z Xzone a Heureky jsou propojení jako PS Store** (R52) — odkaz od uživatele jen přes `RetailUrl::parse()` (SSRF), stránka přes `RetailClient`, cena ze schema.org (`SchemaProductPage`), počítaná nabídka jen `RetailProduct::bestOffer()` (nový kus, skladem nebo předobjednávka, obchod z ČR). Cena je v `current_prices` pod `xzone-<id>` / `heureka-<id>` s platformou PlayStation — klíč vždy `StoreListing::shopKey()`, platformu podle klíče `StoreListing::isListingKey()`. Stránka bez produktu = `RetailFormatChanged` (v cronu výpadek, nikdy mazání ceny). Heureka je nehlídaný zdroj (Cloudflare) — její výpadek běh cronu neoznačí (`PriceRefreshResult::hasCriticalFailures()`)
 
 ## Jazyk
 

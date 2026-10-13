@@ -156,6 +156,8 @@ final class GamePresenter
                 'id' => $listing->id,
                 'name' => $listing->name,
                 'platforms' => $listing->platforms,
+                // Krabicová hra (R52) — obchod místo platforem
+                'shop' => $listing->source->isRetail() ? (string) __('app.listings.shops.'.$listing->source->value) : null,
                 'url' => $listing->url,
                 'removeUrl' => route('listings.destroy', ['game' => $game, 'storeListing' => $listing], absolute: false),
             ])->values()->all(),

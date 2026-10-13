@@ -16,6 +16,7 @@ use App\Domain\GgDeals\GgDealsPrices;
 use App\Domain\Itad\ItadDeal;
 use App\Domain\Itad\ItadGamePrices;
 use App\Domain\PlayStation\PlayStationProduct;
+use App\Domain\Retail\RetailProduct;
 use App\Enums\Platform;
 use App\Enums\PriceScope;
 use App\Enums\PriceSource;
@@ -25,6 +26,7 @@ use App\Models\PriceLow;
 use App\Models\StoreListing;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
+use LogicException;
 
 /**
  * Nabídky jednoho zdroje pro hru se při každém stažení nahradí celé — obchod,
@@ -45,6 +47,17 @@ final class StorePrices
 
     /** Nejvýš tolik znaků názvu edice (sloupec edition). */
     private const EDITION_MAX_LENGTH = 160;
+
+    /** Nejvýš tolik znaků názvu obchodu (sloupec shop_name). */
+    private const SHOP_NAME_MAX_LENGTH = 64;
+
+    /** Názvy obchodů s krabicovými hrami (R52). */
+    private const XZONE_SHOP_NAME = 'Xzone';
+
+    private const HEUREKA_SHOP_NAME = 'Heureka';
+
+    /** Štítek platformy u krabicové hry — jako PS4 / PS5 u PS Store. */
+    private const RETAIL_DRM = 'PS5 krabice';
 
     /**
      * Uloží nabídky oficiálních obchodů a historické minimum z ITAD.
@@ -150,6 +163,54 @@ final class StorePrices
             'drm' => $product->platforms === [] ? null : mb_substr(implode(self::DRM_SEPARATOR, $product->platforms), 0, self::DRM_MAX_LENGTH),
             'url' => $listing->url,
             'expires_at' => $product->cut() > 0 ? $product->saleEndsAt : null,
+            'fetched_at' => $fetchedAt,
+        ];
+
+        DB::transaction(function () use ($game, $row, $fetchedAt): void {
+            CurrentPrice::query()->upsert([$row], ['game_id', 'shop_key'], array_keys(array_diff_key($row, array_flip(['game_id', 'shop_key']))));
+            $this->recordHistory($game, [$row], $fetchedAt);
+        });
+    }
+
+    /**
+     * Uloží cenu krabicové hry (R52) — nejlevnější počítanou nabídku produktu
+     * (nový kus, jde objednat, obchod z ČR). Bez ní (vyprodáno) cena zmizí,
+     * propojení zůstává. U Heureky je obchodem prodejce s nejnižší cenou.
+     */
+    public function storeRetail(StoreListing $listing, RetailProduct $product, CarbonImmutable $fetchedAt): void
+    {
+        $game = $listing->game()->sole();
+        $offer = $product->bestOffer();
+        if ($offer === null) {
+            $this->forgetListing($listing);
+
+            return;
+        }
+
+        $shop = match ($listing->source) {
+            PriceSource::Xzone => self::XZONE_SHOP_NAME,
+            PriceSource::Heureka => self::HEUREKA_SHOP_NAME,
+            default => throw new LogicException("Obchod {$listing->source->value} není obchod s krabicovými hrami."),
+        };
+        $row = [
+            'game_id' => $listing->game_id,
+            'source' => $listing->source->value,
+            'shop_key' => $listing->shopKey(),
+            'shop_name' => mb_substr($offer->seller === null ? $shop : $offer->seller.' ('.$shop.')', 0, self::SHOP_NAME_MAX_LENGTH),
+            'platform' => Platform::PlayStation->value,
+            'edition' => mb_substr($product->name, 0, self::EDITION_MAX_LENGTH),
+            'amount' => $offer->price->toDecimal(),
+            'regular_amount' => null,
+            'member_amount' => null,
+            'member_included' => false,
+            'member_tier' => null,
+            'member_free' => false,
+            'member_leaves_at' => null,
+            'currency' => $offer->price->currency,
+            'cut' => 0,
+            'drm' => self::RETAIL_DRM,
+            'url' => $listing->url,
+            'expires_at' => null,
             'fetched_at' => $fetchedAt,
         ];
 

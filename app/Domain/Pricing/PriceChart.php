@@ -20,7 +20,6 @@ use App\Enums\PriceScope;
 use App\Models\CurrentPrice;
 use App\Models\Game;
 use App\Models\PriceLow;
-use App\Models\StoreListing;
 use App\Models\WatchlistItem;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
@@ -88,7 +87,7 @@ final class PriceChart
 
         foreach ($game->storeListings as $listing) {
             $label = $listing->platforms === null ? $listing->name : $listing->name.' ('.$listing->platforms.')';
-            $series[] = $this->series(StoreListing::PLAYSTATION_KEY_PREFIX.$listing->id, $label, Platform::PlayStation, $this->fromOwn($own, $listing->shopKey(), $days, $currency));
+            $series[] = $this->series($listing->shopKey(), $label, Platform::PlayStation, $this->fromOwn($own, $listing->shopKey(), $days, $currency));
         }
 
         $target = $item?->target();

@@ -1,7 +1,7 @@
 <!--
-    Produkty PlayStation Store připojené ke hře odkazem (R10, R20) — seznam
-    s odpojením a formulář pro vložení odkazu. Cena připojeného produktu je
-    ve výpisu obchodů v panelu cen.
+    Produkty PlayStation Store a krabicové hry z Xzone a Heureky (R52) připojené
+    ke hře odkazem (R10, R20) — seznam s odpojením a formulář pro vložení odkazu.
+    Cena připojeného produktu je ve výpisu obchodů v panelu cen.
 
     @author Roman Hlaváček
     @created 2026-10-12
@@ -50,6 +50,8 @@ function disconnect(listing) {
                 <span class="listings__name">
                     {{ listing.name }}
                     <span v-if="listing.platforms" class="listings__platforms">{{ listing.platforms }}</span>
+                    <!-- Krabicová hra z Xzone nebo Heureky (R52) -->
+                    <span v-if="listing.shop" class="listings__platforms">{{ listing.shop }}</span>
                 </span>
                 <a :href="listing.url" class="listings__link" target="_blank" rel="noopener noreferrer">{{ t('listings.open') }}</a>
                 <button type="button" class="button button--ghost button--small" @click="disconnect(listing)">{{ t('listings.remove') }}</button>

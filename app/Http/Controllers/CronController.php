@@ -99,7 +99,7 @@ class CronController extends Controller
                     $result = $refreshPrices->watched();
                     $this->recordPrices($result);
                     // Výpadek zdroje zalogoval klient; tady jen označí běh jako neúspěšný
-                    if ($result->hasFailures()) {
+                    if ($result->hasCriticalFailures()) {
                         $failedSteps[] = 'prices';
                     }
 
@@ -112,6 +112,8 @@ class CronController extends Controller
                         'itad' => $count(PriceSource::Itad),
                         'ggdeals' => $count(PriceSource::GgDeals),
                         'playstation' => $count(PriceSource::PlayStation),
+                        'xzone' => $count(PriceSource::Xzone),
+                        'heureka' => $count(PriceSource::Heureka),
                     ]);
                 }),
                 // Game Pass sledovaných her (R50) a aktivní bundly (R51) z ITAD — dva

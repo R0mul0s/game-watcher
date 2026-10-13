@@ -15,6 +15,9 @@ namespace App\Domain\Monitoring;
 use App\Domain\Hltb\HltbClient;
 use App\Domain\Metacritic\MetacriticClient;
 use App\Domain\PlayStation\PlayStationClient;
+use App\Domain\Retail\Exceptions\RetailUnavailable;
+use App\Domain\Retail\RetailClient;
+use App\Domain\Retail\RetailUrl;
 use App\Domain\Steam\SteamClient;
 use App\Enums\MonitoredSource;
 use App\Models\SourceStatus;
@@ -38,6 +41,7 @@ final class ParserCanary
         private readonly SteamClient $steam,
         private readonly HltbClient $hltb,
         private readonly MetacriticClient $metacritic,
+        private readonly RetailClient $retail,
     ) {}
 
     /**
@@ -63,6 +67,9 @@ final class ParserCanary
             'steam' => $this->checkSteam(...),
             'hltb' => $this->checkHltb(...),
             'metacritic' => $this->checkMetacritic(...),
+            'xzone' => fn (): ?string => $this->checkRetail('xzone_url', outageCounts: true),
+            // Heureka se nehlídá (R52) — její blokace hlásí stav zdroje, kontrola jen formát
+            'heureka' => fn (): ?string => $this->checkRetail('heureka_url', outageCounts: false),
         ];
 
         $failures = [];
@@ -140,6 +147,37 @@ final class ParserCanary
         return match (true) {
             $game === null => (string) __('app.monitoring.canary.missing'),
             $game->mainMinutes === null => (string) __('app.monitoring.canary.hltb_playtime'),
+            default => null,
+        };
+    }
+
+    /**
+     * Krabicová hra (R52): produkt s aspoň jednou nabídkou v CZK — skladem být
+     * nemusí, vyprodání není změna formátu. Změna formátu je zjištění vždy,
+     * výpadek nebo blokace jen u hlídaného obchodu.
+     *
+     * @throws RetailUnavailable
+     */
+    private function checkRetail(string $configKey, bool $outageCounts): ?string
+    {
+        $url = RetailUrl::parse((string) config('games.monitoring.canary.'.$configKey));
+        if ($url === null) {
+            return (string) __('app.monitoring.canary.missing');
+        }
+
+        try {
+            $product = $this->retail->product($url);
+        } catch (RetailUnavailable $e) {
+            if ($outageCounts) {
+                throw $e;
+            }
+
+            return null;
+        }
+
+        return match (true) {
+            $product === null => (string) __('app.monitoring.canary.missing'),
+            $product->offers === [] => (string) __('app.monitoring.canary.retail_offers'),
             default => null,
         };
     }

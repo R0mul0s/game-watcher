@@ -30,6 +30,12 @@ enum MonitoredSource: string
 
     case PlayStation = 'playstation';
 
+    /** Krabicové hry z Xzone (R52) */
+    case Xzone = 'xzone';
+
+    /** Krabicové hry — souhrn z Heureky (R52); nehlídá se, Heureka je křehká (Cloudflare) */
+    case Heureka = 'heureka';
+
     /** Game Pass sledovaných her z ITAD (R50) — doplňkové údaje */
     case Subscriptions = 'subscriptions';
 
@@ -70,12 +76,14 @@ enum MonitoredSource: string
 
     /**
      * Hlásí výpadek monitoringu (/health/zdroje)? Obnova údajů, Steam, Metacritic,
-     * HowLongToBeat, IGDB, Game Pass a bundly ne — údaje her, žánry, režimy, hodnocení,
-     * délka hraní, nadcházející hry, předplatné a bundly jsou doplňkové a jejich
-     * výpadek neoznačí ani běh cronu jako chybný (R25, R33, R34, R44, R46, R50, R51).
+     * HowLongToBeat, IGDB, Game Pass, bundly a Heureka ne — údaje her, žánry, režimy,
+     * hodnocení, délka hraní, nadcházející hry, předplatné a bundly jsou doplňkové
+     * a jejich výpadek neoznačí ani běh cronu jako chybný (R25, R33, R34, R44, R46,
+     * R50, R51); Heureka propouští jen hlavičky prohlížeče a může kdykoli
+     * zablokovat (R52).
      */
     public function isCritical(): bool
     {
-        return ! in_array($this, [self::GameInfo, self::Steam, self::Metacritic, self::Hltb, self::Igdb, self::Subscriptions, self::Bundles], true);
+        return ! in_array($this, [self::GameInfo, self::Steam, self::Metacritic, self::Hltb, self::Igdb, self::Subscriptions, self::Bundles, self::Heureka], true);
     }
 }

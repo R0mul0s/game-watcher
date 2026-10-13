@@ -66,6 +66,9 @@ return [
             'steam_app_id' => 1426210, // It Takes Two
             'hltb_game_id' => 101237, // Alan Wake 2
             'metacritic_slug' => 'alan-wake-ii',
+            // Krabicové hry na PS5 (R52) — produkt s nabídkou v CZK
+            'xzone_url' => 'https://www.xzone.cz/ghost-of-yotei-complete-edition-ps5',
+            'heureka_url' => 'https://hry-na-ps5.heureka.cz/astro-bot/',
         ],
     ],
 
@@ -320,6 +323,21 @@ return [
             'game_page_cache_seconds' => 604800,
             // Akamai obchodu odmítá klienty bez hlaviček běžného prohlížeče (R7)
             'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+        ],
+        // Krabicové hry na PS5 (R52) — produkt připojený odkazem, cena ze schema.org
+        // stránky produktu. Z hostingu 13. 10. 2026 prošly jen Xzone a Heureka
+        // (Alza, Datart, Smarty blokují). Odkaz od uživatele smí vést jen na tyto
+        // hostitele (SSRF); Heureka má produkty na poddoménách kategorií.
+        'retail' => [
+            'xzone_host' => 'www.xzone.cz',
+            'heureka_host_suffix' => '.heureka.cz',
+            'timeout_seconds' => 20,
+            'request_delay_ms' => (int) env('GAMES_RETAIL_DELAY_MS', 500),
+            // Heureka bez hlaviček běžného prohlížeče ukáže výzvu Cloudflare
+            'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+            // Nabídky Heureky z obchodů mimo ČR (podle domény v názvu prodejce) se
+            // do nejnižší ceny nepočítají — zvolil uživatel
+            'foreign_seller_domains' => ['sk', 'pl', 'de', 'at', 'hu'],
         ],
         // Metacritic (R33) — Metascore her, které ITAD nemá (exkluzivity PS5).
         // Hostitel je jediný, který server z vloženého odkazu zavolá (SSRF).

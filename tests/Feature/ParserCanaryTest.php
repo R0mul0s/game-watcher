@@ -33,10 +33,10 @@ function canaryStatus(): SourceStatus
 }
 
 it('zkontroluje parsery jednou denně a nalezené údaje zapíše jako úspěch', function (): void {
-    $this->get(CANARY_CRON_URL)->assertOk()->assertSeeText('kontrola parserů — v pořádku zdrojů: 4');
+    $this->get(CANARY_CRON_URL)->assertOk()->assertSeeText('kontrola parserů — v pořádku zdrojů: 6');
 
     expect(canaryStatus())
-        ->processed->toBe(4)
+        ->processed->toBe(6)
         ->failures_in_row->toBe(0);
 
     // Další běh cronu za 4 hodiny kontrolu přeskočí
@@ -47,7 +47,7 @@ it('zkontroluje parsery jednou denně a nalezené údaje zapíše jako úspěch'
 
     // Za den znovu
     $this->travel(20)->hours();
-    $this->get(CANARY_CRON_URL)->assertSeeText('kontrola parserů — v pořádku zdrojů: 4');
+    $this->get(CANARY_CRON_URL)->assertSeeText('kontrola parserů — v pořádku zdrojů: 6');
 });
 
 it('tiše chybějící údaj ohlásí jako výpadek, běh cronu ale neoznačí (R48)', function (): void {
@@ -80,7 +80,7 @@ it('změněný formát stránky PS Store ohlásí zprávou zdroje', function ():
 
 it('kontrola starší než den a kus je výpadek, čerstvá ne', function (): void {
     $this->get(CANARY_CRON_URL)->assertOk();
-    $this->get('/health/zdroje')->assertSeeText('Kontrola parserů — PS Store, Steam, HowLongToBeat, Metacritic — OK');
+    $this->get('/health/zdroje')->assertSeeText('Kontrola parserů — PS Store, Steam, HowLongToBeat, Metacritic, Xzone, Heureka — OK');
 
     // Kontrola se nepovede vynechat déle než 30 h — cron mezitím neběžel
     $this->travel(31)->hours();

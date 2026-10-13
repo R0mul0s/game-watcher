@@ -159,11 +159,11 @@ it('stránka stavu ukáže zdroje v pořadí kroků cronu', function (): void {
             ->where('sources.0.state', 'ok')
             ->where('sources.2.source', 'itad')
             ->where('sources.2.processed', 1)
-            ->where('sources.8.source', 'steam')
+            ->where('sources.10.source', 'steam')
             // Selhal hned napoprvé — bez úspěchu je to výpadek
-            ->where('sources.8.state', 'stale')
-            ->where('sources.8.critical', false)
-            ->where('sources.8.lastError', __('app.monitoring.steam_failed')));
+            ->where('sources.10.state', 'stale')
+            ->where('sources.10.critical', false)
+            ->where('sources.10.lastError', __('app.monitoring.steam_failed')));
 });
 
 it('stránka stavu je jen pro přihlášené', function (): void {
@@ -174,7 +174,7 @@ it('přehled upozorní na zdroje ve výpadku', function (): void {
     $user = user();
 
     $this->actingAs($user)->get('/')->assertInertia(fn (Assert $page) => $page
-        ->where('sourcesDown', ['cron', 'exchange_rates', 'itad', 'ggdeals', 'playstation', 'alerts', 'weekly_digest', 'canary']));
+        ->where('sourcesDown', ['cron', 'exchange_rates', 'itad', 'ggdeals', 'playstation', 'xzone', 'alerts', 'weekly_digest', 'canary']));
 
     $this->get(STATUS_CRON_URL)->assertOk();
 

@@ -76,6 +76,18 @@ const STEAM_DETAILS_FIXTURES = [
     KINGDOM_COME_2_STEAM_ID => 'kingdom-come-2',
 ];
 
+/** Krabicové hry na PS5 (R52) — produkty zachycené 13. 10. 2026. */
+const XZONE_GHOST_OF_YOTEI_URL = 'https://www.xzone.cz/ghost-of-yotei-complete-edition-ps5';
+const HEUREKA_ASTRO_BOT_URL = 'https://hry-na-ps5.heureka.cz/astro-bot/';
+
+/**
+ * Zkrácená stránka obchodu s krabicovými hrami (jen JSON-LD).
+ */
+function retailFixture(string $name): string
+{
+    return (string) file_get_contents(fixture("retail/{$name}.html"));
+}
+
 /**
  * Zkrácená stránka PlayStation Store zachycená 12. 10. 2026.
  */
@@ -190,6 +202,11 @@ function fakeApis(array $overrides = []): void
         // Silent Hill 2 — odchází z katalogu PS Plus Extra (R49)
         'store.playstation.com/cs-cz/product/'.PSN_SILENT_HILL_2 => Http::response(psnFixture('product-silent-hill-2')),
         'store.playstation.com/*' => Http::response('Not Found', 404),
+        // Krabicové hry (R52) — zkrácené skutečné stránky (jen JSON-LD), jiný produkt 404
+        XZONE_GHOST_OF_YOTEI_URL => Http::response(retailFixture('xzone-ghost-of-yotei')),
+        HEUREKA_ASTRO_BOT_URL => Http::response(retailFixture('heureka-astro-bot')),
+        'www.xzone.cz/*' => Http::response('Not Found', 404),
+        '*.heureka.cz/*' => Http::response('Not Found', 404),
         'www.playstation.com/*' => Http::response('Not Found', 404),
         // Metacritic (R33) — zkrácené skutečné stránky (jen JSON-LD), jiná hra 404
         'www.metacritic.com/game/saros/' => Http::response(metacriticFixture('saros')),

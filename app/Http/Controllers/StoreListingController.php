@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Připojení a odpojení produktu PlayStation Store u hry.
+ * Připojení a odpojení produktu PlayStation Store nebo krabicové hry u hry.
  *
  * @author Roman Hlaváček
  *
@@ -16,6 +16,10 @@ use App\Domain\PlayStation\Actions\ConnectPlayStationProduct;
 use App\Domain\PlayStation\Actions\DisconnectStoreListing;
 use App\Domain\PlayStation\Exceptions\PlayStationProductNotFound;
 use App\Domain\PlayStation\Exceptions\PlayStationUnavailable;
+use App\Domain\Retail\Actions\ConnectRetailProduct;
+use App\Domain\Retail\Exceptions\RetailProductNotFound;
+use App\Domain\Retail\Exceptions\RetailUnavailable;
+use App\Domain\Retail\RetailUrl;
 use App\Http\Requests\StoreListingRequest;
 use App\Models\Game;
 use App\Models\StoreListing;
@@ -24,7 +28,8 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 /**
- * Obě akce vrací uživatele na detail hry s hláškou (R20).
+ * Obě akce vrací uživatele na detail hry s hláškou (R20). Připojit jde produkt
+ * PS Store i krabicovou hru z Xzone nebo Heureky (R52) — podle hostitele odkazu.
  */
 class StoreListingController extends Controller
 {
@@ -33,8 +38,14 @@ class StoreListingController extends Controller
      *
      * @throws ValidationException
      */
-    public function store(StoreListingRequest $request, Game $game, ConnectPlayStationProduct $connect): RedirectResponse
+    public function store(StoreListingRequest $request, Game $game, ConnectPlayStationProduct $connect, ConnectRetailProduct $connectRetail): RedirectResponse
     {
+        // Krabicová hra z Xzone nebo Heureky (R52), jinak PlayStation Store
+        $retailUrl = RetailUrl::parse($request->string('url')->toString());
+        if ($retailUrl !== null) {
+            return $this->storeRetail($game, $retailUrl, $connectRetail);
+        }
+
         try {
             $listing = $connect->handle($game, $request->string('url')->toString());
         } catch (PlayStationProductNotFound) {
@@ -44,6 +55,27 @@ class StoreListingController extends Controller
         }
 
         return Inertia::flash('success', __('app.listings.connected', ['name' => $listing->name]))->back();
+    }
+
+    /**
+     * Připojí krabicovou hru z obchodu (R52) a hned stáhne její cenu.
+     *
+     * @throws ValidationException
+     */
+    private function storeRetail(Game $game, RetailUrl $url, ConnectRetailProduct $connect): RedirectResponse
+    {
+        try {
+            $listing = $connect->handle($game, $url);
+        } catch (RetailProductNotFound) {
+            throw ValidationException::withMessages(['url' => __('app.listings.not_retail')]);
+        } catch (RetailUnavailable) {
+            return Inertia::flash('error', __('app.listings.retail_unavailable'))->back();
+        }
+
+        return Inertia::flash('success', __('app.listings.connected_retail', [
+            'name' => $listing->name,
+            'shop' => __('app.listings.shops.'.$url->source->value),
+        ]))->back();
     }
 
     /**

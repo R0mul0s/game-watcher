@@ -114,7 +114,7 @@ final class DailyDeals
     {
         $low = null;
         foreach ($rows as $row) {
-            $platform = str_starts_with((string) $row->shop_key, StoreListing::PLAYSTATION_KEY_PREFIX) ? Platform::PlayStation : Platform::Pc;
+            $platform = StoreListing::isListingKey((string) $row->shop_key) ? Platform::PlayStation : Platform::Pc;
             if (! $filter->accepts($platform)) {
                 continue;
             }

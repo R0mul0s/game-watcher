@@ -443,7 +443,8 @@ $checks = [
     'G2A' => fn () => implode(' | ', array_map(fn () => checkG2a(), range(1, G2A_ATTEMPTS))),
     'Loaded' => fn () => checkReachable('https://www.loaded.com/catalogsearch/result/?q=' . SEARCH_TERM),
     'Battle.net' => fn () => checkReachable('https://eu.shop.battle.net/en-gb/product/diablo-iv'),
-    // Krabicové hry na PS5 (průzkum 2026-10-13) — doma Xzone, Datart a Smarty bez výzvy,
+    // Krabicové hry na PS5 (průzkum 2026-10-13, R52) — z hostingu projdou jen Xzone a Heureka;
+    // doma Xzone, Datart a Smarty bez výzvy,
     // Alza jen s plnými hlavičkami prohlížeče, Heureka a Allegro blokují už doma
     'Xzone' => fn () => checkSchemaOffer(XZONE_PRODUCT_URL),
     'Datart' => fn () => checkSchemaOffer(DATART_PRODUCT_URL),

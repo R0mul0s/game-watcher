@@ -109,6 +109,8 @@ final class PriceWatch
             // Obchody s klíči slevu neuvádějí — rozhoduje jen minimum
             PriceSource::GgDeals => $this->sourceLow($game, PriceScope::Keyshops),
             PriceSource::PlayStation => $current->cut > 0 ? $this->ownHistoryLow($current) : null,
+            // Krabicové hry slevu neuvádějí (R52) — minimum z vlastní historie
+            PriceSource::Xzone, PriceSource::Heureka => $this->ownHistoryLow($current),
         };
 
         return $low !== null && $this->atMost($current->price(), $low);

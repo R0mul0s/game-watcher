@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Pricing;
 
+use App\Enums\MonitoredSource;
 use App\Enums\PriceSource;
 
 /**
@@ -71,5 +72,13 @@ final readonly class PriceRefreshResult
     public function hasFailures(): bool
     {
         return $this->failed !== [];
+    }
+
+    /**
+     * Selhal aspoň jeden hlídaný zdroj? Výpadek Heureky (R52) běh cronu neoznačí.
+     */
+    public function hasCriticalFailures(): bool
+    {
+        return array_filter($this->failed, fn (PriceSource $source): bool => MonitoredSource::fromPriceSource($source)->isCritical()) !== [];
     }
 }
