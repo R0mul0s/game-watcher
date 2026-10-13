@@ -174,7 +174,7 @@ it('přehled upozorní na zdroje ve výpadku', function (): void {
     $user = user();
 
     $this->actingAs($user)->get('/')->assertInertia(fn (Assert $page) => $page
-        ->where('sourcesDown', ['cron', 'exchange_rates', 'itad', 'ggdeals', 'playstation', 'alerts', 'weekly_digest']));
+        ->where('sourcesDown', ['cron', 'exchange_rates', 'itad', 'ggdeals', 'playstation', 'alerts', 'weekly_digest', 'canary']));
 
     $this->get(STATUS_CRON_URL)->assertOk();
 

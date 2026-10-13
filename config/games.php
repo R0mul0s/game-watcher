@@ -55,6 +55,18 @@ return [
         'max_attempts_per_minute' => 30,
         'cron_max_age_minutes' => 300,
         'stale_after_minutes' => 540,
+        // Kontrola parserů (R48) jednou denně — první běh cronu po 23 h od minulé;
+        // výpadek je úspěch starší než 30 h (den + jeden vynechaný běh cronu a rezerva)
+        'canary_interval_minutes' => 1380,
+        'canary_max_age_minutes' => 1800,
+        // Referenční hry: dlouho v prodeji, s úplnými údaji — když parser u nich
+        // údaj nenajde, změnil se formát zdroje (nebo hra zmizela, pak vyměnit)
+        'canary' => [
+            'playstation_product' => 'EP9000-PPSA15421_00-FULLGAME00000001', // Until Dawn
+            'steam_app_id' => 1426210, // It Takes Two
+            'hltb_game_id' => 101237, // Alan Wake 2
+            'metacritic_slug' => 'alan-wake-ii',
+        ],
     ],
 
     /*

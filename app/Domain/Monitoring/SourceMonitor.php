@@ -89,9 +89,12 @@ final class SourceMonitor
             $source,
             $rows->get($source->value),
             $now,
-            $source === MonitoredSource::Cron
-                ? (int) config('games.monitoring.cron_max_age_minutes')
-                : (int) config('games.monitoring.stale_after_minutes'),
+            (int) match ($source) {
+                MonitoredSource::Cron => config('games.monitoring.cron_max_age_minutes'),
+                // Kontrola parserů běží jednou denně (R48)
+                MonitoredSource::Canary => config('games.monitoring.canary_max_age_minutes'),
+                default => config('games.monitoring.stale_after_minutes'),
+            },
         ), MonitoredSource::cases());
     }
 

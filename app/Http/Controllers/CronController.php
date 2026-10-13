@@ -22,6 +22,7 @@ use App\Domain\Igdb\Actions\RefreshUpcomingReleases;
 use App\Domain\Igdb\Exceptions\IgdbUnavailable;
 use App\Domain\Maintenance\PruneExpiredCache;
 use App\Domain\Metacritic\Actions\RefreshMetascores;
+use App\Domain\Monitoring\ParserCanary;
 use App\Domain\Monitoring\SourceMonitor;
 use App\Domain\Pricing\Actions\RefreshPrices;
 use App\Domain\Pricing\PriceRefreshResult;
@@ -67,6 +68,7 @@ class CronController extends Controller
         RefreshUpcomingReleases $refreshUpcomingReleases,
         SendPriceAlerts $sendPriceAlerts,
         SendWeeklyDigests $sendWeeklyDigests,
+        ParserCanary $parserCanary,
         PruneExpiredCache $pruneExpiredCache,
     ): Response {
         $lock = Cache::lock(self::LOCK_KEY, (int) config('games.cron.lock_seconds'));
@@ -195,6 +197,23 @@ class CronController extends Controller
                     }
 
                     return __('app.cron.weekly', ['count' => $sent]).($failed > 0 ? __('app.cron.alerts_undelivered', ['count' => $failed]) : '');
+                }),
+                // Kontrola parserů (R48) — jednou denně; zjištění je výpadek zdroje
+                // „Kontrola parserů“ (stav zdrojů, /health/zdroje), běh cronu neoznačí
+                $this->attempt('canary', [MonitoredSource::Canary], $failedSteps, function () use ($parserCanary): string {
+                    if (! $parserCanary->isDue()) {
+                        return __('app.cron.canary_skipped');
+                    }
+
+                    [$checked, $failures] = $parserCanary->handle();
+                    if ($failures !== []) {
+                        $this->monitor->failed(MonitoredSource::Canary, ParserCanary::message($failures));
+
+                        return __('app.cron.canary_failed', ['problems' => ParserCanary::message($failures)]);
+                    }
+                    $this->monitor->succeeded(MonitoredSource::Canary, $checked, $checked);
+
+                    return __('app.cron.canary', ['count' => $checked]);
                 }),
                 $this->attempt('cache', [], $failedSteps, fn (): string => __('app.cron.cache_pruned', ['count' => $pruneExpiredCache->handle()])),
             ];

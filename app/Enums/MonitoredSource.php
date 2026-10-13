@@ -51,6 +51,9 @@ enum MonitoredSource: string
     /** Týdenní souhrn slev e-mailem (R36) */
     case WeeklyDigest = 'weekly_digest';
 
+    /** Denní kontrola parserů na referenčních hrách (R48) — tichá změna formátu zdroje */
+    case Canary = 'canary';
+
     /**
      * Řádek stavu pro zdroj cen.
      */
