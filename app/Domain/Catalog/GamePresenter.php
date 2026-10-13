@@ -24,6 +24,7 @@ use App\Enums\GameMode;
 use App\Enums\Platform;
 use App\Models\CurrentPrice;
 use App\Models\Game;
+use App\Models\GameBundle;
 use App\Models\StoreListing;
 use App\Models\WatchlistItem;
 use Carbon\CarbonImmutable;
@@ -94,6 +95,9 @@ final class GamePresenter
             'czech' => $game->czechSupport()?->value,
             // Nejbližší odchod z katalogu PS Plus (R49) — jen štítek, bez upozornění
             'plusLeavesAt' => $this->plusLeavesAt($game)?->toIso8601String(),
+            // Game Pass (R50) a nejlevnější aktivní bundle (R51); hra musí mít načtenou vazbu bundles
+            'gamePass' => $game->in_game_pass,
+            'bundle' => $this->bundles($game, $currency)[0] ?? null,
         ];
     }
 
@@ -156,6 +160,9 @@ final class GamePresenter
                 'removeUrl' => route('listings.destroy', ['game' => $game, 'storeListing' => $listing], absolute: false),
             ])->values()->all(),
             'connectUrl' => route('listings.store', $game, absolute: false),
+            // Game Pass (R50) a aktivní bundly (R51) z ITAD
+            'gamePass' => $game->in_game_pass ? ['leavesAt' => $game->game_pass_leaves_at?->toIso8601String()] : null,
+            'bundles' => $this->bundles($game, $currency),
             // Délka hraní z HowLongToBeat (R44) — cena za hodinu z nejlevnější
             // oficiální nabídky hlídané platformy, odkaz pro hru, kterou hledání nenašlo
             'playtime' => [
@@ -268,6 +275,30 @@ final class GamePresenter
             fn (GameMode $mode): string => $mode->value,
             array_filter(GameMode::cases(), fn (GameMode $mode): bool => in_array($mode, $played, true)),
         ));
+    }
+
+    /**
+     * Aktivní bundly s hrou (R51) — s cenou v měně zobrazení od nejlevnějšího,
+     * „Build your own“ bez ceny na konci (hra musí mít načtenou vazbu bundles).
+     *
+     * @return list<array{title: string, shop: string, url: string, price: array{amount: float, currency: string}|null, expiresAt: string|null}>
+     */
+    private function bundles(Game $game, string $currency): array
+    {
+        $converted = fn (GameBundle $bundle): ?Money => ($price = $bundle->price()) === null
+            ? null
+            : ($this->rates->convert($price, $currency) ?? $price);
+
+        return array_values($game->bundles
+            ->sortBy(fn (GameBundle $bundle): array => [$bundle->price() === null ? 1 : 0, $converted($bundle)->cents ?? 0])
+            ->map(fn (GameBundle $bundle): array => [
+                'title' => $bundle->title,
+                'shop' => $bundle->shop,
+                'url' => $bundle->url,
+                'price' => $converted($bundle)?->toArray(),
+                'expiresAt' => $bundle->expires_at?->toIso8601String(),
+            ])
+            ->all());
     }
 
     /**

@@ -86,6 +86,10 @@ return [
         'prices' => 'ceny — ITAD her: :itad, gg.deals her: :ggdeals, PlayStation Store produktů: :playstation',
         'details' => 'žánry a režimy ze Steamu — her: :count',
         'details_failed' => 'žánry a režimy ze Steamu — her: :count, Steam neodpovídá (doplní další běh)',
+        'subscriptions' => 'Game Pass z ITAD — her v Game Passu: :count',
+        'subscriptions_failed' => 'Game Pass z ITAD — ITAD neodpovídá (zůstává z minula)',
+        'bundles' => 'bundly z ITAD — her v bundlu: :count',
+        'bundles_failed' => 'bundly z ITAD — ITAD neodpovídá (zůstávají z minula)',
         'info' => 'údaje her z ITAD — obnoveno: :count',
         'info_failed' => 'údaje her z ITAD — obnoveno: :count, ITAD neodpovídá (doplní další běh)',
         'metacritic' => 'Metascore z Metacritic — her: :count',
@@ -105,6 +109,8 @@ return [
         'steps' => [
             'exchange_rates' => 'kurzy ČNB',
             'prices' => 'ceny',
+            'subscriptions' => 'Game Pass',
+            'bundles' => 'bundly',
             'info' => 'údaje her',
             'details' => 'žánry a režimy',
             'metacritic' => 'Metascore',
@@ -174,6 +180,14 @@ return [
         // Hra sledovaná před vydáním (R41)
         'reason_released' => 'právě vyšlo',
         'reason_first_sale' => 'první sleva od vydání',
+        // Game Pass a bundly (R50, R51)
+        'subject_offer' => ':title — :reason',
+        'subject_bundle' => ':title v bundlu za :price',
+        'reason_game_pass' => 'je v Game Passu, který máš',
+        'reason_bundle' => 'v bundlu „:bundle“',
+        'until' => ' do :date',
+        'in_bundle_shop' => 'na :shop',
+        'game_pass' => 'Game Pass',
         // Týdenní souhrn e-mailem (R36)
         'weekly_subject' => 'Za týden zlevnila :count sledovaná hra|Za týden zlevnily :count sledované hry|Za týden zlevnilo :count sledovaných her',
         'weekly_heading' => 'Co za týden zlevnilo',
@@ -413,6 +427,10 @@ return [
             'per_hour_title' => 'Cena za hodinu hlavního příběhu',
             // Odchod z katalogu PS Plus (R49)
             'plus_leaving' => 'Odchází z PS Plus :date',
+            // Game Pass a bundly (R50, R51)
+            'game_pass' => 'Game Pass',
+            'bundle' => 'v bundlu od :price · :shop',
+            'bundle_custom' => 'v bundlu (poskládej si) · :shop',
         ],
 
         // Stránka Objevit (R43)
@@ -616,6 +634,18 @@ return [
             'itad_unavailable' => 'Historie z IsThereAnyDeal teď není k dispozici.',
         ],
 
+        // Game Pass a bundly na detailu hry (R50, R51)
+        'extras' => [
+            'title' => 'Předplatné a bundly',
+            'game_pass' => 'Game Pass',
+            'game_pass_text' => 'Hra je v Game Passu',
+            'leaves' => '— odchází :date',
+            'until' => 'do :date',
+            'custom' => 'poskládej si',
+            'open' => 'Otevřít',
+            'source' => 'Podle IsThereAnyDeal',
+        ],
+
         // Délka hraní z HowLongToBeat (R44)
         'playtime' => [
             'title' => 'Délka hraní',
@@ -684,6 +714,8 @@ return [
             'weekly' => 'Týdenní souhrn — v pondělí e-mail s tím, co za týden zlevnilo',
             'ps_plus' => 'Mám PS Plus',
             'ps_plus_hint' => 'Upozornění u PlayStation Store počítají cenu pro předplatitele a dají vědět, když je sledovaná hra měsíční hrou PS Plus.',
+            'game_pass' => 'Mám Game Pass',
+            'game_pass_hint' => 'Upozorníme, když je sledovaná hra v Game Passu — není ji potřeba kupovat.',
             'save' => 'Uložit',
             'push_title' => 'Upozornění na tomto zařízení',
             'push_text' => 'Zpráva přijde hned do telefonu nebo počítače, i když je stránka zavřená.',
@@ -731,6 +763,8 @@ return [
                 'itad' => 'IsThereAnyDeal — oficiální obchody',
                 'ggdeals' => 'gg.deals — obchody s klíči',
                 'playstation' => 'PlayStation Store',
+                'subscriptions' => 'IsThereAnyDeal — Game Pass',
+                'bundles' => 'IsThereAnyDeal — bundly',
                 'game_info' => 'IsThereAnyDeal — obnova údajů her',
                 'steam' => 'Steam — žánry a režimy',
                 'metacritic' => 'Metacritic — Metascore her mimo ITAD',

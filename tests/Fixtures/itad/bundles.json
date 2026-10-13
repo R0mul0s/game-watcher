@@ -1,0 +1,361 @@
+[
+    {
+        "id": 16655,
+        "title": "The Darksiders Collection Bundle",
+        "page": {
+            "id": 73,
+            "name": "GreenManGaming",
+            "shopId": 36
+        },
+        "url": "https://greenmangaming.sjv.io/c/2545989/3298418/15105?u=https%3A%2F%2Fwww.greenmangamingbundles.com%2Fbundles%2Fthe-darksiders-collection-bundle%2F",
+        "details": "https://isthereanydeal.com/bundles/16655/",
+        "isMature": false,
+        "publish": "2026-10-13T19:21:27+02:00",
+        "expiry": "2026-10-27T19:00:00+01:00",
+        "note": null,
+        "counts": {
+            "games": 4,
+            "media": 0
+        },
+        "tiers": [
+            {
+                "price": {
+                    "amount": 9.99,
+                    "amountInt": 999,
+                    "currency": "EUR"
+                },
+                "addon": false,
+                "games": [
+                    {
+                        "id": "018d937e-f821-70ba-8ba1-0070aef4d688",
+                        "slug": "darksiders-iii",
+                        "title": "Darksiders III",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-062b-73cb-8b77-d067302bc69e",
+                        "slug": "darksiders-warmastered-edition",
+                        "title": "Darksiders Warmastered Edition",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-2bb5-725e-b39e-2f9ddd2aa071",
+                        "slug": "darksiders-genesis",
+                        "title": "Darksiders Genesis",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-3122-70c0-8e5c-2341f05e5992",
+                        "slug": "darksiders-ii-deathinitive-edition",
+                        "title": "Darksiders II Deathinitive Edition",
+                        "type": "game",
+                        "mature": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 16652,
+        "title": "The Cozy After Dark Bundle",
+        "page": {
+            "id": 1,
+            "name": "Humble Bundle",
+            "shopId": 37
+        },
+        "url": "https://humblebundleinc.sjv.io/c/2545989/2091208/25796?u=https%3A%2F%2Fwww.humblebundle.com%2Fgames%2Fcozy-after-dark-showcase-bundle",
+        "details": "https://isthereanydeal.com/bundles/16652/",
+        "isMature": false,
+        "publish": "2026-10-12T20:10:23+02:00",
+        "expiry": "2026-11-03T03:00:19+01:00",
+        "note": "Keys expire. Please redeem and activate on Steam before May 2nd, 2027.\nThis bundle supports Dames4Games.",
+        "counts": {
+            "games": 10,
+            "media": 0
+        },
+        "tiers": [
+            {
+                "price": {
+                    "amount": 8,
+                    "amountInt": 800,
+                    "currency": "USD"
+                },
+                "addon": false,
+                "games": [
+                    {
+                        "id": "018d937f-35b9-708a-9dd4-5eee14bac130",
+                        "slug": "the-darkside-detective",
+                        "title": "The Darkside Detective",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-3ccf-7153-987c-672106ad19f9",
+                        "slug": "paradise-killer",
+                        "title": "Paradise Killer",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-4cf3-7135-98d8-620593f4500c",
+                        "slug": "kathy-rain-directors-cut",
+                        "title": "Kathy Rain: Director's Cut",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-619a-7159-8565-cedfd83eaf4a",
+                        "slug": "a-pet-shop-after-dark",
+                        "title": "a pet shop after dark",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-6ef5-70b6-8028-d3848f10344b",
+                        "slug": "escape-from-mystwood-mansion",
+                        "title": "Escape From Mystwood Mansion",
+                        "type": "game",
+                        "mature": false
+                    }
+                ]
+            },
+            {
+                "price": {
+                    "amount": 12,
+                    "amountInt": 1200,
+                    "currency": "USD"
+                },
+                "addon": false,
+                "games": [
+                    {
+                        "id": "018d937f-3e97-7057-a5f6-a19b15c1188e",
+                        "slug": "gloomy-eyes",
+                        "title": "Gloomy Eyes",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-619e-7299-a1e3-db1725716dc9",
+                        "slug": "fear-the-spotlight",
+                        "title": "Fear the Spotlight",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-6fd3-709b-975a-769c9506572c",
+                        "slug": "cabernet",
+                        "title": "Cabernet",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-74e7-7195-bd2a-eaef1b75f9c8",
+                        "slug": "kulebra-and-the-souls-of-limbo",
+                        "title": "Kulebra and the Souls of Limbo",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "0196b0b0-b4d5-7210-9de8-5a3f07a45511",
+                        "slug": "spooky-express",
+                        "title": "Spooky Express",
+                        "type": "game",
+                        "mature": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 16648,
+        "title": "Build your own All Stars Bundle (Winter)",
+        "page": {
+            "id": 8,
+            "name": "Fanatical",
+            "shopId": 6
+        },
+        "url": "https://www.awin1.com/cread.php?awinmid=118821&awinaffid=235265&ued=https%3A%2F%2Fwww.fanatical.com%2Fen%2Fpick-and-mix%2Fbuild-your-own-all-stars-bundle",
+        "details": "https://isthereanydeal.com/bundles/16648/",
+        "isMature": false,
+        "publish": "2026-10-09T23:50:02+02:00",
+        "expiry": "2026-11-12T19:00:00+01:00",
+        "note": null,
+        "counts": {
+            "games": 15,
+            "media": 1
+        },
+        "tiers": [
+            {
+                "price": null,
+                "addon": false,
+                "games": [
+                    {
+                        "id": "018d937e-efd3-7007-ab3b-0948e5a57efb",
+                        "slug": "sniper-elite-v2-remastered",
+                        "title": "Sniper Elite V2 Remastered",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937e-f04c-70ce-b011-e610ea57d321",
+                        "slug": "beyond-two-souls",
+                        "title": "Beyond Two Souls",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937e-f99a-7194-a303-07dd8f22d0b4",
+                        "slug": "heavy-rain",
+                        "title": "Heavy Rain",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-0428-7202-8697-8aeb1634a22a",
+                        "slug": "zombie-army-trilogy",
+                        "title": "Zombie Army Trilogy",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-0e26-7046-9eac-44b987cd9258",
+                        "slug": "this-war-of-mine-complete-edition",
+                        "title": "This War of Mine: Complete Edition",
+                        "type": "package",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-1ef4-7255-b03a-e9169d5ddb5b",
+                        "slug": "icewind-dale-enhanced-edition",
+                        "title": "Icewind Dale: Enhanced Edition",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-3a08-713a-92a5-4026c3b60d0c",
+                        "slug": "postal-4-no-regerts",
+                        "title": "POSTAL 4: No Regerts",
+                        "type": "game",
+                        "mature": true
+                    },
+                    {
+                        "id": "018d937f-4684-73dd-89e0-42d69219eb29",
+                        "slug": "postal-brain-damaged",
+                        "title": "POSTAL: Brain Damaged",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-468b-7258-a015-eefc1e31e8a9",
+                        "slug": "asterix-and-obelix-xxl-romastered",
+                        "title": "Asterix & Obelix XXL : Romastered",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-4c86-700a-bfad-852aa1598eee",
+                        "slug": "evil-genius-2-world-domination-deluxe-edition",
+                        "title": "Evil Genius 2: World Domination Deluxe Edition",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-5246-711a-8d77-2c8e67db77b2",
+                        "slug": "frog-detective-3-corruption-at-cowboy-county",
+                        "title": "Frog Detective 3: Corruption at Cowboy County",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-61a4-71bf-aad5-2c7367e0d61d",
+                        "slug": "redout-2",
+                        "title": "Redout 2",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d95cf-3c03-734f-be50-dac53afa6d48",
+                        "slug": "pc-tycoon-2",
+                        "title": "PC Tycoon 2",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018dc2e9-3a4f-7088-91ab-984cfba0e4ec",
+                        "slug": "hidden-in-my-paradise",
+                        "title": "Hidden in my Paradise",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "01925727-926b-7150-8e55-dd54e3081534",
+                        "slug": "chernobylite-premium-edition",
+                        "title": "Chernobylite Premium Edition",
+                        "type": "package",
+                        "mature": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 14804,
+        "title": "Monsters' Den Collection Bundle",
+        "page": {
+            "id": 8,
+            "name": "Fanatical",
+            "shopId": 6
+        },
+        "url": "https://www.awin1.com/cread.php?awinmid=118821&awinaffid=235265&ued=https%3A%2F%2Fwww.fanatical.com%2Fen%2Fbundle%2Fmonsters-den-collection-bundle",
+        "details": "https://isthereanydeal.com/bundles/14804/",
+        "isMature": false,
+        "publish": "2024-12-31T19:16:16+01:00",
+        "expiry": null,
+        "note": "* Bundle being relaunched.",
+        "counts": {
+            "games": 3,
+            "media": 1
+        },
+        "tiers": [
+            {
+                "price": {
+                    "amount": 22.07,
+                    "amountInt": 2207,
+                    "currency": "USD"
+                },
+                "addon": false,
+                "games": [
+                    {
+                        "id": "018d937e-f490-71a9-b653-ae88cab7f6bb",
+                        "slug": "monsters-den-book-of-dread",
+                        "title": "Monsters' Den: Book of Dread",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937e-f55d-73dd-8428-7778edfb0ac1",
+                        "slug": "monsters-den-godfall",
+                        "title": "Monsters' Den: Godfall",
+                        "type": "game",
+                        "mature": false
+                    },
+                    {
+                        "id": "018d937f-0404-707a-b399-d323681126c6",
+                        "slug": "monsters-den-chronicles",
+                        "title": "Monsters' Den Chronicles",
+                        "type": "game",
+                        "mature": false
+                    }
+                ]
+            },
+            {
+                "price": null,
+                "addon": true,
+                "games": []
+            }
+        ]
+    }
+]

@@ -15,6 +15,7 @@ namespace App\Domain\Alerts\Actions;
 use App\Domain\Alerts\AlertPresenter;
 use App\Domain\Alerts\AlertRunResult;
 use App\Domain\Alerts\DeliveryResult;
+use App\Domain\Alerts\OfferWatch;
 use App\Domain\Alerts\PriceAlert;
 use App\Domain\Alerts\PriceWatch;
 use App\Domain\Alerts\PushSender;
@@ -32,7 +33,8 @@ use Throwable;
  * nemění — po zapnutí kanálu dostane upozornění na platné ceny. Upozornění
  * se označí jako odeslané, jen když ho doručil aspoň jeden kanál; jinak ho
  * zkusí další běh. Hra bez upozornění na cenu může dostat upozornění na
- * vydání nebo první slevu (ReleaseWatch, R41) — za běh nejvýš jedno na hru.
+ * vydání nebo první slevu (ReleaseWatch, R41), a když ani to, na Game Pass
+ * nebo bundle (OfferWatch, R50, R51) — za běh nejvýš jedno na hru.
  */
 final class SendPriceAlerts
 {
@@ -41,6 +43,7 @@ final class SendPriceAlerts
         private readonly AlertPresenter $presenter,
         private readonly PushSender $pushSender,
         private readonly ReleaseWatch $releaseWatch,
+        private readonly OfferWatch $offerWatch,
     ) {}
 
     /**
@@ -87,7 +90,7 @@ final class SendPriceAlerts
      */
     private function evaluate(User $user): array
     {
-        $items = $user->watchlistItems()->with(['game.currentPrices', 'game.priceLows'])->orderBy('id')->get();
+        $items = $user->watchlistItems()->with(['game.currentPrices', 'game.priceLows', 'game.bundles'])->orderBy('id')->get();
         $alerts = [];
 
         foreach ($items as $item) {
@@ -111,6 +114,14 @@ final class SendPriceAlerts
             $release = $this->releaseWatch->check($user, $item, $game);
             if ($release !== null) {
                 $alerts[] = $release;
+
+                continue;
+            }
+
+            // Game Pass a bundly (R50, R51) — až když hra nemá nic důležitějšího
+            $offer = $this->offerWatch->check($user, $item, $game);
+            if ($offer !== null) {
+                $alerts[] = $offer;
             }
         }
 
@@ -177,7 +188,14 @@ final class SendPriceAlerts
     {
         $now = CarbonImmutable::now();
         foreach ($alerts as $alert) {
-            if ($alert->reason->isPriceCondition()) {
+            // Game Pass a bundle cenu v obchodě neříkají — jen vlastní stav (R50, R51)
+            if ($alert->reason->isOffer()) {
+                $this->offerWatch->markNotified($alert, $now);
+
+                continue;
+            }
+
+            if ($alert->reason->isPriceCondition() && $alert->price !== null) {
                 $alert->item->update([
                     'notified_amount' => $alert->price->toDecimal(),
                     'notified_currency' => $alert->price->currency,

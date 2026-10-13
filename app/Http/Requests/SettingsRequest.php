@@ -38,6 +38,8 @@ class SettingsRequest extends FormRequest
             'notify_email' => ['required', 'boolean'],
             'notify_weekly' => ['required', 'boolean'],
             'has_ps_plus' => ['required', 'boolean'],
+            // Nepovinné kvůli starší stránce v prohlížeči; chybí = nemám
+            'has_game_pass' => ['sometimes', 'boolean'],
         ];
     }
 }

@@ -33,7 +33,7 @@ class GameController extends Controller
     public function show(Request $request, Game $game, GamePresenter $presenter, PriceChart $chart, SaleOutlook $outlook): Response
     {
         $user = $request->user();
-        $game->load(['currentPrices', 'priceLows', 'storeListings']);
+        $game->load(['currentPrices', 'priceLows', 'storeListings', 'bundles']);
         $item = $user instanceof User ? $user->watchlistItemFor($game) : null;
         $currency = $user instanceof User ? $user->displayCurrency() : (string) config('games.prices.default_currency');
 

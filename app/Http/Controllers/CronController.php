@@ -20,11 +20,14 @@ use App\Domain\Currency\Actions\ImportExchangeRates;
 use App\Domain\Hltb\Actions\RefreshPlaytimes;
 use App\Domain\Igdb\Actions\RefreshUpcomingReleases;
 use App\Domain\Igdb\Exceptions\IgdbUnavailable;
+use App\Domain\Itad\Exceptions\ItadUnavailable;
 use App\Domain\Maintenance\PruneExpiredCache;
 use App\Domain\Metacritic\Actions\RefreshMetascores;
 use App\Domain\Monitoring\ParserCanary;
 use App\Domain\Monitoring\SourceMonitor;
+use App\Domain\Pricing\Actions\RefreshBundles;
 use App\Domain\Pricing\Actions\RefreshPrices;
+use App\Domain\Pricing\Actions\RefreshSubscriptions;
 use App\Domain\Pricing\PriceRefreshResult;
 use App\Enums\MonitoredSource;
 use App\Enums\PriceSource;
@@ -61,6 +64,8 @@ class CronController extends Controller
         CronRequest $request,
         ImportExchangeRates $importExchangeRates,
         RefreshPrices $refreshPrices,
+        RefreshSubscriptions $refreshSubscriptions,
+        RefreshBundles $refreshBundles,
         RefreshGameInfo $refreshGameInfo,
         RefreshGameDetails $refreshGameDetails,
         RefreshMetascores $refreshMetascores,
@@ -108,6 +113,32 @@ class CronController extends Controller
                         'ggdeals' => $count(PriceSource::GgDeals),
                         'playstation' => $count(PriceSource::PlayStation),
                     ]);
+                }),
+                // Game Pass sledovaných her (R50) a aktivní bundly (R51) z ITAD — dva
+                // požadavky; doplňkové, výpadek nechá údaje z minula a běh neoznačí
+                $this->attempt('subscriptions', [MonitoredSource::Subscriptions], $failedSteps, function () use ($refreshSubscriptions): string {
+                    try {
+                        $count = $refreshSubscriptions->handle();
+                    } catch (ItadUnavailable $e) {
+                        $this->monitor->failed(MonitoredSource::Subscriptions, $e->getMessage());
+
+                        return __('app.cron.subscriptions_failed');
+                    }
+                    $this->monitor->succeeded(MonitoredSource::Subscriptions, $count);
+
+                    return __('app.cron.subscriptions', ['count' => $count]);
+                }),
+                $this->attempt('bundles', [MonitoredSource::Bundles], $failedSteps, function () use ($refreshBundles): string {
+                    try {
+                        $count = $refreshBundles->handle();
+                    } catch (ItadUnavailable $e) {
+                        $this->monitor->failed(MonitoredSource::Bundles, $e->getMessage());
+
+                        return __('app.cron.bundles_failed');
+                    }
+                    $this->monitor->succeeded(MonitoredSource::Bundles, $count);
+
+                    return __('app.cron.bundles', ['count' => $count]);
                 }),
                 // Obnova údajů her z ITAD (R34) — datum vydání, Metascore, obrázky;
                 // doplňkové, výpadek ITAD tady běh neoznačí (ceny ho ohlásí samy)

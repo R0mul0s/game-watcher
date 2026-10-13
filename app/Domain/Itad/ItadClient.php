@@ -39,6 +39,10 @@ final class ItadClient
 
     private const DEALS_PATH = '/deals/v2';
 
+    private const SUBSCRIPTIONS_PATH = '/games/subs/v1';
+
+    private const BUNDLES_PATH = '/bundles/v1';
+
     /**
      * Hry podle názvu, v pořadí relevance podle ITAD.
      *
@@ -181,20 +185,7 @@ final class ItadClient
      */
     public function prices(array $itadIds): array
     {
-        $path = self::PRICES_PATH.'?'.http_build_query(['country' => config('games.sources.itad.country')]);
-
-        try {
-            $response = $this->request()->post($path, $itadIds);
-        } catch (ConnectionException $e) {
-            Log::warning('IsThereAnyDeal '.self::PRICES_PATH.' neodpovídá: '.$e->getMessage());
-
-            throw new ItadUnavailable($e->getMessage(), previous: $e);
-        }
-
-        $data = $this->decode($response, self::PRICES_PATH);
-        if (! array_is_list($data)) {
-            throw $this->unexpectedShape(self::PRICES_PATH);
-        }
+        $data = $this->postIds(self::PRICES_PATH, $itadIds);
 
         $prices = [];
         foreach ($data as $item) {
@@ -205,6 +196,96 @@ final class ItadClient
         }
 
         return $prices;
+    }
+
+    /**
+     * Předplatná her v zemi z konfigurace (R50) — dávka jako u cen. Hra bez
+     * předplatného v odpovědi chybí; ve výsledku má prázdný seznam.
+     *
+     * @param  list<string>  $itadIds
+     * @return array<string, list<ItadSubscription>> podle ITAD ID — všechny hry z dotazu
+     *
+     * @throws ItadUnavailable
+     */
+    public function subscriptions(array $itadIds): array
+    {
+        $data = $this->postIds(self::SUBSCRIPTIONS_PATH, $itadIds);
+
+        $subscriptions = array_fill_keys($itadIds, []);
+        foreach ($data as $item) {
+            $id = is_array($item) ? ($item['id'] ?? null) : null;
+            if (! is_string($id) || ! is_array($item['subs'] ?? null)) {
+                continue;
+            }
+
+            $subscriptions[$id] = array_values(array_filter(array_map(
+                fn (mixed $sub): ?ItadSubscription => is_array($sub) ? ItadSubscription::fromApi($sub) : null,
+                $item['subs'],
+            )));
+        }
+
+        return $subscriptions;
+    }
+
+    /**
+     * Aktivní bundly v zemi z konfigurace (R51) — po stránkách, dokud je
+     * stránka plná (nejvýš games.sources.itad.bundles_max_pages); bez bundlů pro dospělé.
+     *
+     * @return list<ItadBundle>
+     *
+     * @throws ItadUnavailable
+     */
+    public function bundles(): array
+    {
+        $pageSize = (int) config('games.sources.itad.bundles_page_size');
+        $bundles = [];
+
+        for ($page = 0; $page < (int) config('games.sources.itad.bundles_max_pages'); $page++) {
+            $data = $this->get(self::BUNDLES_PATH, [
+                'country' => (string) config('games.sources.itad.country'),
+                'limit' => $pageSize,
+                'offset' => $page * $pageSize,
+            ]);
+            if (! array_is_list($data)) {
+                throw $this->unexpectedShape(self::BUNDLES_PATH);
+            }
+
+            foreach ($data as $item) {
+                $bundle = is_array($item) ? ItadBundle::fromApi($item) : null;
+                if ($bundle !== null) {
+                    $bundles[] = $bundle;
+                }
+            }
+
+            if (count($data) < $pageSize) {
+                break;
+            }
+        }
+
+        return $bundles;
+    }
+
+    /**
+     * POST se seznamem ITAD ID (dávkové endpointy); vrátí seznam z odpovědi.
+     *
+     * @param  list<string>  $itadIds
+     * @return list<mixed>
+     *
+     * @throws ItadUnavailable
+     */
+    private function postIds(string $path, array $itadIds): array
+    {
+        try {
+            $response = $this->request()->post($path.'?'.http_build_query(['country' => config('games.sources.itad.country')]), $itadIds);
+        } catch (ConnectionException $e) {
+            Log::warning("IsThereAnyDeal {$path} neodpovídá: ".$e->getMessage());
+
+            throw new ItadUnavailable($e->getMessage(), previous: $e);
+        }
+
+        $data = $this->decode($response, $path);
+
+        return array_is_list($data) ? $data : throw $this->unexpectedShape($path);
     }
 
     /**

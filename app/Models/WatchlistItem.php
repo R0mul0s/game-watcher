@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $notified_at
  * @property CarbonImmutable|null $release_notified_at
  * @property CarbonImmutable|null $first_sale_notified_at
+ * @property CarbonImmutable|null $game_pass_notified_at
+ * @property list<int>|null $notified_bundles
  * @property CarbonImmutable|null $created_at
  */
 class WatchlistItem extends Model
@@ -54,6 +56,8 @@ class WatchlistItem extends Model
         'notified_at',
         'release_notified_at',
         'first_sale_notified_at',
+        'game_pass_notified_at',
+        'notified_bundles',
     ];
 
     /**
@@ -68,6 +72,9 @@ class WatchlistItem extends Model
             'notified_at' => 'immutable_datetime',
             'release_notified_at' => 'immutable_datetime',
             'first_sale_notified_at' => 'immutable_datetime',
+            // Upozornění na Game Pass a bundly (R50, R51)
+            'game_pass_notified_at' => 'immutable_datetime',
+            'notified_bundles' => 'array',
         ];
     }
 

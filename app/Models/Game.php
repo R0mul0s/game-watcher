@@ -39,6 +39,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property list<string>|null $genres
  * @property list<string>|null $modes
  * @property CzechSupport|null $czech
+ * @property bool $in_game_pass
+ * @property CarbonImmutable|null $game_pass_leaves_at
  * @property list<array{source: string, score: int, count: int|null, url: string|null}>|null $reviews
  * @property string|null $boxart_url
  * @property string|null $banner_url
@@ -83,6 +85,8 @@ class Game extends Model
         'genres',
         'modes',
         'czech',
+        'in_game_pass',
+        'game_pass_leaves_at',
         'reviews',
         'boxart_url',
         'banner_url',
@@ -117,6 +121,8 @@ class Game extends Model
             'genres' => 'array',
             'modes' => 'array',
             'czech' => CzechSupport::class,
+            'in_game_pass' => 'boolean',
+            'game_pass_leaves_at' => 'immutable_datetime',
             'reviews' => 'array',
             'info_refreshed_at' => 'immutable_datetime',
             'steam_details_at' => 'immutable_datetime',
@@ -237,6 +243,16 @@ class Game extends Model
     public function storeListings(): HasMany
     {
         return $this->hasMany(StoreListing::class);
+    }
+
+    /**
+     * Aktivní bundly s hrou podle ITAD (R51) — přepisuje je cron.
+     *
+     * @return HasMany<GameBundle, $this>
+     */
+    public function bundles(): HasMany
+    {
+        return $this->hasMany(GameBundle::class);
     }
 
     /**

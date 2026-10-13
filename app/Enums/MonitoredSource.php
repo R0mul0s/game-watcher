@@ -30,6 +30,12 @@ enum MonitoredSource: string
 
     case PlayStation = 'playstation';
 
+    /** Game Pass sledovaných her z ITAD (R50) — doplňkové údaje */
+    case Subscriptions = 'subscriptions';
+
+    /** Aktivní bundly z ITAD (R51) — doplňkové údaje */
+    case Bundles = 'bundles';
+
     /** Obnova údajů her z ITAD (R34) — doplňkové údaje */
     case GameInfo = 'game_info';
 
@@ -64,12 +70,12 @@ enum MonitoredSource: string
 
     /**
      * Hlásí výpadek monitoringu (/health/zdroje)? Obnova údajů, Steam, Metacritic,
-     * HowLongToBeat a IGDB ne — údaje her, žánry, režimy, hodnocení, délka hraní
-     * a nadcházející hry jsou doplňkové a jejich výpadek neoznačí ani běh cronu
-     * jako chybný (R25, R33, R34, R44, R46).
+     * HowLongToBeat, IGDB, Game Pass a bundly ne — údaje her, žánry, režimy, hodnocení,
+     * délka hraní, nadcházející hry, předplatné a bundly jsou doplňkové a jejich
+     * výpadek neoznačí ani běh cronu jako chybný (R25, R33, R34, R44, R46, R50, R51).
      */
     public function isCritical(): bool
     {
-        return ! in_array($this, [self::GameInfo, self::Steam, self::Metacritic, self::Hltb, self::Igdb], true);
+        return ! in_array($this, [self::GameInfo, self::Steam, self::Metacritic, self::Hltb, self::Igdb, self::Subscriptions, self::Bundles], true);
     }
 }

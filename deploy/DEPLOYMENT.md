@@ -215,6 +215,7 @@ je jediná cesta, jak ji neztratit.
 | `migrations-2026-10-13-upcoming-releases.sql` | nadcházející hry (R46): tabulka `upcoming_releases` — prázdná, naplní ji první běh cronu s klíčem IGDB v `.env`; opakovatelný, pustit **po** délce hraní a **před** nahráním kódu | 2026-10-13 |
 | `migrations-2026-10-13-czech.sql` | čeština ve hře (R47): v `games` a `store_listings` sloupec `czech`; při prvním běhu vynuluje `games.steam_details_at`, aby cron po dávkách stáhl údaje ze Steamu znovu i s jazyky (PS Store doplní obnova cen); opakovatelný, pustit **po** nadcházejících hrách a **před** nahráním kódu | 2026-10-13 |
 | `migrations-2026-10-13-plus-leaving.sql` | odchod z katalogu PS Plus (R49): v `current_prices` sloupec `member_leaves_at` — prázdný, doplní ho obnova cen; opakovatelný, pustit **po** češtině a **před** nahráním kódu | |
+| `migrations-2026-10-13-game-pass-and-bundles.sql` | Game Pass a bundly (R50, R51): v `games` `in_game_pass` a `game_pass_leaves_at`, v `users` `has_game_pass` (vypnuto), ve `watchlist_items` `game_pass_notified_at` a `notified_bundles`, nová tabulka `game_bundles` — vše doplní cron; opakovatelný, pustit **po** odchodu z PS Plus a **před** nahráním kódu | |
 
 ## Nasazené verze
 

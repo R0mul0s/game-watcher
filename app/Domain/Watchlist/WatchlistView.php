@@ -43,7 +43,7 @@ final class WatchlistView
      */
     public function build(User $user, WatchlistFilters $filters, string $currency): array
     {
-        $games = $user->watchedGames()->with(['currentPrices', 'priceLows', 'storeListings'])->get();
+        $games = $user->watchedGames()->with(['currentPrices', 'priceLows', 'storeListings', 'bundles'])->get();
         $priceFilter = $filters->priceFilter();
         $items = $user->watchlistItemsByGame();
         $watchPlatforms = $items->map(fn (WatchlistItem $item): ?Platform => $item->platform);

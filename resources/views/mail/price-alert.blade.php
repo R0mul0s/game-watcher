@@ -9,7 +9,7 @@
 # {{ __('app.alerts.mail_heading') }}
 
 @foreach ($lines as $line)
-**[{{ $line['title'] }}]({{ $line['detailUrl'] }})** — **{{ $line['price'] }}** {{ $line['shop'] }}<br>
+**[{{ $line['title'] }}]({{ $line['detailUrl'] }})**@if ($line['price'] !== '') — **{{ $line['price'] }}**@endif {{ $line['shop'] }}<br>
 {{ $line['reason'] }}@if ($line['shopUrl']) · [{{ __('app.alerts.open_shop') }}]({{ $line['shopUrl'] }})@endif
 
 

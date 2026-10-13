@@ -25,6 +25,7 @@ const form = useForm({
     notify_email: props.settings.notifyEmail,
     notify_weekly: props.settings.notifyWeekly,
     has_ps_plus: props.settings.hasPsPlus,
+    has_game_pass: props.settings.hasGamePass,
 });
 
 /** Umí prohlížeč upozornění (zjišťuje se až v prohlížeči). */
@@ -140,6 +141,13 @@ function test() {
                     <span class="switch__label">{{ t('settings.ps_plus') }}</span>
                 </label>
                 <p class="settings__hint">{{ t('settings.ps_plus_hint') }}</p>
+                <!-- Game Pass (R50) -->
+                <label class="switch">
+                    <input v-model="form.has_game_pass" class="switch__input" type="checkbox" />
+                    <span class="switch__track" aria-hidden="true"></span>
+                    <span class="switch__label">{{ t('settings.game_pass') }}</span>
+                </label>
+                <p class="settings__hint">{{ t('settings.game_pass_hint') }}</p>
 
                 <div class="settings__actions">
                     <button type="submit" class="button button--primary" :disabled="form.processing || !form.isDirty">

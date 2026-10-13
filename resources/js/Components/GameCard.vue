@@ -49,6 +49,8 @@ const playstation = computed(() => {
             <!-- Štítky přes obrázek — druh, 18+, čeština (R47) a hlídaná platforma (R24) -->
             <span class="game-card__chips">
                 <GameBadges :type="game.type" :mature="game.isMature" :czech="game.czech" />
+                <!-- Game Pass (R50) -->
+                <span v-if="game.gamePass" class="badge badge--success">{{ t('dashboard.game_pass') }}</span>
                 <span v-if="game.watchPlatform" class="platform" :class="`platform--${game.watchPlatform}`">
                     {{ t(`game.watch_platforms.${game.watchPlatform}`) }}
                 </span>
@@ -106,6 +108,14 @@ const playstation = computed(() => {
                 <!-- Měsíční hra PS Plus Essential (R35) — u nejlevnější nabídky i u PS Store zvlášť -->
                 <span v-if="best?.memberFree || playstation?.memberFree" class="game-card__plus">{{ t('prices.plus_free') }}</span>
                 <span v-else-if="!keyshopsRanked && best?.member" class="game-card__plus">{{ t('prices.plus_price', { price: formatPrice(best.member.price, page.props.locale) }) }}</span>
+                <!-- Nejlevnější aktivní bundle (R51) -->
+                <span v-if="game.bundle" class="game-card__bundle">
+                    {{
+                        game.bundle.price
+                            ? t('dashboard.bundle', { price: formatPrice(game.bundle.price, page.props.locale), shop: game.bundle.shop })
+                            : t('dashboard.bundle_custom', { shop: game.bundle.shop })
+                    }}
+                </span>
                 <!-- Odchod z katalogu PS Plus (R49) -->
                 <span v-if="game.plusLeavesAt" class="game-card__plus">
                     {{ t('dashboard.plus_leaving', { date: formatDateInZone(game.plusLeavesAt, page.props.locale, page.props.timezone) }) }}

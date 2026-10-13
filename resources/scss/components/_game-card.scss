@@ -228,6 +228,13 @@
         font-size: var(--font-size-xs);
     }
 
+    // Hra v aktivním bundlu (R51)
+    &__bundle {
+        color: var(--color-neon-amber);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+    }
+
     &__keyshops {
         color: var(--color-neon-magenta);
         font-family: var(--font-mono);

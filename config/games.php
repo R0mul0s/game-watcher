@@ -268,6 +268,13 @@ return [
             'key' => env('GAMES_ITAD_API_KEY'),
             'country' => 'CZ',
             'timeout_seconds' => 10,
+            // Předplatné (R50): ITAD vede Game Pass pod jedním ID bez rozlišení
+            // PC / Ultimate; jiná předplatná se nehlídají (zvolil uživatel)
+            'game_pass_id' => 6,
+            // Aktivní bundly (R51): stránka seznamu má nejvýš 50 položek
+            // (13. 10. 2026 jich bylo 34), víc stránek jen pojistka
+            'bundles_page_size' => 50,
+            'bundles_max_pages' => 4,
         ],
         'ggdeals' => [
             'url' => env('GAMES_GGDEALS_URL', 'https://api.gg.deals/v1'),

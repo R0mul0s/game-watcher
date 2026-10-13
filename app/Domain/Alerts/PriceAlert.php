@@ -15,11 +15,14 @@ namespace App\Domain\Alerts;
 use App\Domain\Pricing\Money;
 use App\Enums\AlertReason;
 use App\Models\Game;
+use App\Models\GameBundle;
 use App\Models\WatchlistItem;
+use Carbon\CarbonImmutable;
 
 /**
  * Cena je v měně zobrazení účtu (R14); obchod a odkaz jsou nejlevnější
- * nabídka podle hlídané platformy, včetně obchodů s klíči (R26).
+ * nabídka podle hlídané platformy, včetně obchodů s klíči (R26). Game Pass
+ * (R50) cenu nemá, bundle „Build your own“ (R51) taky ne.
  */
 final readonly class PriceAlert
 {
@@ -27,7 +30,7 @@ final readonly class PriceAlert
         public WatchlistItem $item,
         public Game $game,
         public AlertReason $reason,
-        public Money $price,
+        public ?Money $price,
         public string $shop,
         public ?string $url,
         public ?Money $target,
@@ -35,5 +38,9 @@ final readonly class PriceAlert
         public bool $keyshops = false,
         // Nabídka je ve slevě — u vydané hry tím odešla i „první sleva“ (R41)
         public bool $discounted = false,
+        // Bundle, na který upozornění je (R51)
+        public ?GameBundle $bundle = null,
+        // Do kdy nabídka platí — konec bundlu, odchod z Game Passu
+        public ?CarbonImmutable $until = null,
     ) {}
 }

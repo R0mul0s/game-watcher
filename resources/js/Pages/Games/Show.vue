@@ -11,6 +11,7 @@
 <script setup>
 import BackLink from '@/Components/BackLink.vue';
 import GameBadges from '@/Components/GameBadges.vue';
+import GameExtras from '@/Components/GameExtras.vue';
 import GamePlaytime from '@/Components/GamePlaytime.vue';
 import GameRatings from '@/Components/GameRatings.vue';
 import PricePanel from '@/Components/PricePanel.vue';
@@ -233,6 +234,7 @@ function toggleWatch() {
                     <PriceChart v-if="chart" :chart="chart" :watch-platform="game.watchPlatform" class="game-detail__prices" />
                 </Deferred>
                 <StoreListings :listings="game.listings" :connect-url="game.connectUrl" class="game-detail__prices" />
+                <GameExtras :game-pass="game.gamePass" :bundles="game.bundles" class="game-detail__prices" />
 
                 <GameRatings :reviews="game.reviews" :player-ratings="game.playerRatings" :metacritic="game.metacritic" />
                 <GamePlaytime :playtime="game.playtime" />

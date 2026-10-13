@@ -30,6 +30,7 @@ use Illuminate\Support\Collection;
  * @property string $display_currency
  * @property bool $notify_email
  * @property bool $has_ps_plus
+ * @property bool $has_game_pass
  * @property bool $notify_weekly
  * @property CarbonImmutable|null $weekly_digest_at
  */
@@ -48,6 +49,7 @@ class User extends Authenticatable
         'display_currency',
         'notify_email',
         'has_ps_plus',
+        'has_game_pass',
         'notify_weekly',
         'weekly_digest_at',
     ];
@@ -61,6 +63,7 @@ class User extends Authenticatable
     protected $attributes = [
         'notify_email' => true,
         'has_ps_plus' => false,
+        'has_game_pass' => false,
         'notify_weekly' => true,
     ];
 
@@ -83,6 +86,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'notify_email' => 'boolean',
             'has_ps_plus' => 'boolean',
+            'has_game_pass' => 'boolean',
             'notify_weekly' => 'boolean',
             'weekly_digest_at' => 'immutable_datetime',
         ];

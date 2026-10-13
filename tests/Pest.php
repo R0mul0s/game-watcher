@@ -157,6 +157,14 @@ function fakeApis(array $overrides = []): void
             jsonFixture('itad/prices'),
             fn (array $game): bool => in_array($game['id'], $request->data(), true),
         ))),
+        // Předplatná (R50) — zachycená 13. 10. 2026; Game Pass má z fixtur jen Fable,
+        // hry bez předplatného v odpovědi chybí jako ve skutečném API
+        'api.isthereanydeal.com/games/subs/v1*' => fn (Request $request): PromiseInterface => Http::response(array_values(array_filter(
+            jsonFixture('itad/subs'),
+            fn (array $game): bool => in_array($game['id'], $request->data(), true),
+        ))),
+        // Aktivní bundly (R51) — 4 z 34 zachycených 13. 10. 2026, bez obrázků
+        'api.isthereanydeal.com/bundles/v1*' => Http::response(jsonFixture('itad/bundles')),
         'api.gg.deals/*' => Http::response(jsonFixture('ggdeals/prices')),
         // Steam appdetails (R25) — zachycené hry podle appids, jinou Steam nezná
         'store.steampowered.com/api/appdetails*' => fn (Request $request): PromiseInterface => Http::response(

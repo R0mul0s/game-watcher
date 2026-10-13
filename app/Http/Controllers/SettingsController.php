@@ -40,6 +40,7 @@ class SettingsController extends Controller
                 'notifyEmail' => $user->notify_email,
                 'notifyWeekly' => $user->notify_weekly,
                 'hasPsPlus' => $user->has_ps_plus,
+                'hasGamePass' => $user->has_game_pass,
                 'devices' => $user->pushSubscriptions()->count(),
             ],
             // Bez klíčů VAPID se upozornění na zařízení nenabízí
@@ -63,6 +64,7 @@ class SettingsController extends Controller
             'notify_email' => $request->boolean('notify_email'),
             'notify_weekly' => $request->boolean('notify_weekly'),
             'has_ps_plus' => $request->boolean('has_ps_plus'),
+            'has_game_pass' => $request->boolean('has_game_pass'),
         ]);
 
         return Inertia::flash('success', __('app.alerts.settings_saved'))->back();
