@@ -42,8 +42,9 @@
     Header always set X-Robots-Tag "noindex, nofollow"
     # Skripty i písma jen z vlastní domény (žádný inline skript v šablonách není,
     # písma jsou ve buildu, R6). Inline styly potřebuje indikátor načítání Inertie.
-    # Obrázky her jdou z CDN IsThereAnyDeal (R10) a u exkluzivit PlayStationu z jeho obrázkového API (R22).
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://assets.isthereanydeal.com https://image.api.playstation.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+    # Obrázky her jdou z CDN IsThereAnyDeal (R10), u exkluzivit PlayStationu z jeho obrázkového API (R22)
+    # a u nadcházejících her z CDN IGDB (R46).
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://assets.isthereanydeal.com https://image.api.playstation.com https://images.igdb.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
 
     # HSTS jen na HTTPS odpovědi; max-age = 1 rok.
     <If "req('X-Forwarded-Proto') == 'https'">

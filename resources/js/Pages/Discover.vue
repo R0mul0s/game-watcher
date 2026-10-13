@@ -3,12 +3,14 @@
     podle štítků (předvolené pro hraní ve dvou a nejčastější štítky sledovaných
     her), volitelně jen historická minima, řazení. Stav je v adrese, filtruje
     ITAD (server, v cache); hru jde rovnou přidat ke sledování. Na telefonu
-    jsou štítky v okně, které vyjede zespodu (FilterSheet, R45).
+    jsou štítky v okně, které vyjede zespodu (FilterSheet, R45). Druhá záložka
+    jsou nadcházející hry (DiscoverUpcoming.vue, R46).
 
     @author Roman Hlaváček
     @created 2026-10-13
 -->
 <script setup>
+import DiscoverTabs from '@/Components/DiscoverTabs.vue';
 import FilterSheet from '@/Components/FilterSheet.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { formatDateInZone, formatPrice } from '@/lib/format';
@@ -22,6 +24,7 @@ const props = defineProps({
     unavailable: { type: Boolean, default: false },
     filters: { type: Object, required: true },
     discoverUrl: { type: String, required: true },
+    upcomingUrl: { type: String, required: true },
     watchUrl: { type: String, required: true },
 });
 
@@ -92,6 +95,8 @@ function watch(deal) {
                 <p class="page__subtitle">{{ t('discover.subtitle') }}</p>
             </div>
         </header>
+
+        <DiscoverTabs active="deals" :discover-url="discoverUrl" :upcoming-url="upcomingUrl" />
 
         <section class="panel discover-filters" :aria-label="t('filters.title')">
             <div class="discover-filters__row">

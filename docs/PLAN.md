@@ -52,6 +52,7 @@ jak se její cena vyvíjí a dostat upozornění, když spadne pod zvolenou mez.
 - **Týdenní souhrn** (R36): v pondělí e-mail s hrami, které za týden zlevnily (volba v nastavení)
 - **Na telefonu** (R45): šipka zpět nahoru vpravo dole, filtry přehledu a štítky Objevit v okně, které vyjede zespodu, s plovoucím tlačítkem „Filtry“
 - **Délka hraní** (R44): z HowLongToBeat (hlavní příběh, s vedlejšími úkoly, na 100 %) na detailu, hlavní příběh a cena za hodinu na kartě, řazení „od nejlevnější hodiny hraní“; hru, kterou hledání podle názvu nenašlo, jde připojit odkazem
+- **Nadcházející hry** (R46): záložka stránky Objevit — hry z IGDB, které vyjdou do roka na PC nebo PS5 (i start předběžného přístupu), s datem v přesnosti zdroje (den, měsíc, čtvrtletí, rok), filtry platforma, žánr a co-op, řazení od nejbližšího vydání nebo nejočekávanější; „Sledovat“ hru spáruje s ITAD a pak přijde upozornění na vydání a první slevu
 - **Objevit** (R43): slevy her z IsThereAnyDeal, které uživatel ještě nesleduje — podle štítků sledovaných her a předvolených štítků pro hraní ve dvou, jen historická minima, řazení; hru jde rovnou přidat
 - **Kup, nebo počkej?** (R42): na detailu hry doporučení z historie cen ITAD za poslední rok — v kolika procentech dní byla hra levněji, roční minimum, kdy byla naposledy u minima a nejbližší výprodej z kalendáře Steamu s loňskou cenou
 - **Nevydané hry** (R41): hra sledovaná před vydáním pošle upozornění „právě vyšlo“ a „první sleva od vydání“ (i nad cílovou cenou); karta i detail ukazují odpočet do vydání, filtr Vydané / Nevydané; nevydané hry se z ITAD obnovují každé 3 dny
@@ -134,19 +135,27 @@ Ze 253 her při `hypes ≥ 5`: **242 má Steam App ID** (`external_games`, zdroj
 | **IGDB** (Twitch) | ✅ dostupné (bez klíče 401) — oficiální API, zdarma pro nekomerční použití, klíč přes registraci aplikace na dev.twitch.tv (client credentials) | data vydání po platformách a regionech (`release_dates`), `hypes` a `popularity_primitives` (i Steam wishlisty), obaly, žánry, **`multiplayer_modes`** (offline co-op, split screen) | přes `external_games` (Steam App ID; PlayStation Store jen US) | limit 4 požadavky/s, 500 výsledků na dotaz; očekává se uvedení zdroje; platformy PC = 6, PS5 = 167 |
 | RAWG, GiantBomb, MobyGames | — | — | — | slabší data, nejistý provoz nebo placené — nepoužívat |
 
-Řešení podle R46 (podrobnosti se upřesní po prvních dotazech na IGDB s klíčem):
+Řešení (R46, hotovo 2026-10-13):
 
 - **Hry z IGDB nejdou do `games`.** Samostatná tabulka `upcoming_releases` (IGDB ID
-  unikátně, název, datum vydání a jeho přesnost — den / měsíc / čtvrtletí, platformy,
-  obal, popularita, žánry, režimy hry, Steam App ID z `external_games`) plněná krokem
-  cronu jednou denně dávkou; hry po vydání se mažou
-- **Záložka „Nadcházející“ na stránce Objevit** (vedle dnešních slev, R43): filtr
-  platformy, žánru a hráčů, řazení podle data nebo popularity, skrytí už sledovaných her
-- **Sledovat až na kliknutí** — teprve tehdy se hra spáruje s ITAD (Steam App ID přesně
-  přes `games/lookup`, exkluzivita PS5 bez Steamu přes `lookupTitle()`, R22) a projde
-  běžným `ImportGame`; dál ji hlídá `ReleaseWatch` (R41)
-- Nový zdroj zapisuje stav přes `SourceMonitor` (R29); změna formátu je výpadek,
-  nikdy důvod mazat seznam
+  unikátně, název, vydání po platformách s přesností a příznakem předběžného přístupu,
+  obal a banner, popularita, žánry, co-op, Steam App ID z `external_games`, ITAD ID po
+  spárování). Krok cronu „nadcházející hry“ (`RefreshUpcomingReleases`) ji každý běh
+  přepíše jedním dotazem — hry, které vyšly nebo z dotazu vypadly, smaže; prázdná
+  odpověď nic nesmaže. **Budoucí start předběžného přístupu se počítá jako vydání**
+  se štítkem (27 z 266 her ho mělo jako jediné datum — na PC se tím dnem dá koupit)
+- **Záložka „Nadcházející“ na stránce Objevit** (`/objevit/nadchazejici`, vedle slev,
+  R43): platforma, nejčastější žánry, „jen co-op“ (režim kooperace nebo rozdělené
+  obrazovky), řazení od nejbližšího vydání (při filtru platformy podle vydání na ní)
+  nebo od nejočekávanější; hry, které uživatel sleduje (ITAD ID nebo Steam App ID),
+  se vynechají
+- **Sledovat až na kliknutí** (`WatchUpcomingRelease`) — hra se spáruje s ITAD (Steam
+  App ID přesně přes `games/lookup`, jinak přesný název přes `lookupTitle()`, R22)
+  a projde běžným `WatchGame`; dál ji hlídá `ReleaseWatch` (R41). Hra jen pro PS5 se
+  hlídá na PlayStationu a přejde na detail k připojení PS Store (R24). Hru, kterou
+  ITAD nezná (God of War Laufey 13. 10. 2026), nepřidá a řekne proč
+- Stav zdroje „IGDB — nadcházející hry“ přes `SourceMonitor` (R29), doplňkový —
+  výpadek běh cronu neoznačí jako chybný
 
 ---
 
@@ -184,6 +193,7 @@ Ze 253 her při `hypes ≥ 5`: **242 má Steam App ID** (`external_games`, zdroj
 | `current_prices` (od R20) | navíc `platform` (pc / playstation), `edition`, `member_amount` (cena s PS Plus), `member_included` (v katalogu PS Plus Extra) |
 | `games` (od R33) | navíc `metacritic_slug`, `metacritic_score`, `metacritic_reviews`, `metacritic_checked_at` — Metascore přímo z Metacritic pro hry bez něj v ITAD; `store_listings` navíc `star_rating` a `star_ratings_count` (hodnocení hráčů na PS Store) |
 | `current_prices` (od R35) | navíc `member_tier` (úroveň katalogu PS Plus: extra / premium) a `member_free` (měsíční hra PS Plus Essential); `users` (od R36) navíc `notify_weekly` a `weekly_digest_at` |
+| `upcoming_releases` | nadcházející hry z IGDB (R46) — mimo katalog: `igdb_id` unikátně, `title`, `hypes`, `steam_app_id`, `itad_id` (po spárování), obrázky IGDB, `genres`, `coop`, po platformách `pc_*` / `playstation_*` (`_release_on`, `_release_precision` — enum `ReleasePrecision`, `_early_access`), `next_release_on` pro řazení; celou ji přepisuje cron |
 | `source_statuses` | stav zdrojů (R29): řádek na zdroj (`source` unikátně, enum `MonitoredSource`), `last_run_at`, `last_success_at`, `last_failure_at`, `last_error`, `failures_in_row`, `processed` / `expected` — přepisuje ho každý běh cronu, historie se nevede |
 
 Tabulky `sessions`, `password_reset_tokens` ani tabulky fronty nejsou (R2, R4, R5).
@@ -261,7 +271,7 @@ nesmí zastavit ostatní.
 | 5 | **Přímé zdroje** — PlayStation Store, Kinguin, Eneba: připojení produktu ke hře přes URL, stahování v cronu, testy nad zachycenými odpověďmi, hlídání změny formátu. Spolu s PS Store pokročilé filtry přehledu (R21) | PlayStation Store a filtry hotovo a nasazeno 2026-10-12 (R20–R25); Kinguin a Eneba odloženo s O4 (TODO) |
 | 6 | **Hlídání cen** — cílová cena, upozornění e-mailem a Web Push (R13), „slevy dne“ ve sledovaných | hotovo a nasazeno 2026-10-12 (R26, R27, `b261ed2`) |
 | 7 | **Historie cen** — graf vývoje ceny (ECharts) | hotovo a nasazeno 2026-10-12 (R28, `3948076`) |
-| 8 | **Nadcházející hry** — seznam připravovaných her pro PC a PS5 nezávisle na ITAD (tabulka `upcoming_releases`, krok cronu), stránka s filtry, sledování jedním klikem se spárováním s ITAD (sekce 2, R46) | rozhodnuto 2026-10-13 (R46), čeká na klíč IGDB |
+| 8 | **Nadcházející hry** — seznam připravovaných her pro PC a PS5 nezávisle na ITAD (tabulka `upcoming_releases`, krok cronu), stránka s filtry, sledování jedním klikem se spárováním s ITAD (sekce 2, R46) | hotovo 2026-10-13 (R46) |
 
 ---
 
@@ -328,4 +338,4 @@ nesmí zastavit ostatní.
 | R43 | 2026-10-13 | **Stránka Objevit — slevy her, které uživatel nesleduje.** Nová položka hlavní navigace `/objevit`: `DiscoverDeals` volá ITAD `deals/v2` (země CZ, jen hry, volitelně jen historická minima = značka `H`, štítky `tagsUnion`, řazení `DiscoverSort` → `rank`, `-trending`, `-cut`, `price`, `-time` — ověřeno proti API), výsledek drží cache 3 h na kombinaci filtrů (limit ITAD, R15) a omezení jako hledání. Hry, které uživatel sleduje, se vynechají, hry z katalogu odkazují na detail; „Sledovat“ přidá hru jako z hledání. Nabídka štítků: předvolené pro hraní ve dvou (`discover.preset_tags`: Local Co-Op, Co-op, Split Screen) a nejčastější štítky sledovaných her (Steam, anglicky jako v ITAD). Jen obchody pro PC — PlayStation Store seznam slev nenabízí. Navigace na telefonu menším písmem, aby se vešly čtyři položky | Nápad z přehledu možností (2026-10-13). Žánry ze Steamu (`games.genres`) ITAD filtrovat neumí, štítky ano — a štítky her z ITAD už katalog má. |
 | R44 | 2026-10-13 | **Délka hraní z HowLongToBeat a cena za hodinu.** Zdroj zvolil uživatel (místo oficiálního IGDB přes Twitch nebo ručního zadávání): neveřejné API webu HLTB — `HltbClient` dělá totéž co web (token z `/api/search/site/init` v cache, hledání `POST /api/search/site` s hlavičkou `x-auth-token`, při 403 jednou nový token; stránka hry `/game/<id>` s daty v `__NEXT_DATA__`). Token je vázaný na IP a User-Agent, proto vždy IPv4. Hra se najde podle názvu jen při přesné shodě písmen a číslic (napřed celý název, pak bez přípony edice, při víc shodách rozhodne rok vydání); jinak odkaz od uživatele (`HltbUrl::parse()`, SSRF). Uloží se `games.hltb_id` a délky v minutách; cron (`RefreshPlaytimes`, krok „délka hraní“, `MonitoredSource::Hltb` — doplňkový) po 10 hrách s pauzou 1 s, obnova po 30 dnech, DLC se nehledají; přidání hry ji zkusí hned. Změna formátu = výpadek, nikdy se neuloží odhad ani nesmažou dosavadní údaje. Cena za hodinu = cena ÷ hlavní příběh: na kartě podle volby „Cena“ (R30), na detailu nejlevnější oficiální nabídka hlídané platformy; nové řazení přehledu `per_hour` | Nápad z přehledu možností (2026-10-13). HLTB má nejpřesnější data, ale API se může kdykoli změnit — proto přísná shoda názvu, odkaz jako záloha a hlídání ve stavu zdrojů. Z hostingu ověřeno diagnostikou 13. 10. 2026 (R7). |
 | R45 | 2026-10-13 | **Návrat nahoru a filtry na telefonu v okně.** Vpravo dole po sjetí o víc než výšku okna neonový šestiúhelník jako logo se šipkou nahoru (`ScrollTopButton` v `AppLayout`; s omezeným pohybem skok místo plynulého posunu, fokus na začátek obsahu). Na telefonu (pod `$breakpoint-md`, v JS `PHONE_QUERY` z `lib/media.js`) jsou volby filtrů přehledu i štítky stránky Objevit v okně, které vyjede zespodu (`FilterSheet`: nativní `<dialog>`, obsah se tam přesune `Teleport`em, na širší obrazovce zůstane na místě). Okno otevře tlačítko „Zobrazit filtry“ u hledání nebo plovoucí „Filtry“ vlevo dole s počtem zapnutých filtrů — to se ukáže, až filtry odjedou z obrazovky. Filtry se používají hned, tlačítko „Zobrazit N her“ okno jen zavře. Plovoucí tlačítko je teleportované do `<body>` — panel má `backdrop-filter` a `position: fixed` by se uvnitř vztahovalo k panelu | Podnět uživatele z telefonu: rozbalené filtry posunuly seznam o celou obrazovku a po sjetí dolů k nim nebyla cesta zpět. |
-| R46 | 2026-10-13 | **Nadcházející hry z IGDB, párování s ITAD přes Steam App ID** (O7, etapa 8). Seznam připravovaných her pro **PC a PS5** s datem vydání **do 12 měsíců** (i jen měsíc nebo čtvrtletí, bez data „TBD“ ne) nad prahem popularity IGDB (`hypes ≥ 5` — 13. 10. 2026 to bylo 253 her; nadcházející po platformách, bez zrušených a edicí, sekce 2). Ukládá se do samostatné tabulky `upcoming_releases`, ne do `games` (identita hry zůstává ITAD ID, R10); s ITAD se hra spáruje až při kliknutí na „Sledovat“ (Steam App ID z `external_games` → `games/lookup`, exkluzivita PS5 přes `lookupTitle()`, R22). Zobrazení jako **záložka „Nadcházející“ na stránce Objevit** (R43). **Jen seznam** — upozornění chodí dál jen na sledované hry (R41), týdenní souhrn se nemění. Klíč: `GAMES_IGDB_CLIENT_ID` a `GAMES_IGDB_CLIENT_SECRET` (aplikace na dev.twitch.tv, token client credentials v cache) | Průzkum v sekci 2: IGDB je jediný oficiální zdroj pro PC i PS5 s popularitou a údaji o couch co-op (`multiplayer_modes`); Steam „Popular Upcoming“ a PS Store GraphQL jsou neoficiální a PS Store nemá popularitu. ITAD zná i nevydané hry ze Steamu a páruje je přesně. Umístění, rozsah a „jen seznam“ zvolil uživatel. |
+| R46 | 2026-10-13 | **Nadcházející hry z IGDB, párování s ITAD přes Steam App ID** (O7, etapa 8). Seznam připravovaných her pro **PC a PS5** s datem vydání **do 12 měsíců** (i jen měsíc nebo čtvrtletí, bez data „TBD“ ne) nad prahem popularity IGDB (`hypes ≥ 5` — 13. 10. 2026 to bylo 253 her; nadcházející po platformách, bez zrušených a edicí, sekce 2). Ukládá se do samostatné tabulky `upcoming_releases`, ne do `games` (identita hry zůstává ITAD ID, R10); s ITAD se hra spáruje až při kliknutí na „Sledovat“ (Steam App ID z `external_games` → `games/lookup`, exkluzivita PS5 přes `lookupTitle()`, R22). Zobrazení jako **záložka „Nadcházející“ na stránce Objevit** (R43). **Jen seznam** — upozornění chodí dál jen na sledované hry (R41), týdenní souhrn se nemění. Klíč: `GAMES_IGDB_CLIENT_ID` a `GAMES_IGDB_CLIENT_SECRET` (aplikace na dev.twitch.tv, token client credentials v cache). Při implementaci doplněno: start předběžného přístupu se počítá jako vydání se štítkem, seznam se obnovuje každý běh cronu (jeden dotaz), ve filtru jen nejčastější žánry (`upcoming.genre_suggestions`) | Průzkum v sekci 2: IGDB je jediný oficiální zdroj pro PC i PS5 s popularitou a údaji o couch co-op (`multiplayer_modes`); Steam „Popular Upcoming“ a PS Store GraphQL jsou neoficiální a PS Store nemá popularitu. ITAD zná i nevydané hry ze Steamu a páruje je přesně. Umístění, rozsah a „jen seznam“ zvolil uživatel. |

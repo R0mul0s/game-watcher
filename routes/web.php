@@ -26,6 +26,7 @@ use App\Http\Controllers\ServiceWorkerController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SourceStatusController;
 use App\Http\Controllers\StoreListingController;
+use App\Http\Controllers\UpcomingController;
 use App\Http\Controllers\WatchlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +62,12 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/objevit', DiscoverController::class)
         ->middleware('throttle:catalog-search')
         ->name('discover');
+    // Nadcházející hry z IGDB (R46) — stránka čte jen vlastní tabulku; sledování
+    // páruje hru s ITAD a převezme ji, omezené jako přidání hry
+    Route::get('/objevit/nadchazejici', [UpcomingController::class, 'index'])->name('discover.upcoming');
+    Route::post('/objevit/nadchazejici/{upcomingRelease}', [UpcomingController::class, 'watch'])
+        ->middleware('throttle:'.config('games.listings.max_attempts_per_minute').',1')
+        ->name('discover.upcoming.watch');
     Route::put('/hry/{game}/sledovani', [WatchlistController::class, 'update'])->name('watchlist.update');
     // Cílová cena pro upozornění (etapa 6, R26)
     Route::put('/hry/{game}/cil', [WatchlistController::class, 'target'])->name('watchlist.target');

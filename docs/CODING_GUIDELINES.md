@@ -112,6 +112,8 @@ Eloquent model                 ← perzistence
 | `app/Domain/Pricing/PriceChart.php` | graf vývoje ceny (R28) — denní řady z historie ITAD a vlastní `price_history` |
 | `app/Domain/Alerts` | upozornění na ceny (R26) — vyhodnocení (`PriceWatch`), texty (`AlertPresenter`), Web Push (`PushSender`, vzor z Počasí), rozeslání v cronu (`Actions/SendPriceAlerts`), týdenní souhrn (`Actions/SendWeeklyDigests`, R36) |
 | `app/Domain/Metacritic` | Metascore z Metacritic pro hry mimo ITAD (R33) — odkaz (`MetacriticUrl`, jediné ověření hostitele), rozbor JSON-LD (`MetacriticGame`), stahování (`MetacriticClient`), obnova v cronu a při přidání (`Actions/RefreshMetascores`), odkaz od uživatele (`Actions/LinkMetacritic`) |
+| `app/Domain/Igdb` | nadcházející hry z IGDB (R46) — klient s tokenem aplikace z Twitche (`IgdbClient`), hra s vydáním po platformách (`IgdbGame`), obnova seznamu v cronu (`Actions/RefreshUpcomingReleases`) |
+| `app/Domain/Discover` | stránka Objevit — slevy z ITAD (`DiscoverDeals`, `DiscoverFilters`, R43), záložka Nadcházející (`UpcomingReleases`, `UpcomingFilters`) a sledování hry z ní se spárováním s ITAD (`Actions/WatchUpcomingRelease`, R46) |
 | `app/Domain/Steam` | Steam appdetails (R25) — žánry a režimy hry (`SteamClient`, `SteamAppDetails`) |
 | `app/Domain/PlayStation` | PlayStation Store (R20, R22) — odkaz z obchodu i ze stránky hry na playstation.com (`PlayStationUrl`, jediné místo ověření hostitele), rozbor stránky (`PlayStationPage`), stahování (`PlayStationClient`), produkt z odkazu (`Actions/FindPlayStationProduct`, R24), stránky her k výsledkům hledání (`Actions/FindPlayStationGamePages`, R24), připojení a odpojení produktu (`Actions/ConnectPlayStationProduct`, `Actions/DisconnectStoreListing`) |
 | `app/Domain/Pricing` | ceny — částka (`Money`), stažení (`Actions/RefreshPrices`), uložení (`StorePrices`), data pro stránky v měně účtu (`PriceBoard`) (R18); přímé zdroje v etapě 5 |
@@ -167,6 +169,7 @@ Eloquent model                 ← perzistence
 - Účet se sledovanými hrami i s cenami z fixtures: `watcherOf([BIOMUTANT_ID, …])`
 - Stránky PS Store jsou zkrácené skutečné stránky (jen JSON skripty `env:*` s položkami Product, Concept a GameCTA) — `psnFixture('product-…')`; nové se dělají stejně, ne ručně psaným JSON
 - Stránky Metacritic jsou zkrácené skutečné stránky (jen `<title>` a JSON-LD) — `metacriticFixture('saros')`
+- Seznam IGDB je zkrácená skutečná odpověď dotazu `IgdbClient` z 13. 10. 2026 (8 her: obě platformy, jen PS5, vyšlo na PC, předběžný přístup, co-op) — testy nadcházejících her běží s časem 13. 10. 2026; token Twitche je vymyšlený
 
 ### Error handling
 - Doménové výjimky jako vlastní třídy, ne holé `\Exception`
@@ -325,7 +328,7 @@ a s omezeným pohybem.
 - **Žádná registrace ani obnova hesla** — účty jen příkazem `games:create-user`; heslo nikdy jako parametr příkazu, nikdy v repu ani v logu (R4)
 - Tajemství v `.env`, nikdy v repu — `.env.example` má prázdné hodnoty
 - CSRF všude kromě cron URL (ta je jen GET a mimo `web`)
-- **CSP bez cizích domén** pro skripty a písma; výjimkou jsou jen obrázky her z CDN ITAD a z obrázkového API PlayStationu (`img-src https://assets.isthereanydeal.com https://image.api.playstation.com`, R22) — nový zdroj obrázků se přidává jmenovitě
+- **CSP bez cizích domén** pro skripty a písma; výjimkou jsou jen obrázky her z CDN ITAD, z obrázkového API PlayStationu a z CDN IGDB (`img-src https://assets.isthereanydeal.com https://image.api.playstation.com https://images.igdb.com`, R22, R46) — nový zdroj obrázků se přidává jmenovitě
 - **SSRF:** server volá jen adresy zdrojů z konfigurace a URL produktů s povoleným hostitelem (sekce 3)
 
 ---

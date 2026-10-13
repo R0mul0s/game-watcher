@@ -43,6 +43,10 @@ const BIOMUTANT_ID = '018d937f-2e7e-7025-89c4-5e9e7becf198';
 const ALAN_WAKE_2_ID = '018d937f-7598-73d1-9435-6d3358dd5f98';
 /** Exkluzivita PS5 — v ITAD jen zástupný záznam bez druhu, obrázků a obchodů (R22). */
 const SAROS_ID = '019e509d-2701-7364-a18e-ea16dd3f5aa4';
+/** Nadcházející hry ze zachyceného seznamu IGDB (tests/Fixtures/igdb/, R46). */
+const FABLE_ID = '018d937f-4b7e-7321-bea0-0a3d69263d30';
+const FABLE_STEAM_ID = 2769570;
+const GTA_VI_ID = '019e3a88-379d-701c-9a03-5054b5450244';
 
 /** Produkty PlayStation Store ze zachycených stránek (tests/Fixtures/playstation/). */
 const PSN_CONTROL_RESONANT = 'EP5291-PPSA34547_00-0210080241603648';
@@ -125,6 +129,11 @@ function fakeApis(array $overrides = []): void
         'api.isthereanydeal.com/games/lookup/v1?appid=597820' => Http::response(jsonFixture('itad/lookup-biomutant')),
         'api.isthereanydeal.com/games/lookup/v1?title=Saros' => Http::response(jsonFixture('itad/lookup-saros')),
         'api.isthereanydeal.com/games/info/v2?id='.SAROS_ID => Http::response(jsonFixture('itad/info-saros')),
+        // Nadcházející hry (R46) — Fable podle Steam App ID, GTA VI (jen PS5) podle názvu
+        'api.isthereanydeal.com/games/lookup/v1?appid='.FABLE_STEAM_ID => Http::response(jsonFixture('itad/lookup-fable')),
+        'api.isthereanydeal.com/games/lookup/v1?title=Grand*' => Http::response(jsonFixture('itad/lookup-gta-vi')),
+        'api.isthereanydeal.com/games/info/v2?id='.FABLE_ID => Http::response(jsonFixture('itad/info-fable')),
+        'api.isthereanydeal.com/games/info/v2?id='.GTA_VI_ID => Http::response(jsonFixture('itad/info-gta-vi')),
         'api.isthereanydeal.com/games/lookup/v1*' => Http::response(jsonFixture('itad/lookup-not-found')),
         'api.isthereanydeal.com/games/info/v2?id='.CONTROL_RESONANT_ID => Http::response(jsonFixture('itad/info-control-resonant')),
         'api.isthereanydeal.com/games/info/v2?id='.BIOMUTANT_ID => Http::response(jsonFixture('itad/info-biomutant')),
@@ -180,6 +189,9 @@ function fakeApis(array $overrides = []): void
         'howlongtobeat.com/game/48568' => Http::response(hltbFixture(48568)),
         'howlongtobeat.com/game/101237' => Http::response(hltbFixture(101237)),
         'howlongtobeat.com/*' => Http::response('Not Found', 404),
+        // IGDB (R46) — token aplikace (vymyšlený) a zachycený seznam nadcházejících her
+        'id.twitch.tv/oauth2/token' => Http::response(jsonFixture('igdb/token')),
+        'api.igdb.com/v4/games' => Http::response(jsonFixture('igdb/games-upcoming')),
     ];
 
     Http::swap(new HttpFactory);

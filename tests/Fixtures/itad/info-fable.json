@@ -1,0 +1,53 @@
+{
+    "id": "018d937f-4b7e-7321-bea0-0a3d69263d30",
+    "slug": "fable",
+    "title": "Fable",
+    "type": "game",
+    "mature": false,
+    "assets": {
+        "boxart": "https://assets.isthereanydeal.com/018d937f-4b7e-7321-bea0-0a3d69263d30/boxart.jpg?t=1788999610",
+        "banner145": "https://assets.isthereanydeal.com/018d937f-4b7e-7321-bea0-0a3d69263d30/banner145.jpg?t=1788999610",
+        "banner300": "https://assets.isthereanydeal.com/018d937f-4b7e-7321-bea0-0a3d69263d30/banner300.jpg?t=1788999610",
+        "banner400": "https://assets.isthereanydeal.com/018d937f-4b7e-7321-bea0-0a3d69263d30/banner400.jpg?t=1788999610",
+        "banner600": "https://assets.isthereanydeal.com/018d937f-4b7e-7321-bea0-0a3d69263d30/banner600.jpg?t=1788999610"
+    },
+    "earlyAccess": false,
+    "achievements": false,
+    "tradingCards": false,
+    "appid": 2769570,
+    "tags": [
+        "RPG",
+        "Action",
+        "Adventure",
+        "Fantasy",
+        "Singleplayer"
+    ],
+    "releaseDate": "2027-02-23",
+    "developers": [
+        {
+            "id": 39657,
+            "name": "Playground Games"
+        }
+    ],
+    "publishers": [
+        {
+            "id": 20,
+            "name": "Xbox Game Studios"
+        }
+    ],
+    "reviews": [],
+    "stats": {
+        "rank": 585,
+        "waitlisted": 16753,
+        "collected": 71
+    },
+    "players": {
+        "recent": 0,
+        "day": 0,
+        "week": 0,
+        "peak": 0
+    },
+    "urls": {
+        "game": "https://isthereanydeal.com/game/fable/"
+    }
+}

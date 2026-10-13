@@ -77,6 +77,7 @@ a vyplň místa `<…>`:
 - **`APP_URL`** — produkční adresa s `https://`
 - `DB_*` — z detailu databáze ve WebAdminu
 - `GAMES_ITAD_API_KEY`, `GAMES_GGDEALS_API_KEY` — klíče zdrojů cen (R9); pro produkci ideálně vlastní aplikace/klíč, ne vývojový
+- `GAMES_IGDB_CLIENT_ID`, `GAMES_IGDB_CLIENT_SECRET` — aplikace na dev.twitch.tv pro IGDB, nadcházející hry (R46; návod v `.env.example`). Bez nich cron seznam nestahuje a záložka Nadcházející zůstane prázdná
 - `GAMES_CRON_TOKEN` — token cron URL (viz *Cron: stahování cen*)
 - `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS` — schránka pro upozornění e-mailem (R26)
 - `GAMES_PUSH_PUBLIC_KEY`, `GAMES_PUSH_PRIVATE_KEY` — `docker compose exec app php artisan games:push-keys`; `GAMES_PUSH_SUBJECT` = `mailto:` adresa schránky. Klíče se nemění — po změně je potřeba upozornění na zařízeních zapnout znovu
@@ -211,6 +212,7 @@ je jediná cesta, jak ji neztratit.
 | `migrations-2026-10-13-plus-and-digest.sql` | PS Plus a týdenní souhrn (R35, R36): v `current_prices` `member_tier`, `member_free` (doplní je stažení cen), v `users` `notify_weekly` (zapnuto) a `weekly_digest_at`; opakovatelný, pustit **po** hodnocení a **před** nahráním kódu | 2026-10-13 |
 | `migrations-2026-10-13-release-alerts.sql` | nevydané hry (R41): ve `watchlist_items` `release_notified_at`, `first_sale_notified_at`; vydané hry označí jako upozorněné; opakovatelný, pustit **po** PS Plus a souhrnu a **před** nahráním kódu | 2026-10-13 |
 | `migrations-2026-10-13-playtime.sql` | délka hraní (R44): v `games` sloupce `hltb_*` — prázdné, doplní je cron a přidání hry; opakovatelný, pustit **po** nevydaných hrách a **před** nahráním kódu | 2026-10-13 |
+| `migrations-2026-10-13-upcoming-releases.sql` | nadcházející hry (R46): tabulka `upcoming_releases` — prázdná, naplní ji první běh cronu s klíčem IGDB v `.env`; opakovatelný, pustit **po** délce hraní a **před** nahráním kódu | |
 
 ## Nasazené verze
 

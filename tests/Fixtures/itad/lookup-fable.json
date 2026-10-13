@@ -1,0 +1,17 @@
+{
+    "found": true,
+    "game": {
+        "id": "018d937f-4b7e-7321-bea0-0a3d69263d30",
+        "slug": "fable",
+        "title": "Fable",
+        "type": "game",
+        "mature": false,
+        "assets": {
+            "boxart": "https://assets.isthereanydeal.com/018d937f-4b7e-7321-bea0-0a3d69263d30/boxart.jpg?t=1788999610",
+            "banner145": "https://assets.isthereanydeal.com/018d937f-4b7e-7321-bea0-0a3d69263d30/banner145.jpg?t=1788999610",
+            "banner300": "https://assets.isthereanydeal.com/018d937f-4b7e-7321-bea0-0a3d69263d30/banner300.jpg?t=1788999610",
+            "banner400": "https://assets.isthereanydeal.com/018d937f-4b7e-7321-bea0-0a3d69263d30/banner400.jpg?t=1788999610",
+            "banner600": "https://assets.isthereanydeal.com/018d937f-4b7e-7321-bea0-0a3d69263d30/banner600.jpg?t=1788999610"
+        }
+    }
+}

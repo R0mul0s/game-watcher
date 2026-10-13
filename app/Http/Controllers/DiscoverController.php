@@ -37,6 +37,7 @@ class DiscoverController extends Controller
             ...$discoverDeals->build($user, $filters, $user->displayCurrency()),
             'filters' => $filters->toArray(),
             'discoverUrl' => route('discover', absolute: false),
+            'upcomingUrl' => route('discover.upcoming', absolute: false),
             'watchUrl' => route('watchlist.store', absolute: false),
         ]);
     }

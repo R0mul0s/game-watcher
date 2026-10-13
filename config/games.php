@@ -331,6 +331,55 @@ return [
             'token_cache_seconds' => 600,
             'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
         ],
+        // IGDB (R46) — nadcházející hry. Oficiální API s klíčem aplikace z Twitche
+        // (client credentials): token ~60 dní drží cache, o token_margin_seconds
+        // dřív se vyžádá nový. Limit 4 požadavky/s — cron volá jeden dotaz za běh.
+        'igdb' => [
+            'url' => env('GAMES_IGDB_URL', 'https://api.igdb.com/v4'),
+            'token_url' => env('GAMES_IGDB_TOKEN_URL', 'https://id.twitch.tv/oauth2/token'),
+            'client_id' => env('GAMES_IGDB_CLIENT_ID'),
+            'client_secret' => env('GAMES_IGDB_CLIENT_SECRET'),
+            'timeout_seconds' => 15,
+            'token_margin_seconds' => 86400,
+            // Obrázky — CDN IGDB, velikost podle názvu šablony (t_cover_big 264 × 374,
+            // t_screenshot_med 569 × 320 jako banner600 z ITAD)
+            'image_url' => 'https://images.igdb.com/igdb/image/upload/t_%s/%s.jpg',
+            'cover_size' => 'cover_big',
+            'banner_size' => 'screenshot_med',
+        ],
+    ],
+
+    /*
+    | Nadcházející hry (R46, etapa 8) — seznam z IGDB pro záložku Objevit. Cron ho
+    | obnoví jedním dotazem za běh: hry vycházející na PC nebo PS5 do window_days
+    | dní, s popularitou IGDB (`hypes`) aspoň min_hypes. ID platforem a druhů her
+    | jsou číselníky IGDB (ověřené 13. 10. 2026).
+    */
+    'upcoming' => [
+        'window_days' => 365,
+        'min_hypes' => 5,
+        // Nejvýš tolik her (IGDB vrací nejvýš 500 na dotaz); 13. 10. 2026 jich bylo 253
+        'limit' => 500,
+        // Platforma IGDB → hlídaná platforma (enum Platform)
+        'platforms' => ['pc' => 6, 'playstation' => 167],
+        // Druhy her IGDB: 0 hlavní hra, 8 remake, 9 remaster — bez DLC, edic a portů
+        'game_types' => [0, 8, 9],
+        // Stav hry IGDB, který se vynechá: 6 zrušená, 7 jen fáma
+        'skipped_game_statuses' => [6, 7],
+        // Stav data vydání IGDB, který vydání neznamená: 1 alfa, 2 beta,
+        // 3 předběžný přístup, 4 offline, 5 zrušeno, 34 dřívější přístup pro dražší edici
+        // (5 zrušené datum se tak nepočítá ani jako vydání, ani jako nadcházející)
+        'prerelease_statuses' => [1, 2, 3, 4, 5, 34],
+        // Stav data vydání IGDB „předběžný přístup“ — budoucí start se počítá jako
+        // nadcházející vydání se štítkem (na PC se hra tím dnem dá koupit)
+        'early_access_status' => 3,
+        // Steam v external_games IGDB (external_game_source)
+        'steam_source' => 1,
+        // Režimy hry IGDB pro filtr co-op: 3 kooperace, 4 rozdělená obrazovka
+        'coop_modes' => [3, 4],
+        // Nejvýš tolik nejčastějších žánrů ve filtru (IGDB jich má přes 20)
+        'genre_suggestions' => 12,
+        'site_url' => 'https://www.igdb.com',
     ],
 
 ];

@@ -18,6 +18,8 @@ use App\Domain\Catalog\Actions\RefreshGameDetails;
 use App\Domain\Catalog\Actions\RefreshGameInfo;
 use App\Domain\Currency\Actions\ImportExchangeRates;
 use App\Domain\Hltb\Actions\RefreshPlaytimes;
+use App\Domain\Igdb\Actions\RefreshUpcomingReleases;
+use App\Domain\Igdb\Exceptions\IgdbUnavailable;
 use App\Domain\Maintenance\PruneExpiredCache;
 use App\Domain\Metacritic\Actions\RefreshMetascores;
 use App\Domain\Monitoring\SourceMonitor;
@@ -62,6 +64,7 @@ class CronController extends Controller
         RefreshGameDetails $refreshGameDetails,
         RefreshMetascores $refreshMetascores,
         RefreshPlaytimes $refreshPlaytimes,
+        RefreshUpcomingReleases $refreshUpcomingReleases,
         SendPriceAlerts $sendPriceAlerts,
         SendWeeklyDigests $sendWeeklyDigests,
         PruneExpiredCache $pruneExpiredCache,
@@ -145,6 +148,24 @@ class CronController extends Controller
                         : $this->monitor->failed(MonitoredSource::Hltb, $error);
 
                     return __($error === null ? 'app.cron.hltb' : 'app.cron.hltb_failed', ['count' => $count]);
+                }),
+                // Nadcházející hry z IGDB (R46) — doplňkové jako délka hraní: výpadek
+                // běh neoznačí jako chybný, seznam zůstane z minula. Bez klíče se přeskočí
+                $this->attempt('upcoming', [MonitoredSource::Igdb], $failedSteps, function () use ($refreshUpcomingReleases): string {
+                    if (! $refreshUpcomingReleases->isEnabled()) {
+                        return __('app.cron.upcoming_disabled');
+                    }
+
+                    try {
+                        $count = $refreshUpcomingReleases->handle();
+                    } catch (IgdbUnavailable $e) {
+                        $this->monitor->failed(MonitoredSource::Igdb, $e->getMessage());
+
+                        return __('app.cron.upcoming_failed');
+                    }
+                    $this->monitor->succeeded(MonitoredSource::Igdb, $count);
+
+                    return __('app.cron.upcoming', ['count' => $count]);
                 }),
                 // Upozornění až po cenách (R26) — porovnávají čerstvé ceny. Nedoručené
                 // upozornění (chyba SMTP i push) označí běh jako chybný, zkusí ho další běh

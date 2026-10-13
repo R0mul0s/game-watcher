@@ -178,6 +178,34 @@ export function releaseCountdown(days, t) {
     return days === 1 ? t('game.release_tomorrow') : t('game.release_in', { count: days });
 }
 
+/** Měsíců ve čtvrtletí — datum čtvrtletí je jeho poslední den (R46). */
+const MONTHS_PER_QUARTER = 3;
+
+/**
+ * Datum vydání v přesnosti zdroje (R46) — „23. 2. 2027“, „listopad 2026“,
+ * „1. čtvrtletí 2027“, „2026“. Datum je den uvnitř období (Y-m-d, jako UTC).
+ *
+ * @param {string} value Y-m-d
+ * @param {'day'|'month'|'quarter'|'year'} precision
+ * @param {string} locale
+ * @param {(key: string, replacements?: object) => string} t překlady (useTranslations)
+ * @returns {string}
+ */
+export function formatReleaseDate(value, precision, locale, t) {
+    const date = new Date(`${value}T00:00:00Z`);
+
+    switch (precision) {
+        case 'month':
+            return cachedFormatter(Intl.DateTimeFormat, locale, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date);
+        case 'quarter':
+            return t('upcoming.quarter', { quarter: Math.ceil((date.getUTCMonth() + 1) / MONTHS_PER_QUARTER), year: date.getUTCFullYear() });
+        case 'year':
+            return String(date.getUTCFullYear());
+        default:
+            return formatDate(value, locale);
+    }
+}
+
 /** Délka hraní se zaokrouhluje na půlhodiny jako na HowLongToBeat. */
 const HOURS_STEP = 0.5;
 const MINUTES_PER_HOUR = 60;

@@ -61,6 +61,11 @@ return [
         'linked' => 'HowLongToBeat je připojený — „:name“.',
     ],
 
+    // Nadcházející hry z IGDB (R46)
+    'upcoming' => [
+        'not_in_catalog' => '„:title“ IsThereAnyDeal zatím nezná — zkus to blíž vydání.',
+    ],
+
     'watchlist' => [
         'added' => '„:title“ je na tvém seznamu.',
         'removed' => '„:title“ už nesleduješ.',
@@ -89,6 +94,9 @@ return [
         'hltb_failed' => 'Délka hraní z HowLongToBeat — her: :count, HowLongToBeat neodpovídá (doplní další běh)',
         'alerts' => 'upozornění — her: :alerts, e-mailů: :emails, na zařízení: :pushes',
         'alerts_undelivered' => ', nedoručeno: :count (zkusí další běh, podrobnosti v logu)',
+        'upcoming' => 'nadcházející hry z IGDB — her: :count',
+        'upcoming_failed' => 'nadcházející hry z IGDB — IGDB neodpovídá (seznam zůstává z minula)',
+        'upcoming_disabled' => 'nadcházející hry — IGDB není nastavené (GAMES_IGDB_CLIENT_ID), přeskočeno',
         'weekly' => 'týdenní souhrn — e-mailů: :count',
         'cache_pruned' => 'cache — smazáno prošlých záznamů: :count',
         'steps' => [
@@ -98,6 +106,7 @@ return [
             'details' => 'žánry a režimy',
             'metacritic' => 'Metascore',
             'hltb' => 'délka hraní',
+            'upcoming' => 'nadcházející hry',
             'alerts' => 'upozornění',
             'weekly' => 'týdenní souhrn',
             'cache' => 'cache',
@@ -111,6 +120,9 @@ return [
         'playstation_format' => 'Stránka :path nemá data obchodu ve známém formátu — PS Store nejspíš změnil web',
         'metacritic_format' => 'Stránka hry :slug nemá strukturovaná data hry — Metacritic nejspíš změnil web',
         'hltb_format' => 'HowLongToBeat :path nevrátil data hry — nejspíš změnil web',
+        'igdb_token' => 'Twitch odmítl klíč aplikace IGDB (HTTP :status) — zkontroluj GAMES_IGDB_CLIENT_ID a GAMES_IGDB_CLIENT_SECRET',
+        'igdb_format' => 'IGDB :path nevrátil očekávaná data — nejspíš změnil API',
+        'igdb_empty' => 'IGDB nevrátil žádnou nadcházející hru — seznam zůstává z minula',
         'steam_failed' => 'Steam neodpovídá — údaje doplní další běh',
         'alerts_undelivered' => 'Nedoručená upozornění: :count — podrobnosti v logu aplikace',
         'weekly_undelivered' => 'Nedoručené týdenní souhrny: :count — podrobnosti v logu aplikace',
@@ -274,6 +286,7 @@ return [
             'close' => 'Zavřít filtry',
             'show' => 'Zobrazit :count hru|Zobrazit :count hry|Zobrazit :count her',
             'show_deals' => 'Zobrazit :count slevu|Zobrazit :count slevy|Zobrazit :count slev',
+            'show_upcoming' => 'Zobrazit :count hru|Zobrazit :count hry|Zobrazit :count her',
         ],
 
         'filters' => [
@@ -395,6 +408,41 @@ return [
             'empty' => 'Filtrům teď neodpovídá žádná sleva.',
             'unavailable' => 'IsThereAnyDeal teď neodpovídá. Zkus to za chvíli.',
             'source' => 'Slevy v obchodech pro PC podle IsThereAnyDeal — stránka se obnovuje po pár hodinách. PlayStation Store seznam slev nenabízí.',
+            // Záložky stránky Objevit (R46)
+            'tabs' => [
+                'label' => 'Co objevovat',
+                'deals' => 'Slevy',
+                'upcoming' => 'Nadcházející',
+            ],
+        ],
+
+        // Záložka Nadcházející na stránce Objevit (R46)
+        'upcoming' => [
+            'title' => 'Nadcházející hry',
+            'subtitle' => 'Co vyjde do roka na PC a PS5 — sleduj hru a dáme vědět, až vyjde a poprvé zlevní',
+            'platform' => 'Platforma',
+            'platforms' => [
+                'all' => 'Všechny',
+                'pc' => 'PC',
+                'playstation' => 'PS5',
+            ],
+            'genres' => 'Žánry',
+            'genres_hint' => 'Podle IGDB — stačí jeden z vybraných, bez výběru všechny hry.',
+            'coop' => 'Jen pro víc hráčů spolu (co-op)',
+            'coop_badge' => 'Co-op',
+            'sorts' => [
+                'date' => 'Od nejbližšího vydání',
+                'popular' => 'Nejočekávanější',
+            ],
+            'early_access' => 'předběžný přístup',
+            'quarter' => ':quarter. čtvrtletí :year',
+            'watch' => 'Sledovat',
+            'detail' => 'Detail',
+            'igdb' => 'IGDB',
+            'empty' => 'Filtrům teď neodpovídá žádná nadcházející hra.',
+            'not_loaded' => 'Seznam nadcházejících her se zatím nestáhl — naplní ho další běh cronu.',
+            'source' => 'Data o nadcházejících hrách z IGDB.com — seznam se obnovuje s každým během cronu.',
+            'updated' => 'Naposledy :time.',
         ],
 
         // Slevy dne nad přehledem (R26)
@@ -639,6 +687,7 @@ return [
                 'steam' => 'Steam — žánry a režimy',
                 'metacritic' => 'Metacritic — Metascore her mimo ITAD',
                 'hltb' => 'HowLongToBeat — délka hraní',
+                'igdb' => 'IGDB — nadcházející hry',
                 'alerts' => 'Upozornění — e-mail a zařízení',
                 'weekly_digest' => 'Týdenní souhrn — e-mail',
             ],

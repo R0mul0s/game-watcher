@@ -65,7 +65,8 @@ class HandleInertiaRequests extends Middleware
                 fn (string $routeName, string $labelKey): array => [
                     'url' => route($routeName, absolute: false),
                     'label' => 'nav.'.$labelKey,
-                    'active' => $request->routeIs($routeName),
+                    // I podstránky položky (Objevit → Nadcházející, R46)
+                    'active' => $request->routeIs($routeName, $routeName.'.*'),
                 ],
                 array_keys(self::NAVIGATION),
                 self::NAVIGATION,

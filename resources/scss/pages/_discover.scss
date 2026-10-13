@@ -21,6 +21,11 @@
         flex: 0 1 var(--game-card-min-width);
     }
 
+    // Platforma nadcházejících her (R46) — tři krátké volby
+    &__platform {
+        flex: 0 1 var(--game-card-min-width);
+    }
+
     // Štítky a „jen historická minima“ — od md pod řazením, na telefonu v okně (R45)
     &__options {
         display: flex;
@@ -30,6 +35,33 @@
         @include from-md {
             margin-top: var(--space-3);
         }
+    }
+}
+
+// Karta nadcházející hry (DiscoverUpcoming.vue, R46) — vydání po platformách
+.upcoming-card {
+    &__releases {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+
+    &__release {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--space-2);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+    }
+
+    &__platforms {
+        color: var(--color-text-muted);
+    }
+
+    &__early-access {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
     }
 }
 

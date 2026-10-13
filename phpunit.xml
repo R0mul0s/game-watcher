@@ -30,6 +30,8 @@
         <!-- Testy nesmí volat skutečná API ani záviset na lokálních klíčích — jen Http::fake() -->
         <env name="GAMES_ITAD_API_KEY" value="test-itad-key"/>
         <env name="GAMES_GGDEALS_API_KEY" value="test-ggdeals-key"/>
+        <env name="GAMES_IGDB_CLIENT_ID" value="test-igdb-client"/>
+        <env name="GAMES_IGDB_CLIENT_SECRET" value="test-igdb-secret"/>
         <!-- Varování z testů (podvržené výpadky API) nemají plnit vývojový log -->
         <env name="LOG_CHANNEL" value="null"/>
         <env name="GAMES_CRON_TOKEN" value="test-cron-token"/>

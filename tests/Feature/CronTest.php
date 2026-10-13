@@ -53,7 +53,8 @@ it('kurz, který už je uložený, nestahuje znovu', function (): void {
     // Lístek z pátku je o víkendu poslední — další pokus až za hodinu
     $this->get(CRON_URL)->assertSeeText('kurzy ČNB — aktuální');
 
-    Http::assertSentCount(1);
+    // Ostatní kroky (nadcházející hry z IGDB, R46) volají svá API každý běh
+    expect(Http::recorded(fn (Request $request): bool => str_contains($request->url(), 'www.cnb.cz')))->toHaveCount(1);
 });
 
 it('ceny stahuje jen hrám, které někdo sleduje', function (): void {

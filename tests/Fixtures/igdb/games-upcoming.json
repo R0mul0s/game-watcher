@@ -1,0 +1,1104 @@
+[
+    {
+        "id": 52189,
+        "artworks": [
+            {
+                "id": 285644,
+                "image_id": "ar64ek"
+            },
+            {
+                "id": 285301,
+                "image_id": "ar6451"
+            },
+            {
+                "id": 285305,
+                "image_id": "ar6455"
+            },
+            {
+                "id": 285308,
+                "image_id": "ar6458"
+            },
+            {
+                "id": 285309,
+                "image_id": "ar6459"
+            },
+            {
+                "id": 285310,
+                "image_id": "ar645a"
+            },
+            {
+                "id": 285368,
+                "image_id": "ar646w"
+            },
+            {
+                "id": 285643,
+                "image_id": "ar64ej"
+            },
+            {
+                "id": 303429,
+                "image_id": "ar6i4l"
+            },
+            {
+                "id": 303435,
+                "image_id": "ar6i4r"
+            },
+            {
+                "id": 303432,
+                "image_id": "ar6i4o"
+            },
+            {
+                "id": 303430,
+                "image_id": "ar6i4m"
+            },
+            {
+                "id": 303434,
+                "image_id": "ar6i4q"
+            },
+            {
+                "id": 303431,
+                "image_id": "ar6i4n"
+            },
+            {
+                "id": 303433,
+                "image_id": "ar6i4p"
+            },
+            {
+                "id": 236447,
+                "image_id": "ar52fz"
+            },
+            {
+                "id": 236449,
+                "image_id": "ar52g1"
+            }
+        ],
+        "cover": {
+            "id": 600115,
+            "image_id": "cocv1v"
+        },
+        "external_games": [
+            {
+                "id": 3218871,
+                "uid": "B0H6X8VNQC",
+                "external_game_source": 20
+            },
+            {
+                "id": 3191009,
+                "uid": "10000730",
+                "external_game_source": 36
+            }
+        ],
+        "game_modes": [
+            1,
+            2,
+            3
+        ],
+        "genres": [
+            {
+                "id": 5,
+                "name": "Shooter"
+            },
+            {
+                "id": 10,
+                "name": "Racing"
+            },
+            {
+                "id": 31,
+                "name": "Adventure"
+            }
+        ],
+        "hypes": 1096,
+        "name": "Grand Theft Auto VI",
+        "release_dates": [
+            {
+                "id": 831835,
+                "date": 1795046400,
+                "platform": 169,
+                "status": 6,
+                "date_format": 0
+            },
+            {
+                "id": 831834,
+                "date": 1795046400,
+                "platform": 167,
+                "status": 6,
+                "date_format": 0
+            }
+        ],
+        "screenshots": [
+            {
+                "id": 1526347,
+                "image_id": "scwpqj"
+            },
+            {
+                "id": 1203595,
+                "image_id": "scpsp7"
+            },
+            {
+                "id": 1203594,
+                "image_id": "scpsp6"
+            },
+            {
+                "id": 1203596,
+                "image_id": "scpsp8"
+            },
+            {
+                "id": 1720567,
+                "image_id": "sc10vlj"
+            },
+            {
+                "id": 1720575,
+                "image_id": "sc10vlr"
+            },
+            {
+                "id": 1720576,
+                "image_id": "sc10vls"
+            },
+            {
+                "id": 1720577,
+                "image_id": "sc10vlt"
+            },
+            {
+                "id": 1720570,
+                "image_id": "sc10vlm"
+            },
+            {
+                "id": 1720573,
+                "image_id": "sc10vlp"
+            },
+            {
+                "id": 1720578,
+                "image_id": "sc10vlu"
+            },
+            {
+                "id": 1203597,
+                "image_id": "scpsp9"
+            },
+            {
+                "id": 1720568,
+                "image_id": "sc10vlk"
+            },
+            {
+                "id": 1720569,
+                "image_id": "sc10vll"
+            },
+            {
+                "id": 1720571,
+                "image_id": "sc10vln"
+            },
+            {
+                "id": 1720572,
+                "image_id": "sc10vlo"
+            },
+            {
+                "id": 1720574,
+                "image_id": "sc10vlq"
+            },
+            {
+                "id": 1720579,
+                "image_id": "sc10vlv"
+            },
+            {
+                "id": 1912471,
+                "image_id": "sc14zo7"
+            },
+            {
+                "id": 1912472,
+                "image_id": "sc14zo8"
+            }
+        ],
+        "url": "https://www.igdb.com/games/grand-theft-auto-vi"
+    },
+    {
+        "id": 92550,
+        "artworks": [
+            {
+                "id": 139351,
+                "image_id": "ar2ziv"
+            },
+            {
+                "id": 240077,
+                "image_id": "ar558t"
+            },
+            {
+                "id": 240076,
+                "image_id": "ar558s"
+            }
+        ],
+        "cover": {
+            "id": 528997,
+            "image_id": "cobc6d"
+        },
+        "external_games": [
+            {
+                "id": 124708,
+                "uid": "35616",
+                "external_game_source": 3
+            },
+            {
+                "id": 3193200,
+                "uid": "772820722",
+                "external_game_source": 14
+            },
+            {
+                "id": 2922357,
+                "uid": "2769570",
+                "external_game_source": 1
+            },
+            {
+                "id": 3183957,
+                "uid": "10015869",
+                "external_game_source": 36
+            }
+        ],
+        "game_modes": [
+            1
+        ],
+        "genres": [
+            {
+                "id": 12,
+                "name": "Role-playing (RPG)"
+            },
+            {
+                "id": 31,
+                "name": "Adventure"
+            }
+        ],
+        "hypes": 427,
+        "name": "Fable",
+        "release_dates": [
+            {
+                "id": 924163,
+                "date": 1802908800,
+                "platform": 6,
+                "status": 34,
+                "date_format": 0
+            },
+            {
+                "id": 924164,
+                "date": 1803340800,
+                "platform": 6,
+                "status": 6,
+                "date_format": 0
+            },
+            {
+                "id": 924208,
+                "date": 1803340800,
+                "platform": 167,
+                "status": 6,
+                "date_format": 0
+            },
+            {
+                "id": 924209,
+                "date": 1802908800,
+                "platform": 167,
+                "status": 34,
+                "date_format": 0
+            },
+            {
+                "id": 924210,
+                "date": 1803340800,
+                "platform": 169,
+                "status": 6,
+                "date_format": 0
+            },
+            {
+                "id": 924211,
+                "date": 1802908800,
+                "platform": 169,
+                "status": 34,
+                "date_format": 0
+            }
+        ],
+        "screenshots": [
+            {
+                "id": 1338005,
+                "image_id": "scsoet"
+            },
+            {
+                "id": 1338006,
+                "image_id": "scsoeu"
+            },
+            {
+                "id": 1338008,
+                "image_id": "scsoew"
+            },
+            {
+                "id": 1338007,
+                "image_id": "scsoev"
+            },
+            {
+                "id": 1338011,
+                "image_id": "scsoez"
+            },
+            {
+                "id": 1338009,
+                "image_id": "scsoex"
+            },
+            {
+                "id": 1338010,
+                "image_id": "scsoey"
+            },
+            {
+                "id": 1853366,
+                "image_id": "sc13q2e"
+            },
+            {
+                "id": 1853368,
+                "image_id": "sc13q2g"
+            },
+            {
+                "id": 1853367,
+                "image_id": "sc13q2f"
+            },
+            {
+                "id": 1853369,
+                "image_id": "sc13q2h"
+            },
+            {
+                "id": 1853370,
+                "image_id": "sc13q2i"
+            },
+            {
+                "id": 1853371,
+                "image_id": "sc13q2j"
+            },
+            {
+                "id": 1853372,
+                "image_id": "sc13q2k"
+            },
+            {
+                "id": 1853373,
+                "image_id": "sc13q2l"
+            }
+        ],
+        "url": "https://www.igdb.com/games/fable--1"
+    },
+    {
+        "id": 279051,
+        "artworks": [
+            {
+                "id": 169196,
+                "image_id": "ar3mjw"
+            },
+            {
+                "id": 169197,
+                "image_id": "ar3mjx"
+            },
+            {
+                "id": 169198,
+                "image_id": "ar3mjy"
+            }
+        ],
+        "cover": {
+            "id": 406202,
+            "image_id": "co8pfe"
+        },
+        "external_games": [
+            {
+                "id": 2937986,
+                "uid": "2456740",
+                "external_game_source": 1
+            },
+            {
+                "id": 2868183,
+                "uid": "286759738",
+                "external_game_source": 14
+            }
+        ],
+        "game_modes": [
+            1,
+            2
+        ],
+        "genres": [
+            {
+                "id": 13,
+                "name": "Simulator"
+            },
+            {
+                "id": 31,
+                "name": "Adventure"
+            }
+        ],
+        "hypes": 311,
+        "name": "Inzoi",
+        "release_dates": [
+            {
+                "id": 669397,
+                "date": 1743120000,
+                "platform": 6,
+                "status": 3,
+                "date_format": 0
+            },
+            {
+                "id": 783279,
+                "date": 1755648000,
+                "platform": 14,
+                "status": 3,
+                "date_format": 0
+            },
+            {
+                "id": 977413,
+                "date": 1806451200,
+                "platform": 167,
+                "status": 6,
+                "date_format": 3
+            },
+            {
+                "id": 919144,
+                "platform": 169,
+                "status": 3,
+                "date_format": 7
+            }
+        ],
+        "screenshots": [
+            {
+                "id": 1203408,
+                "image_id": "scpsk0"
+            },
+            {
+                "id": 1203407,
+                "image_id": "scpsjz"
+            },
+            {
+                "id": 1203406,
+                "image_id": "scpsjy"
+            },
+            {
+                "id": 1203409,
+                "image_id": "scpsk1"
+            }
+        ],
+        "url": "https://www.igdb.com/games/inzoi"
+    },
+    {
+        "id": 404063,
+        "artworks": [
+            {
+                "id": 311845,
+                "image_id": "ar6omd"
+            },
+            {
+                "id": 311846,
+                "image_id": "ar6ome"
+            },
+            {
+                "id": 278904,
+                "image_id": "ar5z7c"
+            },
+            {
+                "id": 278879,
+                "image_id": "ar5z6n"
+            }
+        ],
+        "cover": {
+            "id": 567336,
+            "image_id": "coc5rc"
+        },
+        "external_games": [
+            {
+                "id": 3180781,
+                "uid": "54029029",
+                "external_game_source": 14
+            }
+        ],
+        "game_modes": [
+            1
+        ],
+        "genres": [
+            {
+                "id": 12,
+                "name": "Role-playing (RPG)"
+            },
+            {
+                "id": 25,
+                "name": "Hack and slash/Beat 'em up"
+            },
+            {
+                "id": 31,
+                "name": "Adventure"
+            }
+        ],
+        "hypes": 111,
+        "name": "God of War Laufey",
+        "release_dates": [
+            {
+                "id": 945988,
+                "date": 1802736000,
+                "platform": 167,
+                "status": 6,
+                "date_format": 0
+            }
+        ],
+        "screenshots": [
+            {
+                "id": 1847159,
+                "image_id": "sc13l9z"
+            },
+            {
+                "id": 1847155,
+                "image_id": "sc13l9v"
+            },
+            {
+                "id": 1847156,
+                "image_id": "sc13l9w"
+            },
+            {
+                "id": 1847154,
+                "image_id": "sc13l9u"
+            },
+            {
+                "id": 1847162,
+                "image_id": "sc13la2"
+            },
+            {
+                "id": 1847157,
+                "image_id": "sc13l9x"
+            },
+            {
+                "id": 1847160,
+                "image_id": "sc13la0"
+            },
+            {
+                "id": 1847158,
+                "image_id": "sc13l9y"
+            },
+            {
+                "id": 1847163,
+                "image_id": "sc13la3"
+            },
+            {
+                "id": 1847161,
+                "image_id": "sc13la1"
+            }
+        ],
+        "url": "https://www.igdb.com/games/god-of-war-laufey"
+    },
+    {
+        "id": 348330,
+        "artworks": [
+            {
+                "id": 274431,
+                "image_id": "ar5vr3"
+            },
+            {
+                "id": 200394,
+                "image_id": "ar4ami"
+            },
+            {
+                "id": 200393,
+                "image_id": "ar4amh"
+            },
+            {
+                "id": 259177,
+                "image_id": "ar5jzd"
+            },
+            {
+                "id": 276973,
+                "image_id": "ar5xpp"
+            }
+        ],
+        "cover": {
+            "id": 528971,
+            "image_id": "cobc5n"
+        },
+        "external_games": [
+            {
+                "id": 3177590,
+                "uid": "9N431PX143P8",
+                "external_game_source": 54
+            },
+            {
+                "id": 3103087,
+                "uid": "2483190",
+                "external_game_source": 1
+            },
+            {
+                "id": 3103076,
+                "uid": "1991115310",
+                "external_game_source": 14
+            },
+            {
+                "id": 3210519,
+                "uid": "10016335",
+                "external_game_source": 36
+            }
+        ],
+        "game_modes": [
+            1,
+            2,
+            3
+        ],
+        "genres": [
+            {
+                "id": 10,
+                "name": "Racing"
+            },
+            {
+                "id": 13,
+                "name": "Simulator"
+            },
+            {
+                "id": 14,
+                "name": "Sport"
+            },
+            {
+                "id": 33,
+                "name": "Arcade"
+            }
+        ],
+        "hypes": 102,
+        "multiplayer_modes": [
+            {
+                "id": 42132,
+                "offlinecoop": false,
+                "splitscreen": false
+            },
+            {
+                "id": 42133,
+                "offlinecoop": false,
+                "splitscreen": false
+            }
+        ],
+        "name": "Forza Horizon 6",
+        "release_dates": [
+            {
+                "id": 862150,
+                "date": 1798675200,
+                "platform": 167,
+                "status": 6,
+                "date_format": 2
+            },
+            {
+                "id": 862151,
+                "date": 1779148800,
+                "platform": 169,
+                "status": 6,
+                "date_format": 0
+            },
+            {
+                "id": 862781,
+                "date": 1778803200,
+                "platform": 169,
+                "status": 34,
+                "date_format": 0
+            },
+            {
+                "id": 900822,
+                "date": 1778803200,
+                "platform": 6,
+                "status": 34,
+                "date_format": 0
+            },
+            {
+                "id": 900823,
+                "date": 1779148800,
+                "platform": 6,
+                "status": 6,
+                "date_format": 0
+            }
+        ],
+        "screenshots": [
+            {
+                "id": 1746198,
+                "image_id": "sc11fdi"
+            },
+            {
+                "id": 1746199,
+                "image_id": "sc11fdj"
+            },
+            {
+                "id": 1746200,
+                "image_id": "sc11fdk"
+            },
+            {
+                "id": 1746201,
+                "image_id": "sc11fdl"
+            },
+            {
+                "id": 1746205,
+                "image_id": "sc11fdp"
+            },
+            {
+                "id": 1746203,
+                "image_id": "sc11fdn"
+            },
+            {
+                "id": 1746206,
+                "image_id": "sc11fdq"
+            },
+            {
+                "id": 1746204,
+                "image_id": "sc11fdo"
+            },
+            {
+                "id": 1746202,
+                "image_id": "sc11fdm"
+            },
+            {
+                "id": 1835738,
+                "image_id": "sc13cgq"
+            },
+            {
+                "id": 1835739,
+                "image_id": "sc13cgr"
+            },
+            {
+                "id": 1835740,
+                "image_id": "sc13cgs"
+            },
+            {
+                "id": 1835741,
+                "image_id": "sc13cgt"
+            }
+        ],
+        "url": "https://www.igdb.com/games/forza-horizon-6"
+    },
+    {
+        "id": 314449,
+        "artworks": [
+            {
+                "id": 315053,
+                "image_id": "ar6r3h"
+            },
+            {
+                "id": 315054,
+                "image_id": "ar6r3i"
+            }
+        ],
+        "cover": {
+            "id": 610586,
+            "image_id": "cod34q"
+        },
+        "external_games": [
+            {
+                "id": 2941738,
+                "uid": "9774905",
+                "external_game_source": 14
+            },
+            {
+                "id": 3018265,
+                "uid": "1a6f5f8319b143fbb6b86ae3afbadbc4",
+                "external_game_source": 26
+            },
+            {
+                "id": 2940962,
+                "uid": "3161310",
+                "external_game_source": 1
+            }
+        ],
+        "game_modes": [
+            1,
+            2,
+            3,
+            4
+        ],
+        "genres": [
+            {
+                "id": 31,
+                "name": "Adventure"
+            }
+        ],
+        "hypes": 48,
+        "multiplayer_modes": [
+            {
+                "id": 46006,
+                "offlinecoop": true,
+                "splitscreen": true
+            },
+            {
+                "id": 46007,
+                "offlinecoop": true,
+                "splitscreen": true
+            },
+            {
+                "id": 46008,
+                "offlinecoop": true,
+                "splitscreen": true
+            }
+        ],
+        "name": "Hela: Of Mice & Magic",
+        "release_dates": [
+            {
+                "id": 963237,
+                "date": 1796083200,
+                "platform": 508,
+                "status": 6,
+                "date_format": 0
+            },
+            {
+                "id": 963238,
+                "date": 1796083200,
+                "platform": 6,
+                "status": 6,
+                "date_format": 0
+            },
+            {
+                "id": 963239,
+                "date": 1796083200,
+                "platform": 167,
+                "status": 6,
+                "date_format": 0
+            },
+            {
+                "id": 963240,
+                "date": 1796083200,
+                "platform": 169,
+                "status": 6,
+                "date_format": 0
+            }
+        ],
+        "screenshots": [
+            {
+                "id": 1942456,
+                "image_id": "sc15mt4"
+            },
+            {
+                "id": 1942452,
+                "image_id": "sc15mt0"
+            },
+            {
+                "id": 1942454,
+                "image_id": "sc15mt2"
+            },
+            {
+                "id": 1942455,
+                "image_id": "sc15mt3"
+            },
+            {
+                "id": 1942457,
+                "image_id": "sc15mt5"
+            },
+            {
+                "id": 1942458,
+                "image_id": "sc15mt6"
+            },
+            {
+                "id": 1942453,
+                "image_id": "sc15mt1"
+            },
+            {
+                "id": 1942459,
+                "image_id": "sc15mt7"
+            }
+        ],
+        "url": "https://www.igdb.com/games/hela-of-mice-and-magic"
+    },
+    {
+        "id": 347841,
+        "artworks": [
+            {
+                "id": 172285,
+                "image_id": "ar3oxp"
+            },
+            {
+                "id": 172748,
+                "image_id": "ar3pak"
+            }
+        ],
+        "cover": {
+            "id": 463861,
+            "image_id": "co9xx1"
+        },
+        "external_games": [
+            {
+                "id": 3070339,
+                "uid": "253918469",
+                "external_game_source": 14
+            },
+            {
+                "id": 3070247,
+                "uid": "3725190",
+                "external_game_source": 1
+            }
+        ],
+        "game_modes": [
+            1
+        ],
+        "genres": [
+            {
+                "id": 7,
+                "name": "Music"
+            },
+            {
+                "id": 9,
+                "name": "Puzzle"
+            },
+            {
+                "id": 12,
+                "name": "Role-playing (RPG)"
+            },
+            {
+                "id": 31,
+                "name": "Adventure"
+            },
+            {
+                "id": 32,
+                "name": "Indie"
+            }
+        ],
+        "hypes": 44,
+        "name": "There Are No Ghosts at the Grand",
+        "release_dates": [
+            {
+                "id": 957260,
+                "date": 1796083200,
+                "platform": 6,
+                "status": 3,
+                "date_format": 1
+            },
+            {
+                "id": 957354,
+                "platform": 169,
+                "status": 6,
+                "date_format": 7
+            },
+            {
+                "id": 957353,
+                "platform": 6,
+                "status": 6,
+                "date_format": 7
+            }
+        ],
+        "screenshots": [
+            {
+                "id": 1552934,
+                "image_id": "scxa92"
+            },
+            {
+                "id": 1552937,
+                "image_id": "scxa95"
+            },
+            {
+                "id": 1554476,
+                "image_id": "scxbfw"
+            },
+            {
+                "id": 1554477,
+                "image_id": "scxbfx"
+            },
+            {
+                "id": 1554473,
+                "image_id": "scxbft"
+            },
+            {
+                "id": 1554478,
+                "image_id": "scxbfy"
+            },
+            {
+                "id": 1554480,
+                "image_id": "scxbg0"
+            },
+            {
+                "id": 1554481,
+                "image_id": "scxbg1"
+            },
+            {
+                "id": 1554482,
+                "image_id": "scxbg2"
+            },
+            {
+                "id": 1552935,
+                "image_id": "scxa93"
+            },
+            {
+                "id": 1552939,
+                "image_id": "scxa97"
+            },
+            {
+                "id": 1552936,
+                "image_id": "scxa94"
+            },
+            {
+                "id": 1552938,
+                "image_id": "scxa96"
+            }
+        ],
+        "url": "https://www.igdb.com/games/there-are-no-ghosts-at-the-grand"
+    },
+    {
+        "id": 325596,
+        "artworks": [
+            {
+                "id": 150594,
+                "image_id": "ar3876"
+            }
+        ],
+        "cover": {
+            "id": 426965,
+            "image_id": "co95g5"
+        },
+        "external_games": [
+            {
+                "id": 2969524,
+                "uid": "814535305",
+                "external_game_source": 14
+            },
+            {
+                "id": 2969518,
+                "uid": "1586260",
+                "external_game_source": 1
+            }
+        ],
+        "game_modes": [
+            1,
+            2,
+            3
+        ],
+        "genres": [
+            {
+                "id": 13,
+                "name": "Simulator"
+            },
+            {
+                "id": 15,
+                "name": "Strategy"
+            },
+            {
+                "id": 32,
+                "name": "Indie"
+            }
+        ],
+        "hypes": 43,
+        "name": "Blackfrost: The Long Dark 2",
+        "release_dates": [
+            {
+                "id": 676378,
+                "date": 1798675200,
+                "platform": 6,
+                "status": 3,
+                "date_format": 2
+            }
+        ],
+        "screenshots": [
+            {
+                "id": 1436052,
+                "image_id": "scus2c"
+            },
+            {
+                "id": 1436053,
+                "image_id": "scus2d"
+            },
+            {
+                "id": 1436054,
+                "image_id": "scus2e"
+            },
+            {
+                "id": 1436055,
+                "image_id": "scus2f"
+            },
+            {
+                "id": 1436049,
+                "image_id": "scus29"
+            },
+            {
+                "id": 1436050,
+                "image_id": "scus2a"
+            },
+            {
+                "id": 1436051,
+                "image_id": "scus2b"
+            }
+        ],
+        "url": "https://www.igdb.com/games/blackfrost-the-long-dark-2"
+    }
+]
