@@ -208,7 +208,7 @@ je jediná cesta, jak ji neztratit.
 | `migrations-2026-10-12-price-alerts.sql` | hlídání cen (R26): ve `watchlist_items` cílová cena a poslední upozornění, v `users` `notify_email` (zapnuto) a `has_ps_plus`, tabulka `push_subscriptions`; opakovatelný, pustit **po** žánrech a **před** nahráním kódu | 2026-10-12 |
 | `migrations-2026-10-12-source-statuses.sql` | stav zdrojů (R29): tabulka `source_statuses` — prázdná, naplní ji první běh cronu; opakovatelný, pustit **po** hlídání cen a **před** nahráním kódu | 2026-10-12 |
 | `migrations-2026-10-12-ratings.sql` | hodnocení (R33): v `games` sloupce `metacritic_*`, ve `store_listings` `star_rating`, `star_ratings_count` — prázdné, doplní je cron a stažení cen; opakovatelný, pustit **po** stavu zdrojů a **před** nahráním kódu | 2026-10-12 |
-| `migrations-2026-10-13-plus-and-digest.sql` | PS Plus a týdenní souhrn (R35, R36): v `current_prices` `member_tier`, `member_free` (doplní je stažení cen), v `users` `notify_weekly` (zapnuto) a `weekly_digest_at`; opakovatelný, pustit **po** hodnocení a **před** nahráním kódu | |
+| `migrations-2026-10-13-plus-and-digest.sql` | PS Plus a týdenní souhrn (R35, R36): v `current_prices` `member_tier`, `member_free` (doplní je stažení cen), v `users` `notify_weekly` (zapnuto) a `weekly_digest_at`; opakovatelný, pustit **po** hodnocení a **před** nahráním kódu | 2026-10-13 |
 
 ## Nasazené verze
 
@@ -221,3 +221,4 @@ Co běží na produkci — pro `git log <commit>..HEAD` při dalším nasazení
 | 2026-10-12 | `b261ed2` | etapa 6 — hlídání cen: cílová cena, upozornění e-mailem (SMTP schránka Websupportu) a na zařízení (Web Push, klíče VAPID), nastavení účtu, slevy dne, aplikace na plochu; SQL `migrations-2026-10-12-price-alerts.sql`, nové `MAIL_*` a `GAMES_PUSH_*` v `.env`, nahrán i `vendor/` (minishlink/web-push) |
 | 2026-10-12 | `3948076` | etapa 7 — graf vývoje ceny na detailu hry (historie ITAD, vlastní historie klíčů a PS Store, minimum klíčů z gg.deals); jen nový build, bez SQL a změn `.env` |
 | 2026-10-12 | `accce34` | stav zdrojů a monitoring `/health/zdroje` (R29), zdroj ceny a filtry hledání (R30), Tron vzhled (R31), výchozí řazení od nejlevnější a Metascore na kartě (R32), Metascore z Metacritic pro PS hry a hvězdičky z PS Store (R33); SQL `migrations-2026-10-12-source-statuses.sql` a `migrations-2026-10-12-ratings.sql`, bez změn `.env` |
+| 2026-10-13 | `e6149f7` | obnova údajů her z ITAD (R34), úroveň katalogu a měsíční hry PS Plus s upozorněním (R35), týdenní souhrn e-mailem (R36), aplikace na ploše — zkratky, maskovatelná ikona, sdílení odkazu, číslo na ikoně, stránka offline, stažení dolů, iPhone (R37); SQL `migrations-2026-10-13-plus-and-digest.sql`, nový `public/icon-maskable-512.png`, bez změn `.env` |
