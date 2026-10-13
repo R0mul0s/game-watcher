@@ -81,6 +81,7 @@ MariaDB 11.4. **Není tam SSH ani composer** — nic z `php artisan` se na produ
 PHP 8.4 · Laravel 13 · Inertia 3 · Vue 3 · SCSS (BEM + CSS tokeny) · Fontsource (Oxanium,
 Chakra Petch, JetBrains Mono) · MariaDB 11.4 · Pest 4 · Larastan · Pint.
 Zdroje cen: IsThereAnyDeal API, gg.deals API, přímo PlayStation Store, Kinguin, Eneba (R9).
+Doplňkové údaje: Steam (žánry), Metacritic, HowLongToBeat (délka hraní, R44).
 Kurzy: ČNB (textový lístek bez klíče, R14).
 
 ## Nejčastější zdroje chyb v tomhle projektu
@@ -118,6 +119,7 @@ Kurzy: ČNB (textový lístek bez klíče, R14).
 31. **Metacritic jen pro hry bez Metascore v ITAD** (R33) — Metascore hry vždy přes `Game::metascore()` (ITAD má přednost před `games.metacritic_score`), odkaz od uživatele jen přes `MetacriticUrl::parse()` (SSRF). Odvozená stránka podle názvu se bere, jen když název stránky dává stejný slug. Hvězdičky PS Store (`store_listings.star_rating`) jsou hodnocení hráčů — nemíchat s Metascore ani do řazení podle Metacritic; údaje produktu k propojení jen přes `PlayStationProduct::listingDetails()`
 32. **PS Plus: katalog ≠ měsíční hra** (R35) — `member_tier` je úroveň katalogu (Extra / Premium, z `tierLabel`), `member_free` měsíční hra Essential (`UPSELL_PS_PLUS_FREE`, cena s PS Plus 0, upozornění `AlertReason::PlusMonthly` jen s PS Plus u účtu). Obnova údajů z ITAD (`ImportGame::refresh()`, R34) nesmí prázdnou hodnotou přepsat údaje doplněné z PS Store. Týdenní souhrn (`SendWeeklyDigests`, R36) počítá poklesy přes `DailyDeals::drops()` — ne vlastním výpočtem
 33. **Objevit volá ITAD `deals/v2` jen přes `DiscoverDeals`** (cache na kombinaci filtrů, R43) — nový filtr stránky musí být ve `DiscoverFilters::cacheKey()`, jinak by se vracel cizí výsledek; hodnoty řazení ITAD ověř požadavkem (neznámou vrátí HTTP 400)
+34. **Délka hraní jen z `HltbClient` přes `RefreshPlaytimes`** (R44) — neveřejné API HowLongToBeat: token vázaný na IP a User-Agent (vždy IPv4), změna formátu = `HltbUnavailable`, nikdy odhad ani mazání údajů. Hra z hledání jen přes `RefreshPlaytimes::match()` (přesná shoda názvu), odkaz od uživatele jen přes `HltbUrl::parse()` (SSRF). Cenu za hodinu počítá jen `GamePresenter`
 
 ## Jazyk
 

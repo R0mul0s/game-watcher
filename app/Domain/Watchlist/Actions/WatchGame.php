@@ -14,6 +14,7 @@ namespace App\Domain\Watchlist\Actions;
 
 use App\Domain\Catalog\Actions\ImportGame;
 use App\Domain\Catalog\Actions\RefreshGameDetails;
+use App\Domain\Hltb\Actions\RefreshPlaytimes;
 use App\Domain\Itad\Exceptions\ItadUnavailable;
 use App\Domain\Metacritic\Actions\RefreshMetascores;
 use App\Domain\Pricing\Actions\RefreshPrices;
@@ -36,6 +37,7 @@ final class WatchGame
         private readonly RefreshPrices $refreshPrices,
         private readonly RefreshGameDetails $refreshGameDetails,
         private readonly RefreshMetascores $refreshMetascores,
+        private readonly RefreshPlaytimes $refreshPlaytimes,
     ) {}
 
     /**
@@ -73,6 +75,11 @@ final class WatchGame
         // přidání nezastaví, doplní ho cron
         if ($game->metacritic_checked_at === null && $game->itadMetascore() === null) {
             $this->refreshMetascores->handle(collect([$game]));
+        }
+
+        // Délka hraní z HowLongToBeat (R44) — výpadek přidání nezastaví, doplní ji cron
+        if ($game->hltb_checked_at === null && $game->type !== Game::TYPE_DLC) {
+            $this->refreshPlaytimes->handle(collect([$game]));
         }
 
         return $game;

@@ -11,6 +11,7 @@
 <script setup>
 import BackLink from '@/Components/BackLink.vue';
 import GameBadges from '@/Components/GameBadges.vue';
+import GamePlaytime from '@/Components/GamePlaytime.vue';
 import GameRatings from '@/Components/GameRatings.vue';
 import PricePanel from '@/Components/PricePanel.vue';
 import SaleOutlook from '@/Components/SaleOutlook.vue';
@@ -220,6 +221,7 @@ function toggleWatch() {
                 <StoreListings :listings="game.listings" :connect-url="game.connectUrl" class="game-detail__prices" />
 
                 <GameRatings :reviews="game.reviews" :player-ratings="game.playerRatings" :metacritic="game.metacritic" />
+                <GamePlaytime :playtime="game.playtime" />
 
                 <section v-if="game.tags.length" class="panel">
                     <h2 class="panel__title">{{ t('game.tags') }}</h2>

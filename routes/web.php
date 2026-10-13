@@ -18,6 +18,7 @@ use App\Http\Controllers\DiscoverController;
 use App\Http\Controllers\DisplayCurrencyController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameSearchController;
+use App\Http\Controllers\HltbController;
 use App\Http\Controllers\ManifestController;
 use App\Http\Controllers\MetacriticController;
 use App\Http\Controllers\PushSubscriptionController;
@@ -77,6 +78,11 @@ Route::middleware('auth')->group(function (): void {
     Route::put('/hry/{game}/metacritic', [MetacriticController::class, 'update'])
         ->middleware('throttle:'.config('games.listings.max_attempts_per_minute').',1')
         ->name('metacritic.update');
+
+    // Hra na HowLongToBeat odkazem (R44) — volá HLTB, omezené jako propojení
+    Route::put('/hry/{game}/delka-hrani', [HltbController::class, 'update'])
+        ->middleware('throttle:'.config('games.listings.max_attempts_per_minute').',1')
+        ->name('hltb.update');
 
     // Měna zobrazení cen (R14)
     Route::put('/nastaveni/mena', DisplayCurrencyController::class)->name('settings.currency');

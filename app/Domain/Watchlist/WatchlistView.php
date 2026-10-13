@@ -166,6 +166,7 @@ final class WatchlistView
             WatchlistSort::Cut => $cards->sortByDesc(fn (array $card): int => $card['prices']['best']['cut'] ?? -1),
             WatchlistSort::Release => $cards->sortByDesc(fn (array $card): string => $card['releaseDate'] ?? ''),
             WatchlistSort::Score => $cards->sortByDesc(fn (array $card): int => $card['metascore']['score'] ?? -1),
+            WatchlistSort::PerHour => $cards->sortBy(fn (array $card): int => $card['pricePerHour']['cents'] ?? PHP_INT_MAX),
         };
     }
 

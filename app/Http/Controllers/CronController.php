@@ -17,6 +17,7 @@ use App\Domain\Alerts\Actions\SendWeeklyDigests;
 use App\Domain\Catalog\Actions\RefreshGameDetails;
 use App\Domain\Catalog\Actions\RefreshGameInfo;
 use App\Domain\Currency\Actions\ImportExchangeRates;
+use App\Domain\Hltb\Actions\RefreshPlaytimes;
 use App\Domain\Maintenance\PruneExpiredCache;
 use App\Domain\Metacritic\Actions\RefreshMetascores;
 use App\Domain\Monitoring\SourceMonitor;
@@ -60,6 +61,7 @@ class CronController extends Controller
         RefreshGameInfo $refreshGameInfo,
         RefreshGameDetails $refreshGameDetails,
         RefreshMetascores $refreshMetascores,
+        RefreshPlaytimes $refreshPlaytimes,
         SendPriceAlerts $sendPriceAlerts,
         SendWeeklyDigests $sendWeeklyDigests,
         PruneExpiredCache $pruneExpiredCache,
@@ -133,6 +135,16 @@ class CronController extends Controller
                         : $this->monitor->failed(MonitoredSource::Metacritic, $error);
 
                     return __($error === null ? 'app.cron.metacritic' : 'app.cron.metacritic_failed', ['count' => $count]);
+                }),
+                // Délka hraní z HowLongToBeat (R44) — doplňkové údaje jako Metascore
+                $this->attempt('hltb', [MonitoredSource::Hltb], $failedSteps, function () use ($refreshPlaytimes): string {
+                    $pending = $refreshPlaytimes->pending();
+                    [$count, $error] = $refreshPlaytimes->handle($pending);
+                    $error === null
+                        ? $this->monitor->succeeded(MonitoredSource::Hltb, $count, $pending->count())
+                        : $this->monitor->failed(MonitoredSource::Hltb, $error);
+
+                    return __($error === null ? 'app.cron.hltb' : 'app.cron.hltb_failed', ['count' => $count]);
                 }),
                 // Upozornění až po cenách (R26) — porovnávají čerstvé ceny. Nedoručené
                 // upozornění (chyba SMTP i push) označí běh jako chybný, zkusí ho další běh

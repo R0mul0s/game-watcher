@@ -72,6 +72,22 @@ function psnFixture(string $name): string
     return (string) file_get_contents(fixture("playstation/{$name}.html"));
 }
 
+/** Hledání na HowLongToBeat zachycená 13. 10. 2026 — slova názvu => tests/Fixtures/hltb/search-<soubor>.json. */
+const HLTB_SEARCH_FIXTURES = [
+    'biomutant' => 'biomutant',
+    'control resonant' => 'control-resonant',
+    'saros' => 'saros',
+    'alan wake 2' => 'alan-wake-2',
+];
+
+/**
+ * Zkrácená stránka hry na HowLongToBeat zachycená 13. 10. 2026 (jen <title> a data hry z __NEXT_DATA__).
+ */
+function hltbFixture(int $id): string
+{
+    return (string) file_get_contents(fixture("hltb/game-{$id}.html"));
+}
+
 /**
  * Zkrácená stránka hry na Metacritic zachycená 12. 10. 2026 (jen <title> a JSON-LD).
  */
@@ -153,6 +169,17 @@ function fakeApis(array $overrides = []): void
         'www.metacritic.com/game/alan-wake-ii/' => Http::response(metacriticFixture('alan-wake-ii')),
         'www.metacritic.com/game/intergalactic-the-heretic-prophet/' => Http::response(metacriticFixture('intergalactic-the-heretic-prophet')),
         'www.metacritic.com/*' => Http::response('Not Found', 404),
+        // HowLongToBeat (R44) — token (vymyšlený, skutečný obsahuje IP), zachycené
+        // hledání podle slov názvu (jiná hra nic nenajde) a zkrácené stránky her
+        'howlongtobeat.com/api/search/site/init*' => Http::response(jsonFixture('hltb/init')),
+        'howlongtobeat.com/api/search/site' => fn (Request $request): PromiseInterface => Http::response(
+            ($search = HLTB_SEARCH_FIXTURES[mb_strtolower(implode(' ', (array) $request['searchTerms']))] ?? null) === null
+                ? ['count' => 0, 'data' => []]
+                : jsonFixture('hltb/search-'.$search),
+        ),
+        'howlongtobeat.com/game/48568' => Http::response(hltbFixture(48568)),
+        'howlongtobeat.com/game/101237' => Http::response(hltbFixture(101237)),
+        'howlongtobeat.com/*' => Http::response('Not Found', 404),
     ];
 
     Http::swap(new HttpFactory);

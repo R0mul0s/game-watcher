@@ -53,6 +53,14 @@ return [
         'linked_unrated' => 'Metacritic je připojený, „:name“ ale zatím nemá hodnocení kritiků.',
     ],
 
+    // Délka hraní z HowLongToBeat (R44)
+    'hltb' => [
+        'url_required' => 'Vlož odkaz na hru na HowLongToBeat.',
+        'not_found' => 'Z odkazu nejde najít hru na HowLongToBeat. Vlož odkaz ve tvaru howlongtobeat.com/game/…',
+        'unavailable' => 'HowLongToBeat teď neodpovídá. Zkus to za chvíli.',
+        'linked' => 'HowLongToBeat je připojený — „:name“.',
+    ],
+
     'watchlist' => [
         'added' => '„:title“ je na tvém seznamu.',
         'removed' => '„:title“ už nesleduješ.',
@@ -77,6 +85,8 @@ return [
         'info_failed' => 'údaje her z ITAD — obnoveno: :count, ITAD neodpovídá (doplní další běh)',
         'metacritic' => 'Metascore z Metacritic — her: :count',
         'metacritic_failed' => 'Metascore z Metacritic — her: :count, Metacritic neodpovídá (doplní další běh)',
+        'hltb' => 'Délka hraní z HowLongToBeat — her: :count',
+        'hltb_failed' => 'Délka hraní z HowLongToBeat — her: :count, HowLongToBeat neodpovídá (doplní další běh)',
         'alerts' => 'upozornění — her: :alerts, e-mailů: :emails, na zařízení: :pushes',
         'alerts_undelivered' => ', nedoručeno: :count (zkusí další běh, podrobnosti v logu)',
         'weekly' => 'týdenní souhrn — e-mailů: :count',
@@ -87,6 +97,7 @@ return [
             'info' => 'údaje her',
             'details' => 'žánry a režimy',
             'metacritic' => 'Metascore',
+            'hltb' => 'délka hraní',
             'alerts' => 'upozornění',
             'weekly' => 'týdenní souhrn',
             'cache' => 'cache',
@@ -99,6 +110,7 @@ return [
         'unexpected_error' => 'Neočekávaná chyba — podrobnosti v logu aplikace',
         'playstation_format' => 'Stránka :path nemá data obchodu ve známém formátu — PS Store nejspíš změnil web',
         'metacritic_format' => 'Stránka hry :slug nemá strukturovaná data hry — Metacritic nejspíš změnil web',
+        'hltb_format' => 'HowLongToBeat :path nevrátil data hry — nejspíš změnil web',
         'steam_failed' => 'Steam neodpovídá — údaje doplní další běh',
         'alerts_undelivered' => 'Nedoručená upozornění: :count — podrobnosti v logu aplikace',
         'weekly_undelivered' => 'Nedoručené týdenní souhrny: :count — podrobnosti v logu aplikace',
@@ -310,6 +322,7 @@ return [
             'sort_cut' => 'Od největší slevy',
             'sort_release' => 'Od nejnovějšího vydání',
             'sort_score' => 'Podle Metacritic',
+            'sort_per_hour' => 'Od nejlevnější hodiny hraní',
             'reset' => 'Zrušit filtry',
             'shown' => 'Zobrazeno :shown z :total',
             'empty' => 'Filtrům neodpovídá žádná hra.',
@@ -340,6 +353,11 @@ return [
             'metascore_label' => 'Metacritic :score',
             'player_rating' => '★ :rating',
             'player_rating_title' => 'Hodnocení hráčů na PlayStation Store (:count hodnocení)',
+            // Délka hlavního příběhu a cena za hodinu (R44)
+            'playtime' => ':hours h',
+            'playtime_title' => 'Hlavní příběh podle HowLongToBeat',
+            'per_hour' => ':price/h',
+            'per_hour_title' => 'Cena za hodinu hlavního příběhu',
         ],
 
         // Stránka Objevit (R43)
@@ -492,6 +510,24 @@ return [
             'itad_unavailable' => 'Historie z IsThereAnyDeal teď není k dispozici.',
         ],
 
+        // Délka hraní z HowLongToBeat (R44)
+        'playtime' => [
+            'title' => 'Délka hraní',
+            'main' => 'Hlavní příběh',
+            'extra' => 'S vedlejšími úkoly',
+            'complete' => 'Na 100 %',
+            'hours' => ':hours h',
+            'per_hour' => 'Cena za hodinu',
+            'per_hour_value' => ':price za hodinu příběhu',
+            'not_found' => 'HowLongToBeat jsme podle názvu nenašli — vlož odkaz na hru.',
+            'pending' => 'Délku hraní doplní nejbližší stahování cen, nebo vlož odkaz rovnou.',
+            'link_label' => 'Odkaz na HowLongToBeat',
+            'link_placeholder' => 'https://howlongtobeat.com/game/…',
+            'link_submit' => 'Připojit',
+            'linked' => 'Podle HowLongToBeat:',
+            'link_hint' => 'Průměry hráčů z HowLongToBeat.',
+        ],
+
         // „Kup, nebo počkej?“ na detailu hry (R42)
         'outlook' => [
             'title' => 'Kup, nebo počkej?',
@@ -592,6 +628,7 @@ return [
                 'game_info' => 'IsThereAnyDeal — obnova údajů her',
                 'steam' => 'Steam — žánry a režimy',
                 'metacritic' => 'Metacritic — Metascore her mimo ITAD',
+                'hltb' => 'HowLongToBeat — délka hraní',
                 'alerts' => 'Upozornění — e-mail a zařízení',
                 'weekly_digest' => 'Týdenní souhrn — e-mail',
             ],

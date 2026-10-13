@@ -47,6 +47,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $metacritic_score
  * @property int|null $metacritic_reviews
  * @property CarbonImmutable|null $metacritic_checked_at
+ * @property int|null $hltb_id
+ * @property int|null $hltb_main_minutes
+ * @property int|null $hltb_extra_minutes
+ * @property int|null $hltb_complete_minutes
+ * @property CarbonImmutable|null $hltb_checked_at
  */
 class Game extends Model
 {
@@ -55,6 +60,9 @@ class Game extends Model
 
     /** Zdroj hodnocení kritiků z Metacritic v `reviews` (ITAD). */
     public const METASCORE_SOURCE = 'Metascore';
+
+    /** Druh DLC z ITAD (`type`). */
+    public const TYPE_DLC = 'dlc';
 
     /**
      * @var list<string>
@@ -82,6 +90,11 @@ class Game extends Model
         'metacritic_score',
         'metacritic_reviews',
         'metacritic_checked_at',
+        'hltb_id',
+        'hltb_main_minutes',
+        'hltb_extra_minutes',
+        'hltb_complete_minutes',
+        'hltb_checked_at',
     ];
 
     /**
@@ -106,6 +119,11 @@ class Game extends Model
             'metacritic_score' => 'integer',
             'metacritic_reviews' => 'integer',
             'metacritic_checked_at' => 'immutable_datetime',
+            'hltb_id' => 'integer',
+            'hltb_main_minutes' => 'integer',
+            'hltb_extra_minutes' => 'integer',
+            'hltb_complete_minutes' => 'integer',
+            'hltb_checked_at' => 'immutable_datetime',
         ];
     }
 

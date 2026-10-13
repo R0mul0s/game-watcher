@@ -177,3 +177,20 @@ export function formatInteger(value, locale) {
 export function releaseCountdown(days, t) {
     return days === 1 ? t('game.release_tomorrow') : t('game.release_in', { count: days });
 }
+
+/** Délka hraní se zaokrouhluje na půlhodiny jako na HowLongToBeat. */
+const HOURS_STEP = 0.5;
+const MINUTES_PER_HOUR = 60;
+
+/**
+ * Délka hraní v hodinách z minut („12,5“) — zaokrouhlená na půlhodiny (R44).
+ *
+ * @param {number} minutes
+ * @param {string} locale
+ * @returns {string}
+ */
+export function formatHours(minutes, locale) {
+    const hours = Math.max(HOURS_STEP, Math.round(minutes / MINUTES_PER_HOUR / HOURS_STEP) * HOURS_STEP);
+
+    return cachedFormatter(Intl.NumberFormat, locale, { maximumFractionDigits: 1 }).format(hours);
+}

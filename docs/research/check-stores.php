@@ -27,6 +27,9 @@ const G2A_PRODUCT_URL = 'https://www.g2a.com/biomutant-steam-key-europe-i1000019
 const G2A_ATTEMPTS = 3;
 // Metacritic — Metascore exkluzivity PS5, kterou ITAD nemá (R33)
 const METACRITIC_GAME_URL = 'https://www.metacritic.com/game/saros/';
+// HowLongToBeat — délka hraní (R44); token hledání je vázaný na IP a User-Agent
+const HLTB_URL = 'https://howlongtobeat.com';
+const SECONDS_PER_HOUR = 3600;
 
 // Veřejné Algolia údaje Ubisoft Store (vložené v HTML jejich stránky, mohou se změnit)
 const UBISOFT_ALGOLIA_APP = 'XELY3U4LOD';
@@ -40,9 +43,10 @@ const UBISOFT_SEARCH_TERM = 'assassin';
  * @param string               $url     Cílová URL
  * @param array<string,string> $headers Dodatečné hlavičky
  * @param string|null          $body    Tělo POST požadavku (null = GET)
+ * @param bool                 $ipv4    Jen IPv4 — token HowLongToBeat je vázaný na IP
  * @return array{status:int, body:string, error:string}
  */
-function httpRequest(string $url, array $headers = [], ?string $body = null): array
+function httpRequest(string $url, array $headers = [], ?string $body = null, bool $ipv4 = false): array
 {
     $defaultHeaders = [
         'Accept' => 'text/html,application/json,*/*;q=0.8',
@@ -75,6 +79,9 @@ function httpRequest(string $url, array $headers = [], ?string $body = null): ar
     if ($body !== null) {
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+    }
+    if ($ipv4) {
+        curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
     }
     $response = curl_exec($ch);
     $result = [
@@ -159,6 +166,38 @@ function checkMetacritic(): string
     }
 
     return describeFailure($r);
+}
+
+/**
+ * HowLongToBeat – token z /api/search/site/init, pak hledání POST /api/search/site
+ * (neveřejné API webu, R44). Délky jsou v sekundách.
+ *
+ * @return string Délka hlavního příběhu nebo popis chyby
+ */
+function checkHltb(): string
+{
+    $referer = ['Referer' => HLTB_URL . '/', 'Accept' => 'application/json'];
+    $init = httpRequest(HLTB_URL . '/api/search/site/init?t=' . (int) (microtime(true) * 1000), $referer, null, true);
+    $token = json_decode($init['body'], true)['token'] ?? null;
+    if (!is_string($token)) {
+        return 'token: ' . describeFailure($init);
+    }
+
+    $body = json_encode([
+        'searchType' => 'games',
+        'searchTerms' => [SEARCH_TERM],
+        'searchPage' => 1,
+        'size' => 20,
+        'searchOptions' => ['games' => ['userId' => 0, 'platform' => '', 'sortCategory' => 'popular', 'rangeCategory' => 'main', 'rangeTime' => ['min' => null, 'max' => null], 'gameplay' => ['perspective' => '', 'flow' => '', 'genre' => '', 'difficulty' => ''], 'rangeYear' => ['min' => '', 'max' => ''], 'modifier' => ''], 'users' => ['sortCategory' => 'postcount'], 'lists' => ['sortCategory' => 'follows'], 'filter' => '', 'sort' => 0, 'randomizer' => 0],
+        'useCache' => true,
+    ]);
+    $r = httpRequest(HLTB_URL . '/api/search/site', $referer + ['Content-Type' => 'application/json', 'Origin' => HLTB_URL, 'x-auth-token' => $token], $body, true);
+    $game = json_decode($r['body'], true)['data'][0] ?? null;
+    if (!is_array($game)) {
+        return describeFailure($r);
+    }
+
+    return sprintf('%s: hlavní příběh %.1f h', $game['game_name'], $game['comp_main'] / SECONDS_PER_HOUR);
 }
 
 /**
@@ -267,6 +306,7 @@ $checks = [
     'PlayStation' => 'checkPsn',
     'PS web' => 'checkPsnGamePage',
     'Metacritic' => 'checkMetacritic',
+    'HLTB' => 'checkHltb',
     'Kinguin' => 'checkKinguin',
     'Eneba' => 'checkEneba',
     'Ubisoft' => 'checkUbisoft',

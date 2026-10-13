@@ -31,7 +31,7 @@ const TYPES = ['game', 'dlc'];
 /** Vydání (enum ReleaseFilter, R41). */
 const RELEASES = ['released', 'upcoming'];
 /** Řazení (enum WatchlistSort); první je výchozí — od nejlevnější (R32). */
-const SORTS = ['price', 'score', 'cut', 'release', 'title', 'added'];
+const SORTS = ['price', 'per_hour', 'score', 'cut', 'release', 'title', 'added'];
 const DEFAULT_SORT = SORTS[0];
 /** Filtr hráčů (enum PlayerFilter). */
 const PLAYERS = ['solo', 'duo', 'couch'];

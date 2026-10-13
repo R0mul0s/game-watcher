@@ -1,0 +1,13 @@
+// _playtime.scss
+// Délka hraní na detailu hry (GamePlaytime.vue, R44) — údaje a formulář odkazu
+// jsou sdílené (.facts, .rating-link), cena za hodinu svítí jako cena.
+//
+// @author Roman Hlaváček
+// @created 2026-10-13
+
+.playtime {
+    &__per-hour {
+        color: var(--color-neon-green);
+        font-family: var(--font-mono);
+    }
+}

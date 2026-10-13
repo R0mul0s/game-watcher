@@ -35,4 +35,7 @@ enum WatchlistSort: string
 
     /** Od nejlepšího hodnocení kritiků na Metacritic (R32) */
     case Score = 'score';
+
+    /** Od nejnižší ceny za hodinu hlavního příběhu podle HowLongToBeat (R44) */
+    case PerHour = 'per_hour';
 }

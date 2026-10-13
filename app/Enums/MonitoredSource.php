@@ -39,6 +39,9 @@ enum MonitoredSource: string
     /** Metascore z Metacritic pro hry mimo ITAD (R33) — doplňkové údaje */
     case Metacritic = 'metacritic';
 
+    /** Délka hraní z HowLongToBeat (R44) — doplňkové údaje */
+    case Hltb = 'hltb';
+
     /** Doručení upozornění e-mailem a na zařízení (R26) */
     case Alerts = 'alerts';
 
@@ -54,12 +57,12 @@ enum MonitoredSource: string
     }
 
     /**
-     * Hlásí výpadek monitoringu (/health/zdroje)? Obnova údajů, Steam a Metacritic
-     * ne — údaje her, žánry, režimy a hodnocení jsou doplňkové a jejich výpadek
-     * neoznačí ani běh cronu jako chybný (R25, R33, R34).
+     * Hlásí výpadek monitoringu (/health/zdroje)? Obnova údajů, Steam, Metacritic
+     * a HowLongToBeat ne — údaje her, žánry, režimy, hodnocení a délka hraní jsou
+     * doplňkové a jejich výpadek neoznačí ani běh cronu jako chybný (R25, R33, R34, R44).
      */
     public function isCritical(): bool
     {
-        return ! in_array($this, [self::GameInfo, self::Steam, self::Metacritic], true);
+        return ! in_array($this, [self::GameInfo, self::Steam, self::Metacritic, self::Hltb], true);
     }
 }

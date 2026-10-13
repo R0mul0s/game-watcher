@@ -14,7 +14,7 @@
 -->
 <script setup>
 import GameBadges from '@/Components/GameBadges.vue';
-import { formatDate, formatInteger, formatPrice, formatRating, releaseCountdown } from '@/lib/format';
+import { formatDate, formatHours, formatInteger, formatPrice, formatRating, releaseCountdown } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -63,6 +63,10 @@ const playstation = computed(() => {
                 >
                     {{ t('dashboard.metascore', { score: game.metascore.score }) }}
                 </span>
+                <!-- Hlavní příběh podle HowLongToBeat (R44) -->
+                <span v-if="game.playtime" :title="t('dashboard.playtime_title')">
+                    {{ t('dashboard.playtime', { hours: formatHours(game.playtime, page.props.locale) }) }}
+                </span>
                 <!-- Hodnocení hráčů na PS Store (R33) -->
                 <span
                     v-if="game.playerRating"
@@ -101,6 +105,10 @@ const playstation = computed(() => {
             </span>
             <span v-if="game.prices.keyshops && !keyshopsRanked" class="game-card__keyshops">
                 {{ t('prices.keyshops_short', { price: formatPrice(game.prices.keyshops.price, page.props.locale) }) }}
+            </span>
+            <!-- Cena za hodinu hlavního příběhu podle volby „Cena“ (R44) -->
+            <span v-if="game.pricePerHour" class="game-card__per-hour" :title="t('dashboard.per_hour_title')">
+                {{ t('dashboard.per_hour', { price: formatPrice(game.pricePerHour.price, page.props.locale) }) }}
             </span>
             <!-- Cílová cena pro upozornění (R26) — splněná svítí -->
             <span v-if="game.target" class="game-card__target" :class="{ 'game-card__target--reached': game.targetReached }">

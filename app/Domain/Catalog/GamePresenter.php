@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Domain\Catalog;
 
 use App\Domain\Currency\ExchangeRates;
+use App\Domain\Hltb\HltbUrl;
 use App\Domain\Itad\ItadGame;
 use App\Domain\Metacritic\MetacriticUrl;
 use App\Domain\Pricing\Money;
@@ -40,6 +41,8 @@ final class GamePresenter
     /** Hodnocení od této hodnoty je smíšené, pod ní záporné (Steam „Mixed“). */
     private const REVIEW_MIXED_FROM = 40;
 
+    private const MINUTES_PER_HOUR = 60;
+
     public function __construct(
         private readonly PriceBoard $priceBoard,
         private readonly ExchangeRates $rates,
@@ -58,13 +61,14 @@ final class GamePresenter
         // Cílová cena v měně zobrazení; bez kurzu se neukáže (R26)
         $target = ($itemTarget = $item?->target()) === null ? null : $this->rates->convert($itemTarget, $currency);
         $cheapest = $this->priceBoard->cheapest($summary);
+        $ranked = $this->priceBoard->ranked($summary, $filter->basis);
 
         return [
             ...$this->basics($game),
             'isMature' => $game->is_mature,
             'prices' => $summary,
             // Cena pro řazení a filtry podle volby „Cena“ (R30) — karta ji zvýrazní
-            'ranked' => $this->priceBoard->ranked($summary, $filter->basis),
+            'ranked' => $ranked,
             // Hodnocení kritiků z Metacritic pro kartu a řazení (R32, R33)
             'metascore' => ($metascore = $game->metascore()) === null ? null : [
                 'score' => $metascore,
@@ -80,6 +84,9 @@ final class GamePresenter
             'target' => $target?->toArray(),
             // Stejné pravidlo jako upozornění — nejlevnější včetně obchodů s klíči
             'targetReached' => $target !== null && $cheapest !== null && $cheapest['effectiveCents'] <= $target->cents,
+            // Hlavní příběh podle HowLongToBeat a cena za hodinu podle volby „Cena“ (R44)
+            'playtime' => $game->hltb_main_minutes,
+            'pricePerHour' => $this->pricePerHour($game, $ranked, $currency),
         ];
     }
 
@@ -141,6 +148,21 @@ final class GamePresenter
                 'removeUrl' => route('listings.destroy', ['game' => $game, 'storeListing' => $listing], absolute: false),
             ])->values()->all(),
             'connectUrl' => route('listings.store', $game, absolute: false),
+            // Délka hraní z HowLongToBeat (R44) — cena za hodinu z nejlevnější
+            // oficiální nabídky hlídané platformy, odkaz pro hru, kterou hledání nenašlo
+            'playtime' => [
+                'main' => $game->hltb_main_minutes,
+                'extra' => $game->hltb_extra_minutes,
+                'complete' => $game->hltb_complete_minutes,
+                'url' => $game->hltb_id === null ? null : HltbUrl::game($game->hltb_id),
+                'checked' => $game->hltb_checked_at !== null,
+                'linkUrl' => route('hltb.update', $game, absolute: false),
+                'pricePerHour' => $this->pricePerHour(
+                    $game,
+                    $this->priceBoard->summary($game, $currency, (new PriceFilter)->restrictedTo($watch?->platform))['best'],
+                    $currency,
+                ),
+            ],
         ];
     }
 
@@ -272,6 +294,25 @@ final class GamePresenter
             ->first();
 
         return $listing instanceof StoreListing ? $listing : null;
+    }
+
+    /**
+     * Cena za hodinu hlavního příběhu (R44) — z nabídky v měně zobrazení;
+     * null bez nabídky nebo bez délky z HowLongToBeat. `cents` je pro řazení.
+     *
+     * @param  array<string, mixed>|null  $offer  nabídka PriceBoard (effectiveCents)
+     * @return array{price: array{amount: float, currency: string}, cents: int}|null
+     */
+    private function pricePerHour(Game $game, ?array $offer, string $currency): ?array
+    {
+        $minutes = $game->hltb_main_minutes;
+        if ($offer === null || $minutes === null || $minutes <= 0) {
+            return null;
+        }
+
+        $cents = (int) round((int) $offer['effectiveCents'] * self::MINUTES_PER_HOUR / $minutes);
+
+        return ['price' => (new Money($cents, $currency))->toArray(), 'cents' => $cents];
     }
 
     /**

@@ -316,6 +316,21 @@ return [
             'refresh_days' => 14,
             'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
         ],
+        // HowLongToBeat (R44) — délka hraní; neveřejné API webu (hledání s tokenem
+        // vázaným na IP a User-Agent, stránka hry s daty Next.js). Hostitelé jsou
+        // jediní, které server z vloženého odkazu přijme (SSRF). Po malých dávkách
+        // s pauzou, délky se obnovují po refresh_days.
+        'hltb' => [
+            'url' => env('GAMES_HLTB_URL', 'https://howlongtobeat.com'),
+            'hosts' => ['howlongtobeat.com', 'www.howlongtobeat.com'],
+            'timeout_seconds' => 15,
+            'request_delay_ms' => (int) env('GAMES_HLTB_DELAY_MS', 1000),
+            'per_run' => 10,
+            'refresh_days' => 30,
+            // Token hledání platí omezenou dobu — při odmítnutí se obnoví sám
+            'token_cache_seconds' => 600,
+            'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+        ],
     ],
 
 ];
