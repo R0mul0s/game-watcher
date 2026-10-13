@@ -9,6 +9,7 @@
     @created 2026-10-11
 -->
 <script setup>
+import BackLink from '@/Components/BackLink.vue';
 import GameBadges from '@/Components/GameBadges.vue';
 import GameRatings from '@/Components/GameRatings.vue';
 import PricePanel from '@/Components/PricePanel.vue';
@@ -90,6 +91,8 @@ function toggleWatch() {
     <Head :title="game.title" />
 
     <AppLayout>
+        <!-- Zpět na stejně vyfiltrovaný přehled na stejné místo (R38) -->
+        <BackLink />
         <article class="game-detail">
             <header class="game-detail__hero">
                 <img v-if="game.boxartUrl" :src="game.boxartUrl" alt="" class="game-detail__boxart" />

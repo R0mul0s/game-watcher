@@ -4,6 +4,7 @@
  * @author Roman Hlaváček
  * @created 2026-10-11
  */
+import { trackNavigation } from '@/lib/navigation';
 import { initPwa } from '@/lib/pwa';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { createApp, h } from 'vue';
@@ -33,5 +34,7 @@ createInertiaApp({
             .mount(el);
         // Aplikace na ploše — service worker, číslo na ikoně, obnovení po návratu (R37)
         initPwa(props.initialPage);
+        // Předchozí stránka pro tlačítko Zpět na detailu hry (R38)
+        trackNavigation(props.initialPage);
     },
 });

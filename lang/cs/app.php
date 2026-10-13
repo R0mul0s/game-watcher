@@ -185,6 +185,14 @@ return [
             'settings' => 'Nastavení',
         ],
 
+        // Tlačítko Zpět na detailu hry (R38) — podle stránky hlavní navigace, kam vede
+        'back' => [
+            'default' => 'Zpět',
+            'dashboard' => 'Zpět na přehled',
+            'add_game' => 'Zpět na hledání',
+            'settings' => 'Zpět do nastavení',
+        ],
+
         'flash' => [
             'dismiss' => 'Zavřít hlášku',
         ],
