@@ -463,6 +463,47 @@ return [
             'itad_unavailable' => 'Historie z IsThereAnyDeal teď není k dispozici.',
         ],
 
+        // „Kup, nebo počkej?“ na detailu hry (R42)
+        'outlook' => [
+            'title' => 'Kup, nebo počkej?',
+            'verdicts' => [
+                'buy' => 'Kup teď',
+                'good' => 'Dobrá cena',
+                'wait' => 'Počkej',
+                'neutral' => 'Bez doporučení',
+            ],
+            'reasons' => [
+                'low' => 'Nejnižší cena za poslední rok — levněji to nebývá.',
+                'cheap' => 'Levněji byla jen :share % dní za poslední rok.',
+                'event' => ':event začíná za :days — loni tam byla za :price.',
+                'event_tomorrow' => ':event začíná zítra — loni tam byla za :price.',
+                'pattern' => 'Za poslední rok byla levněji :share % dní, u minima naposledy před :ago.',
+                'pattern_short' => 'Za poslední rok byla levněji :share % dní.',
+                'typical' => 'Běžná cena — za poslední rok byla levněji :share % dní.',
+            ],
+            'days' => ':count den|:count dny|:count dní',
+            'days_ago' => ':count dnem|:count dny|:count dny',
+            'cheaper_share' => 'Levněji za rok',
+            'cheaper_share_value' => ':share % dní',
+            'year_low' => 'Roční minimum',
+            'year_low_value' => ':price (−:cut %, :date)',
+            'year_low_value_regular' => ':price (:date)',
+            'near_low' => 'U minima',
+            'near_low_now' => 'teď',
+            'near_low_ago' => 'naposledy před :ago',
+            'near_low_interval' => 'zhruba každých :days dní',
+            'upcoming' => 'Nejbližší výprodej',
+            'upcoming_value' => ':event :start – :end',
+            'upcoming_last_year' => 'loni :price (−:cut %)',
+            'note' => 'Nejnižší cena dne v obchodech pro PC podle IsThereAnyDeal od :since. „U minima“ = nejvýš :percent % nad ročním minimem. Výprodeje podle kalendáře Steamu.',
+            'events' => [
+                'steam_winter' => 'Zimní výprodej na Steamu',
+                'steam_spring' => 'Jarní výprodej na Steamu',
+                'steam_summer' => 'Letní výprodej na Steamu',
+                'steam_autumn' => 'Podzimní výprodej na Steamu',
+            ],
+        ],
+
         // Nastavení upozornění (etapa 6, R13, R26)
         'settings' => [
             'title' => 'Nastavení',

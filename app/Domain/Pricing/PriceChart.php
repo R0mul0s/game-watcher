@@ -13,8 +13,7 @@ declare(strict_types=1);
 namespace App\Domain\Pricing;
 
 use App\Domain\Currency\ExchangeRates;
-use App\Domain\Itad\Exceptions\ItadUnavailable;
-use App\Domain\Itad\ItadClient;
+use App\Domain\Itad\ItadHistory;
 use App\Domain\Itad\ItadPriceChange;
 use App\Enums\Platform;
 use App\Enums\PriceScope;
@@ -25,7 +24,6 @@ use App\Models\StoreListing;
 use App\Models\WatchlistItem;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -39,8 +37,6 @@ use Illuminate\Support\Facades\DB;
  */
 final class PriceChart
 {
-    private const CACHE_PREFIX = 'itad:history:';
-
     /** Klíče řad — barvu a název řady volí stránka. */
     public const SERIES_OFFICIAL = 'official';
 
@@ -52,7 +48,7 @@ final class PriceChart
     public const SERIES_KEYSHOPS_LOW = 'keyshops_low';
 
     public function __construct(
-        private readonly ItadClient $itad,
+        private readonly ItadHistory $history,
         private readonly ExchangeRates $rates,
     ) {}
 
@@ -65,9 +61,9 @@ final class PriceChart
     {
         $zone = (string) config('games.display_timezone');
         $today = CarbonImmutable::now($zone)->startOfDay();
-        $start = $today->subDays((int) config('games.chart.history_days'));
+        $start = ItadHistory::start();
 
-        $changes = $this->itadHistory($game, $start);
+        $changes = $this->history->forGame($game);
         /** @var Collection<int, object{shop_key: string, day: string, amount: string, currency: string}> $own */
         $own = DB::table('price_history')
             ->where('game_id', $game->id)
@@ -108,32 +104,6 @@ final class PriceChart
             // Od kdy máme vlastní historii (obchody s klíči, PS Store) — poznámka pod grafem
             'ownSince' => $own->isEmpty() ? null : (string) $own->first()->day,
         ];
-    }
-
-    /**
-     * Historie z ITAD (cache chart.cache_seconds); null = ITAD teď neodpovídá.
-     *
-     * @return list<ItadPriceChange>|null
-     */
-    private function itadHistory(Game $game, CarbonImmutable $start): ?array
-    {
-        $key = self::CACHE_PREFIX.$game->itad_id;
-
-        /** @var list<array{at: string, shopId: int, shopName: string, cents: int, currency: string}>|null $cached */
-        $cached = Cache::get($key);
-        if (is_array($cached)) {
-            return array_map(ItadPriceChange::fromArray(...), $cached);
-        }
-
-        try {
-            $changes = $this->itad->history($game->itad_id, $start);
-        } catch (ItadUnavailable) {
-            return null;
-        }
-
-        Cache::put($key, array_map(fn (ItadPriceChange $change): array => $change->toArray(), $changes), (int) config('games.chart.cache_seconds'));
-
-        return $changes;
     }
 
     /**

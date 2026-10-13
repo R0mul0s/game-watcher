@@ -2,8 +2,8 @@
     Detail hry z katalogu — údaje z IsThereAnyDeal (R10), sledování a odkazy.
     Ceny v měně účtu (R14) — panel PricePanel. U sledované hry jde zvolit,
     kde se hlídá (R24) — ceny ostatních platforem se ztlumí — a cílovou
-    cenu pro upozornění (etapa 6, R26). Graf vývoje ceny se dočte po zobrazení
-    stránky (odložený prop, etapa 7, R28).
+    cenu pro upozornění (etapa 6, R26). Graf vývoje ceny a „kup, nebo počkej“
+    se dočtou po zobrazení stránky (odložené propy, etapa 7, R28, R42).
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -13,6 +13,7 @@ import BackLink from '@/Components/BackLink.vue';
 import GameBadges from '@/Components/GameBadges.vue';
 import GameRatings from '@/Components/GameRatings.vue';
 import PricePanel from '@/Components/PricePanel.vue';
+import SaleOutlook from '@/Components/SaleOutlook.vue';
 import StoreListings from '@/Components/StoreListings.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { formatDate, releaseCountdown } from '@/lib/format';
@@ -28,6 +29,8 @@ const props = defineProps({
     watchUrl: { type: String, required: true },
     /** Graf vývoje ceny — odložený prop (PriceChart na serveru). */
     chart: { type: Object, default: null },
+    /** Kup, nebo počkej — odložený prop (SaleOutlook na serveru, R42); null = bez historie. */
+    outlook: { type: Object, default: null },
 });
 
 const t = useTranslations();
@@ -198,6 +201,12 @@ function toggleWatch() {
             </header>
 
             <div class="game-detail__panels">
+                <!-- Kup, nebo počkej (R42) — krátké shrnutí nad dlouhým výpisem obchodů;
+                     ze stejné historie jako graf, bez historie se neukáže -->
+                <Deferred data="outlook">
+                    <template #fallback></template>
+                    <SaleOutlook v-if="outlook" :outlook="outlook" class="game-detail__prices" />
+                </Deferred>
                 <PricePanel :prices="game.prices" :focus-platform="game.watchPlatform" class="game-detail__prices" />
                 <Deferred data="chart">
                     <template #fallback>

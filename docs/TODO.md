@@ -52,5 +52,7 @@ v [PLAN.md](PLAN.md); větší celky se z toho stávají etapou.
 
 - **PWA** (R27, R37 jsou hotové) — výzva „Přidat na plochu“ v nastavení (dialog prohlížeče na Androidu,
   návod na iPhonu); písma na stránce offline (dnes systémové — písma se načítají přes skript aplikace)
+- **kalendář výprodejů** (R42): doplnit Steam Autumn Sale 2027 a další, až je Valve zveřejní
+  (Steamworks → Upcoming Steam Events); případně i jiné obchody (GOG, Epic), kdyby se daly zjistit dopředu
 - **graf ceny**: historické kurzy ČNB (dnes se přepočítává dnešním kurzem, R28), historie obchodů s klíči odjinud než z vlastních záznamů, značky slev (začátek a konec akce)
 - porovnání regionů (stejná hra na PS Store v CZ vs. TR/AR) — zajímavé, ale na hranici pravidel obchodů

@@ -14,6 +14,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Catalog\GamePresenter;
 use App\Domain\Pricing\PriceChart;
+use App\Domain\Pricing\SaleOutlook;
 use App\Models\Game;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class GameController extends Controller
     /**
      * Stránka detailu hry.
      */
-    public function show(Request $request, Game $game, GamePresenter $presenter, PriceChart $chart): Response
+    public function show(Request $request, Game $game, GamePresenter $presenter, PriceChart $chart, SaleOutlook $outlook): Response
     {
         $user = $request->user();
         $game->load(['currentPrices', 'priceLows', 'storeListings']);
@@ -39,8 +40,10 @@ class GameController extends Controller
         return Inertia::render('Games/Show', [
             'game' => $presenter->detail($game, $item, $currency),
             'watchUrl' => route('watchlist.store', absolute: false),
-            // Graf vývoje ceny až po zobrazení stránky — historie ITAD může chvíli trvat (R28)
+            // Graf vývoje ceny až po zobrazení stránky — historie ITAD může chvíli trvat (R28);
+            // „kup, nebo počkej“ ze stejné historie ve stejném odloženém požadavku (R42)
             'chart' => Inertia::defer(fn (): array => $chart->build($game, $currency, $item)),
+            'outlook' => Inertia::defer(fn (): ?array => $outlook->build($game, $item, $currency)),
         ]);
     }
 }

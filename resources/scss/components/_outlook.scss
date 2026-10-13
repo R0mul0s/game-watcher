@@ -1,0 +1,56 @@
+// _outlook.scss
+// „Kup, nebo počkej?“ na detailu hry (SaleOutlook.vue, R42) — neonový štítek
+// doporučení s barvou podle verdiktu a věta, proč.
+//
+// @author Roman Hlaváček
+// @created 2026-10-13
+
+@use '../abstracts/mixins' as *;
+
+.outlook {
+    &__verdict {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2) var(--space-3);
+        margin: 0;
+    }
+
+    &__badge {
+        @include display-caps;
+
+        padding: var(--space-1) var(--space-3);
+        border: var(--border-width) solid currentcolor;
+        font-weight: var(--font-weight-display);
+        text-shadow: 0 0 var(--space-2) currentcolor;
+        box-shadow: 0 0 var(--space-2) currentcolor;
+
+        &--buy {
+            color: var(--color-neon-green);
+        }
+
+        &--good {
+            color: var(--color-accent);
+        }
+
+        &--wait {
+            color: var(--color-neon-amber);
+        }
+
+        &--neutral {
+            color: var(--color-text-muted);
+            text-shadow: none;
+            box-shadow: none;
+        }
+    }
+
+    &__reason {
+        color: var(--color-text);
+    }
+
+    &__note {
+        margin: 0;
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+    }
+}

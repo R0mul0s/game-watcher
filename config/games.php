@@ -161,6 +161,36 @@ return [
     ],
 
     /*
+    | „Kup, nebo počkej?“ na detailu hry (R42) — ze stejné historie ITAD jako
+    | graf, za poslední rok. Roční minimum s tolerancí low_tolerance_percent %
+    | (haléřové rozdíly obchodů) = „kup“; „u minima“ je cena do near_low_percent %
+    | nad ním. Levněji nejvýš v good_share % dní = dobrá cena, aspoň v wait_share
+    | % dní = počkej. Výprodej z kalendáře se ukáže upcoming_days dní předem;
+    | historie kratší než min_history_days dní doporučení nedá.
+    */
+    'outlook' => [
+        'low_tolerance_percent' => 2,
+        'near_low_percent' => 15,
+        'good_share' => 20,
+        'wait_share' => 50,
+        'upcoming_days' => 60,
+        'min_history_days' => 30,
+    ],
+
+    /*
+    | Kalendář velkých výprodejů (R42) — data zveřejňuje Valve na Steamworks
+    | (partner.steamgames.com/doc/marketing/upcoming_events), PlayStation Store
+    | svoje akce předem neohlašuje. Doplňovat ručně, když Valve zveřejní další.
+    | key = název v lang (app.ui.outlook.events), shop_id = obchod v ITAD
+    | (61 = Steam) — výprodej se ukáže jen u hry, která se v obchodě prodává.
+    */
+    'sales_calendar' => [
+        ['key' => 'steam_winter', 'shop_id' => 61, 'start' => '2026-12-17', 'end' => '2027-01-04'],
+        ['key' => 'steam_spring', 'shop_id' => 61, 'start' => '2027-03-18', 'end' => '2027-03-25'],
+        ['key' => 'steam_summer', 'shop_id' => 61, 'start' => '2027-06-24', 'end' => '2027-07-08'],
+    ],
+
+    /*
     | Upozornění na telefon (Web Push, R13) — převzato z Počasí. Klíče VAPID
     | vygeneruje games:push-keys; bez nich se upozornění na telefon nenabízí.
     */
