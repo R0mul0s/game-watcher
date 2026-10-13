@@ -1,6 +1,6 @@
 // _back-link.scss
-// Tlačítko Zpět nad obsahem stránky (BackLink.vue, R38) — mono písmo verzálkami,
-// při najetí se rozsvítí jako odkaz v navigaci.
+// Tlačítko Zpět nad obsahem stránky (BackLink.vue, R38) — plovoucí pod plovoucí
+// hlavičkou (R39): při posouvání zůstává na očích jako neonový štítek.
 //
 // @author Roman Hlaváček
 // @created 2026-10-13
@@ -10,21 +10,30 @@
 .back-link {
     @include display-caps;
 
+    position: sticky;
+    top: calc(var(--app-header-height) + var(--space-2));
+    z-index: var(--z-header);
     display: inline-flex;
     align-items: center;
+    align-self: flex-start;
     gap: var(--space-2);
     margin-bottom: var(--space-3);
-    padding: var(--space-1) 0;
-    background: none;
-    border: 0;
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
     color: var(--color-text-muted);
     font-size: var(--font-size-sm);
     text-decoration: none;
     cursor: pointer;
-    transition: color var(--duration-fast);
+    transition:
+        color var(--duration-fast),
+        border-color var(--duration-fast),
+        box-shadow var(--duration-fast);
 
     &:hover {
+        border-color: var(--color-accent);
         color: var(--color-accent);
+        box-shadow: var(--glow-accent);
         text-shadow: var(--text-glow-accent);
     }
 

@@ -18,7 +18,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { formatDate } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
 import { Deferred, Head, router, useForm, usePage } from '@inertiajs/vue3';
-import { defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 
 /** Graf s ECharts až když je potřeba — knihovna je velká, stránka se zobrazí bez ní. */
 const PriceChart = defineAsyncComponent(() => import('@/Components/PriceChart.vue'));
@@ -33,6 +33,11 @@ const props = defineProps({
 const t = useTranslations();
 const page = usePage();
 const processing = ref(false);
+
+/** Telefon — pod $breakpoint-md (abstracts/_variables.scss) je místo obalu na výšku široký banner. */
+const PHONE_MEDIA = '(max-width: 767px)';
+/** Hra má vlastní banner (bannerUrl jinak obsahuje obal). */
+const hasBanner = computed(() => props.game.bannerUrl !== null && props.game.bannerUrl !== props.game.boxartUrl);
 
 /** Volby hlídané platformy — null = všude (enum Platform). */
 const WATCH_PLATFORMS = [null, 'pc', 'playstation'];
@@ -95,7 +100,12 @@ function toggleWatch() {
         <BackLink />
         <article class="game-detail">
             <header class="game-detail__hero">
-                <img v-if="game.boxartUrl" :src="game.boxartUrl" alt="" class="game-detail__boxart" />
+                <!-- Na telefonu široký banner přes celou šířku, jinak obal na výšku (R39) -->
+                <picture v-if="game.boxartUrl && hasBanner" class="game-detail__cover">
+                    <source :media="PHONE_MEDIA" :srcset="game.bannerUrl" />
+                    <img :src="game.boxartUrl" alt="" class="game-detail__boxart game-detail__boxart--with-banner" />
+                </picture>
+                <img v-else-if="game.boxartUrl" :src="game.boxartUrl" alt="" class="game-detail__boxart" />
                 <img v-else-if="game.bannerUrl" :src="game.bannerUrl" alt="" class="game-detail__banner" />
 
                 <div class="game-detail__heading">

@@ -23,12 +23,33 @@
         }
     }
 
+    // Obal hry s bannerem — <picture> na telefonu přepne na banner (R39)
+    &__cover {
+        display: block;
+    }
+
+    // Na telefonu přes celou šířku (R39): s bannerem v jeho poměru stran, bez
+    // banneru obal na výšku omezený výškou; od md obal vedle údajů
     &__boxart {
-        width: var(--boxart-width);
+        display: block;
+        width: 100%;
+        max-height: var(--boxart-max-height-phone);
         aspect-ratio: var(--boxart-aspect);
         object-fit: cover;
+        object-position: top;
         border: var(--border-width) solid var(--color-accent);
         box-shadow: var(--glow-accent);
+
+        &--with-banner {
+            max-height: none;
+            aspect-ratio: var(--banner-aspect);
+        }
+
+        @include from-md {
+            width: var(--boxart-width);
+            max-height: none;
+            aspect-ratio: var(--boxart-aspect);
+        }
     }
 
     &__banner {

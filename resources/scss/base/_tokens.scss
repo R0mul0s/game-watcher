@@ -97,6 +97,8 @@
     --thumbnail-width: 7.5rem;
     --boxart-aspect: 300 / 450;
     --boxart-width: 12rem;
+    // Obal bez banneru přes celou šířku telefonu — aby nezabral celou obrazovku (R39)
+    --boxart-max-height-phone: 28rem;
     --game-card-min-width: 16rem;
     --facts-label-width: 7rem;
     // Filtry přehledu
@@ -154,8 +156,12 @@
     --z-backdrop: 0;
     --z-content: 1;
     --z-overlay: 50;
+    // Plovoucí hlavička a tlačítko Zpět nad obsahem (R39)
+    --z-header: 30;
     // Ukazatel stažení dolů — nad hlavičkou, pod řádkováním obrazovky
     --z-pull-refresh: 40;
+    // Výška plovoucí hlavičky — měří ji AppLayout (na telefonu má tři řádky)
+    --app-header-height: 0px;
 
     --opacity-disabled: 0.45;
     // Pohasnutí neonu při problikávání loga
