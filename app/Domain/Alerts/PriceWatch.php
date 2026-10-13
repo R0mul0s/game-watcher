@@ -32,6 +32,8 @@ use Illuminate\Support\Facades\DB;
  * - cena = nejlevnější nabídka hlídané platformy (R24) včetně obchodů s klíči,
  *   s PS Plus u účtu cena pro předplatitele, v měně zobrazení účtu;
  * - s cílovou cenou: cena je na cíli nebo pod ním;
+ * - s PS Plus u účtu: měsíční hra PS Plus Essential (zdarma s předplatným,
+ *   R35) — bez ohledu na cílovou cenu;
  * - bez cílové ceny: nabídka je ve slevě a na historickém minimu svého zdroje
  *   (oficiální obchody a obchody s klíči z ITAD a gg.deals, PS Store z vlastní
  *   historie, když je aspoň alerts.min_history_days dní dlouhá);
@@ -63,9 +65,11 @@ final class PriceWatch
 
         $price = new Money((int) $offer['effectiveCents'], $currency);
         $target = $item->target();
-        $met = $target === null
+        // Měsíční hra PS Plus Essential — s předplatným zdarma, upozornit vždy (R35)
+        $monthly = $user->has_ps_plus && ($offer['memberFree'] ?? false) === true;
+        $met = $monthly || ($target === null
             ? $this->isHistoricalLow($game, $offer)
-            : ($converted = $this->rates->convert($target, $currency)) !== null && $price->cents <= $converted->cents;
+            : ($converted = $this->rates->convert($target, $currency)) !== null && $price->cents <= $converted->cents);
 
         if (! $met || ! $this->isNew($item, $price)) {
             return new PriceCheck($met, null);
@@ -74,7 +78,11 @@ final class PriceWatch
         return new PriceCheck(true, new PriceAlert(
             item: $item,
             game: $game,
-            reason: $target === null ? AlertReason::HistoricalLow : AlertReason::Target,
+            reason: match (true) {
+                $monthly => AlertReason::PlusMonthly,
+                $target === null => AlertReason::HistoricalLow,
+                default => AlertReason::Target,
+            },
             price: $price,
             shop: (string) ($offer['shop'] ?? __('app.ui.prices.keyshops')),
             url: is_string($offer['url'] ?? null) ? $offer['url'] : null,

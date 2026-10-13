@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Domain\PlayStation;
 
 use App\Domain\Pricing\Money;
+use App\Enums\PlusTier;
 use Carbon\CarbonImmutable;
 
 /**
@@ -23,7 +24,9 @@ use Carbon\CarbonImmutable;
  *
  * - druh ADD_TO_CART (i PREORDER) se `serviceBranding` NONE — běžná cena,
  * - UPSELL_PS_PLUS_DISCOUNT — cena s PS Plus,
- * - UPSELL_PS_PLUS_GAME_CATALOG — hra je v katalogu PS Plus (zdarma v předplatném).
+ * - UPSELL_PS_PLUS_GAME_CATALOG — hra je v katalogu PS Plus (zdarma v předplatném),
+ *   úroveň v `tierLabel` (TIER_20 Extra, TIER_30 Premium, R35),
+ * - UPSELL_PS_PLUS_FREE — měsíční hra PS Plus Essential (zdarma s předplatným, R35).
  *
  * Částky jsou v setinách (`basePriceValue`, `discountedValue`), konec slevy
  * `endTime` v milisekundách. Formát není veřejné API — když se změní, parser
@@ -39,6 +42,9 @@ final class PlayStationPage
     private const PLUS_CATALOG_CTA = 'UPSELL_PS_PLUS_GAME_CATALOG';
 
     private const PLUS_DISCOUNT_CTA = 'UPSELL_PS_PLUS_DISCOUNT';
+
+    /** Měsíční hra PS Plus Essential — zdarma pro předplatitele (R35). */
+    private const PLUS_FREE_CTA = 'UPSELL_PS_PLUS_FREE';
 
     private const BRANDING_NONE = 'NONE';
 
@@ -120,12 +126,19 @@ final class PlayStationPage
         $regular = null;
         $plusPrice = null;
         $inPlusCatalog = false;
+        $catalogTier = null;
+        $plusFree = false;
         foreach ($this->ctas($productId) as $type => $price) {
             $branding = is_array($price['serviceBranding'] ?? null) ? $price['serviceBranding'] : [];
 
             if ($type === self::PLUS_CATALOG_CTA) {
                 $inPlusCatalog = true;
-            } elseif ($type === self::PLUS_DISCOUNT_CTA) {
+                $catalogTier = PlusTier::fromTierLabel($price['tierLabel'] ?? null);
+            } elseif ($type === self::PLUS_FREE_CTA) {
+                // Měsíční hra — s PS Plus za 0 (R35)
+                $plusFree = true;
+                $plusPrice = self::money($price, 'discountedValue');
+            } elseif ($type === self::PLUS_DISCOUNT_CTA && ! $plusFree) {
                 $plusPrice = self::money($price, 'discountedValue');
             } elseif (in_array($type, self::REGULAR_CTAS, true) && in_array(self::BRANDING_NONE, $branding, true)) {
                 $regular ??= $price;
@@ -154,6 +167,8 @@ final class PlayStationPage
             // Cena s PS Plus, jen když je opravdu nižší než běžná
             plusPrice: $plusPrice !== null && ($price === null || $plusPrice->cents < $price->cents) ? $plusPrice : null,
             inPlusCatalog: $inPlusCatalog,
+            catalogTier: $catalogTier,
+            plusFree: $plusFree && $plusPrice !== null,
             coverUrl: self::image($media, self::COVER_ROLES, (int) config('games.sources.playstation.cover_width')),
             bannerUrl: self::image($media, self::BANNER_ROLES, (int) config('games.sources.playstation.banner_width')),
             // Datum vydání je půlnoc místního času v UTC (2026-04-29T22:00:00Z = 30. 4.)

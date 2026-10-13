@@ -1,0 +1,76 @@
+// _pull-refresh.scss
+// Ukazatel stažení stránky dolů v aplikaci z plochy (PullToRefresh.vue, R37) —
+// neonový kruh se šipkou vyjede shora o tolik, o kolik táhne prst
+// (--pull-distance nastavuje komponenta), za hranicí se rozsvítí, při načítání
+// se točí. Převzato z Agregátoru letáků.
+//
+// @author Roman Hlaváček
+// @created 2026-10-13
+
+@use '../abstracts/mixins' as *;
+
+.pull-refresh {
+    --pull-distance: 0px;
+
+    position: fixed;
+    top: calc(var(--space-2) + env(safe-area-inset-top));
+    left: 50%;
+    z-index: var(--z-pull-refresh);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--pull-refresh-size);
+    height: var(--pull-refresh-size);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: 50%;
+    color: var(--color-text-muted);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, calc(var(--pull-distance) - var(--pull-refresh-size)));
+
+    &--visible {
+        opacity: 1;
+    }
+
+    // Po puštění (pod hranicí zpět, nad ní na místo načítání) dojede plynule, během tahu ne
+    @include with-motion {
+        &:not(.pull-refresh--visible),
+        &--refreshing {
+            transition:
+                opacity var(--duration-fast),
+                transform var(--duration-fast);
+        }
+    }
+
+    &--ready {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        box-shadow: var(--glow-accent);
+    }
+
+    &__icon {
+        width: var(--pull-refresh-icon-size);
+        height: var(--pull-refresh-icon-size);
+        fill: none;
+        stroke: currentcolor;
+        stroke-width: var(--pull-refresh-stroke);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        // Šipka se točí s prstem
+        transform: rotate(calc(var(--pull-distance) * var(--pull-refresh-turn)));
+    }
+
+    // Točení jen po dobu načítání
+    @include with-motion {
+        &--refreshing &__icon {
+            animation: pull-refresh-spin var(--duration-pull-refresh-spin) linear infinite;
+        }
+    }
+}
+
+@keyframes pull-refresh-spin {
+    to {
+        transform: rotate(1turn);
+    }
+}

@@ -134,6 +134,9 @@ final class PriceBoard
                     'cut' => $price->cut,
                     'member' => $member === null ? null : ['price' => $member['price'], 'original' => $member['original']],
                     'memberIncluded' => $price->member_included,
+                    // Úroveň katalogu PS Plus a měsíční hra Essential (R35)
+                    'memberTier' => $price->member_tier?->value,
+                    'memberFree' => $price->member_free,
                     'drm' => $price->drm,
                     'url' => $price->url,
                     'expiresAt' => $price->expires_at?->toIso8601String(),

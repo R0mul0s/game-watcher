@@ -128,6 +128,11 @@
     --trail-magenta-position: 0.62;
     // Šipka vlastního selectu (field__select)
     --select-arrow-size: 0.75rem;
+    // Ukazatel stažení dolů v aplikaci z plochy (R37); šipka se otočí o tolik na px tahu
+    --pull-refresh-size: 2.5rem;
+    --pull-refresh-icon-size: 1.25rem;
+    --pull-refresh-stroke: 2.5;
+    --pull-refresh-turn: 3deg;
     // Světelná stopa na lince pod nadpisem stránky
     --header-trail-length: 6rem;
 
@@ -138,6 +143,7 @@
     --duration-trail: 14s;
     --trail-delay: 7s;
     --duration-header-trail: 8s;
+    --duration-pull-refresh-spin: 0.8s;
     // Problikávání neonového loga — rám a „play“ v různém rytmu
     --duration-logo-flicker: 7s;
     --duration-logo-flicker-play: 11s;
@@ -148,6 +154,8 @@
     --z-backdrop: 0;
     --z-content: 1;
     --z-overlay: 50;
+    // Ukazatel stažení dolů — nad hlavičkou, pod řádkováním obrazovky
+    --z-pull-refresh: 40;
 
     --opacity-disabled: 0.45;
     // Pohasnutí neonu při problikávání loga

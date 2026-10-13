@@ -69,6 +69,28 @@ it('pošle e-mail, když nejlevnější nabídka (i klíče) klesne pod cílovou
         ->and($item?->notified_at)->not->toBeNull();
 });
 
+it('s PS Plus upozorní na měsíční hru Essential jednou, bez PS Plus ne (R35)', function (bool $hasPlus, int $alerts): void {
+    $user = watcherOf([CONTROL_RESONANT_ID], ['has_ps_plus' => $hasPlus]);
+    // Produkt F1 25 je teď měsíční hra — s PS Plus za 0
+    app(ConnectPlayStationProduct::class)->handle(
+        $user->watchedGames()->sole(),
+        'https://store.playstation.com/cs-cz/product/'.PSN_F1_25,
+    );
+
+    expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe($alerts);
+    if ($hasPlus) {
+        Mail::assertSent(PriceAlertMail::class, fn (PriceAlertMail $mail): bool => $mail->hasTo($user->email)
+            && $mail->lines[0]['reason'] === __('app.alerts.reason_plus_monthly')
+            && plainSpaces($mail->lines[0]['price']) === '0 Kč');
+
+        // Podruhé už ne
+        expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(0);
+    }
+})->with([
+    's PS Plus' => [true, 1],
+    'bez PS Plus' => [false, 0],
+]);
+
 it('stejnou cenu podruhé nepošle, nižší ano', function (): void {
     setTarget($this->item, '200.00');
     app(SendPriceAlerts::class)->handle();

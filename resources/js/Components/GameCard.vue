@@ -89,7 +89,9 @@ const playstation = computed(() => {
                 {{ t('prices.official_short', { price: formatPrice(best.price, page.props.locale) }) }}
                 <template v-if="best.cut"> · {{ t('prices.cut', { cut: best.cut }) }}</template>
             </span>
-            <span v-if="!keyshopsRanked && best?.member" class="game-card__plus">{{ t('prices.plus_price', { price: formatPrice(best.member.price, page.props.locale) }) }}</span>
+            <!-- Měsíční hra PS Plus Essential (R35) — u nejlevnější nabídky i u PS Store zvlášť -->
+            <span v-if="best?.memberFree || playstation?.memberFree" class="game-card__plus">{{ t('prices.plus_free') }}</span>
+            <span v-else-if="!keyshopsRanked && best?.member" class="game-card__plus">{{ t('prices.plus_price', { price: formatPrice(best.member.price, page.props.locale) }) }}</span>
             <span v-if="playstation" class="game-card__playstation">
                 {{ t('prices.playstation_short', { price: formatPrice(playstation.price, page.props.locale) }) }}
                 <template v-if="playstation.member"> · {{ t('prices.plus_price', { price: formatPrice(playstation.member.price, page.props.locale) }) }}</template>

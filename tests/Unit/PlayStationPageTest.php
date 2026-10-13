@@ -11,6 +11,7 @@
 declare(strict_types=1);
 
 use App\Domain\PlayStation\PlayStationPage;
+use App\Enums\PlusTier;
 
 it('přečte název, platformy a běžnou cenu produktu bez slevy', function (): void {
     $product = PlayStationPage::fromHtml(psnFixture('product-control-resonant'))->product(PSN_CONTROL_RESONANT);
@@ -36,6 +37,26 @@ it('přečte slevu, její konec a zařazení do katalogu PS Plus', function (): 
         ->and($product?->inPlusCatalog)->toBeTrue()
         // Hra v katalogu není cena s PS Plus — zdarma je jen v předplatném Extra
         ->and($product?->plusPrice)->toBeNull();
+});
+
+it('pozná úroveň katalogu PS Plus a zkušební verzi Premium za katalog nebere (R35)', function (): void {
+    $kingdomCome = PlayStationPage::fromHtml(psnFixture('product-kingdom-come'))->product(PSN_KINGDOM_COME);
+    $saros = PlayStationPage::fromHtml(psnFixture('product-saros'))->product(PSN_SAROS);
+
+    expect($kingdomCome?->catalogTier)->toBe(PlusTier::Extra)
+        ->and($kingdomCome?->plusFree)->toBeFalse()
+        // Saros má s PS Plus Premium jen zkušební verzi (TIER_30) — ne katalog
+        ->and($saros?->inPlusCatalog)->toBeFalse()
+        ->and($saros?->catalogTier)->toBeNull();
+});
+
+it('pozná měsíční hru PS Plus Essential — s předplatným za 0 (R35)', function (): void {
+    $product = PlayStationPage::fromHtml(psnFixture('product-f1-25'))->product(PSN_F1_25);
+
+    expect($product?->plusFree)->toBeTrue()
+        ->and($product?->plusPrice?->cents)->toBe(0)
+        ->and($product?->price?->cents)->toBeGreaterThan(0)
+        ->and($product?->inPlusCatalog)->toBeFalse();
 });
 
 it('přečte cenu s PS Plus vedle běžné ceny', function (): void {

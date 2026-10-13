@@ -113,7 +113,7 @@ curl -I "https://game-watcher.rhsoft.cz/prihlaseni"
 
 ## Cron: stahování cen
 
-Kurzy ČNB, ceny sledovaných her, žánry ze Steamu, Metascore z Metacritic, upozornění na ceny a úklid cache obstarává URL volaná cronem
+Kurzy ČNB, ceny sledovaných her, obnovu údajů her, žánry ze Steamu, Metascore z Metacritic, upozornění na ceny, týdenní souhrn a úklid cache obstarává URL volaná cronem
 ve WebAdminu (R19) — hosting nemá scheduler ani artisan.
 
 1. V `.env` na hostingu vyplň `GAMES_CRON_TOKEN` — náhodný řetězec:
@@ -124,9 +124,11 @@ ve WebAdminu (R19) — hosting nemá scheduler ani artisan.
    ```
    kurzy ČNB — uložen lístek z 9. 10. 2026
    ceny — ITAD her: 4, gg.deals her: 3, PlayStation Store produktů: 1
+   údaje her z ITAD — obnoveno: 3
    žánry a režimy ze Steamu — her: 2
    Metascore z Metacritic — her: 1
    upozornění — her: 1, e-mailů: 1, na zařízení: 1
+   týdenní souhrn — e-mailů: 0
    cache — smazáno prošlých záznamů: 6
    ```
    Špatný nebo chybějící token vrací **404**.
@@ -153,7 +155,7 @@ Na každém řádku jeden zdroj, např. `PlayStation Store — VÝPADEK: posledn
 - **výpadek cronu** = poslední běh starší než 5 h (`games.monitoring.cron_max_age_minutes`) — hosting cron přestal volat
 - **výpadek zdroje** = poslední úspěch starší než 9 h (`games.monitoring.stale_after_minutes`), tedy dva
   neúspěšné běhy po sobě; jeden neúspěšný běh je jen „CHYBA“ a 503 nevrací
-- Steam (žánry a režimy) a Metacritic (Metascore her mimo ITAD) se nehlídají — jsou doplňkové (R25, R33)
+- obnova údajů her, Steam (žánry a režimy) a Metacritic (Metascore her mimo ITAD) se nehlídají — jsou doplňkové (R25, R33, R34)
 - změna formátu PS Store (stránka bez dat obchodu) je výpadek zdroje, dosavadní ceny zůstanou
 
 Hned po nasazení, než cron poprvé proběhne, vrací 503 — zavolej cron URL ručně.
@@ -206,6 +208,7 @@ je jediná cesta, jak ji neztratit.
 | `migrations-2026-10-12-price-alerts.sql` | hlídání cen (R26): ve `watchlist_items` cílová cena a poslední upozornění, v `users` `notify_email` (zapnuto) a `has_ps_plus`, tabulka `push_subscriptions`; opakovatelný, pustit **po** žánrech a **před** nahráním kódu | 2026-10-12 |
 | `migrations-2026-10-12-source-statuses.sql` | stav zdrojů (R29): tabulka `source_statuses` — prázdná, naplní ji první běh cronu; opakovatelný, pustit **po** hlídání cen a **před** nahráním kódu | 2026-10-12 |
 | `migrations-2026-10-12-ratings.sql` | hodnocení (R33): v `games` sloupce `metacritic_*`, ve `store_listings` `star_rating`, `star_ratings_count` — prázdné, doplní je cron a stažení cen; opakovatelný, pustit **po** stavu zdrojů a **před** nahráním kódu | 2026-10-12 |
+| `migrations-2026-10-13-plus-and-digest.sql` | PS Plus a týdenní souhrn (R35, R36): v `current_prices` `member_tier`, `member_free` (doplní je stažení cen), v `users` `notify_weekly` (zapnuto) a `weekly_digest_at`; opakovatelný, pustit **po** hodnocení a **před** nahráním kódu | |
 
 ## Nasazené verze
 

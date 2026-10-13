@@ -15,7 +15,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Kanál e-mail a předplatné PS Plus (R26) — obě volby vždy celé.
+ * Kanál e-mail, týdenní souhrn (R36) a předplatné PS Plus (R26) — volby vždy celé.
  */
 class SettingsRequest extends FormRequest
 {
@@ -36,6 +36,7 @@ class SettingsRequest extends FormRequest
     {
         return [
             'notify_email' => ['required', 'boolean'],
+            'notify_weekly' => ['required', 'boolean'],
             'has_ps_plus' => ['required', 'boolean'],
         ];
     }

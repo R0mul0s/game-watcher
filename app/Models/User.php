@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -29,6 +30,8 @@ use Illuminate\Support\Collection;
  * @property string $display_currency
  * @property bool $notify_email
  * @property bool $has_ps_plus
+ * @property bool $notify_weekly
+ * @property CarbonImmutable|null $weekly_digest_at
  */
 class User extends Authenticatable
 {
@@ -45,6 +48,8 @@ class User extends Authenticatable
         'display_currency',
         'notify_email',
         'has_ps_plus',
+        'notify_weekly',
+        'weekly_digest_at',
     ];
 
     /**
@@ -56,6 +61,7 @@ class User extends Authenticatable
     protected $attributes = [
         'notify_email' => true,
         'has_ps_plus' => false,
+        'notify_weekly' => true,
     ];
 
     /**
@@ -77,6 +83,8 @@ class User extends Authenticatable
             'password' => 'hashed',
             'notify_email' => 'boolean',
             'has_ps_plus' => 'boolean',
+            'notify_weekly' => 'boolean',
+            'weekly_digest_at' => 'immutable_datetime',
         ];
     }
 

@@ -35,6 +35,9 @@ final class DailyDeals
 {
     private const PERCENT = 100;
 
+    /** Slevy dne porovnávají se včerejškem. */
+    private const DAILY_DAYS = 1;
+
     public function __construct(
         private readonly PriceBoard $priceBoard,
         private readonly ExchangeRates $rates,
@@ -50,14 +53,38 @@ final class DailyDeals
      */
     public function handle(Collection $games, Collection $watchPlatforms, string $currency): array
     {
-        $yesterday = CarbonImmutable::now((string) config('games.display_timezone'))->subDay()->toDateString();
+        $drops = array_slice($this->drops($games, $watchPlatforms, $currency, self::DAILY_DAYS), 0, (int) config('games.alerts.daily_deals_limit'));
+
+        return array_map(fn (PriceDrop $drop): array => [
+            'slug' => $drop->game->slug,
+            'title' => $drop->game->title,
+            'url' => route('games.show', $drop->game, absolute: false),
+            'bannerUrl' => $drop->game->banner_url ?? $drop->game->boxart_url,
+            'price' => $drop->price->toArray(),
+            'previous' => $drop->previous->toArray(),
+            'drop' => $drop->drop,
+        ], $drops);
+    }
+
+    /**
+     * Hry, jejichž nejlevnější nabídka teď je nižší než nejnižší cena dne
+     * před $days dny — od největšího poklesu. Slevy dne (1 den) i týdenní
+     * souhrn (R36). Hry musí mít načtené vazby currentPrices a priceLows.
+     *
+     * @param  Collection<int, Game>  $games
+     * @param  Collection<int, Platform|null>  $watchPlatforms  hlídaná platforma podle ID hry
+     * @return list<PriceDrop>
+     */
+    public function drops(Collection $games, Collection $watchPlatforms, string $currency, int $days): array
+    {
+        $day = CarbonImmutable::now((string) config('games.display_timezone'))->subDays($days)->toDateString();
         $history = DB::table('price_history')
             ->whereIn('game_id', $games->pluck('id'))
-            ->where('day', $yesterday)
+            ->where('day', $day)
             ->get(['game_id', 'shop_key', 'amount', 'currency'])
             ->groupBy('game_id');
 
-        $deals = [];
+        $drops = [];
         foreach ($games as $game) {
             $filter = (new PriceFilter)->restrictedTo($watchPlatforms->get($game->id));
             $offer = $this->priceBoard->cheapest($this->priceBoard->summary($game, $currency, $filter));
@@ -68,24 +95,14 @@ final class DailyDeals
             }
 
             $drop = (int) round(($previous->cents - $offer['effectiveCents']) * self::PERCENT / $previous->cents);
-            if ($drop < (int) config('games.alerts.daily_deals_min_drop')) {
-                continue;
+            if ($drop >= (int) config('games.alerts.daily_deals_min_drop')) {
+                $drops[] = new PriceDrop($game, new Money((int) $offer['effectiveCents'], $currency), $previous, $drop);
             }
-
-            $deals[] = [
-                'slug' => $game->slug,
-                'title' => $game->title,
-                'url' => route('games.show', $game, absolute: false),
-                'bannerUrl' => $game->banner_url ?? $game->boxart_url,
-                'price' => (new Money((int) $offer['effectiveCents'], $currency))->toArray(),
-                'previous' => $previous->toArray(),
-                'drop' => $drop,
-            ];
         }
 
-        usort($deals, fn (array $a, array $b): int => $b['drop'] <=> $a['drop']);
+        usort($drops, fn (PriceDrop $a, PriceDrop $b): int => $b->drop <=> $a->drop);
 
-        return array_slice($deals, 0, (int) config('games.alerts.daily_deals_limit'));
+        return $drops;
     }
 
     /**

@@ -107,17 +107,17 @@ Eloquent model                 ← perzistence
 | `app/Domain/Itad` | HTTP klient IsThereAnyDeal (`ItadClient`) a jeho datové třídy (`ItadGame`, `ItadGameInfo`, `ItadGamePrices`, `ItadDeal`) — katalog i ceny oficiálních obchodů |
 | `app/Domain/GgDeals` | HTTP klient gg.deals (`GgDealsClient`, `GgDealsPrices`) — nejnižší cena obchodů s klíči; klíč maže z logu (R18) |
 | `app/Domain/Currency` | kurzy ČNB — lístek (`CnbRateSheet`), stažení (`Actions/ImportExchangeRates`), převod (`ExchangeRates`, jeden za požadavek) (R14) |
-| `app/Domain/Catalog` | katalog her — dotaz (`GameQuery`), hledání (`Actions/SearchGames`), výsledky hledání s filtry (`SearchResults`, `SearchFilters`, R30), obchody ve výsledcích (`Actions/DescribeAvailability`, R23), hledání podle odkazu z PS Store (`Actions/SearchByPlayStationLink`, R24), žánry a režimy ze Steamu (`Actions/RefreshGameDetails`, R25), převzetí hry (`Actions/ImportGame`), data pro stránky (`GamePresenter`) |
+| `app/Domain/Catalog` | katalog her — dotaz (`GameQuery`), hledání (`Actions/SearchGames`), výsledky hledání s filtry (`SearchResults`, `SearchFilters`, R30), obchody ve výsledcích (`Actions/DescribeAvailability`, R23), hledání podle odkazu z PS Store (`Actions/SearchByPlayStationLink`, R24), žánry a režimy ze Steamu (`Actions/RefreshGameDetails`, R25), převzetí a obnova hry (`Actions/ImportGame`, `Actions/RefreshGameInfo`, R34), data pro stránky (`GamePresenter`) |
 | `app/Domain/Watchlist` | osobní seznam sledovaných her (`Actions/WatchGame`, `Actions/UnwatchGame`), přehled s filtry (`WatchlistFilters`, `WatchlistView`, R21); upozornění v etapě 6 |
 | `app/Domain/Pricing/PriceChart.php` | graf vývoje ceny (R28) — denní řady z historie ITAD a vlastní `price_history` |
-| `app/Domain/Alerts` | upozornění na ceny (R26) — vyhodnocení (`PriceWatch`), texty (`AlertPresenter`), Web Push (`PushSender`, vzor z Počasí), rozeslání v cronu (`Actions/SendPriceAlerts`) |
+| `app/Domain/Alerts` | upozornění na ceny (R26) — vyhodnocení (`PriceWatch`), texty (`AlertPresenter`), Web Push (`PushSender`, vzor z Počasí), rozeslání v cronu (`Actions/SendPriceAlerts`), týdenní souhrn (`Actions/SendWeeklyDigests`, R36) |
 | `app/Domain/Metacritic` | Metascore z Metacritic pro hry mimo ITAD (R33) — odkaz (`MetacriticUrl`, jediné ověření hostitele), rozbor JSON-LD (`MetacriticGame`), stahování (`MetacriticClient`), obnova v cronu a při přidání (`Actions/RefreshMetascores`), odkaz od uživatele (`Actions/LinkMetacritic`) |
 | `app/Domain/Steam` | Steam appdetails (R25) — žánry a režimy hry (`SteamClient`, `SteamAppDetails`) |
 | `app/Domain/PlayStation` | PlayStation Store (R20, R22) — odkaz z obchodu i ze stránky hry na playstation.com (`PlayStationUrl`, jediné místo ověření hostitele), rozbor stránky (`PlayStationPage`), stahování (`PlayStationClient`), produkt z odkazu (`Actions/FindPlayStationProduct`, R24), stránky her k výsledkům hledání (`Actions/FindPlayStationGamePages`, R24), připojení a odpojení produktu (`Actions/ConnectPlayStationProduct`, `Actions/DisconnectStoreListing`) |
 | `app/Domain/Pricing` | ceny — částka (`Money`), stažení (`Actions/RefreshPrices`), uložení (`StorePrices`), data pro stránky v měně účtu (`PriceBoard`) (R18); přímé zdroje v etapě 5 |
 | `app/Domain/Maintenance` | úklid volaný z cron URL (`PruneExpiredCache`) — hosting nemá scheduler |
 | `app/Domain/Monitoring` | stav zdrojů (R29) — zápis a vyhodnocení (`SourceMonitor`, `SourceHealth`), rozhraní `SourceUnavailable` pro výjimky zdrojů, jejichž zprávu smí ukázat stránka stavu |
-| `app/Enums` | výčty (`PriceSource`, `PriceScope`, `PriceBasis`, `SearchSort`, `MonitoredSource`, `SourceState`) |
+| `app/Enums` | výčty (`PriceSource`, `PriceScope`, `PriceBasis`, `PlusTier`, `SearchSort`, `MonitoredSource`, `SourceState`) |
 | `app/Http/Controllers` | tenké kontrolery |
 | `app/Http/Requests` | Form Requesty (včetně `LoginRequest`) |
 | `app/Console/Commands` | Artisan příkazy — jen obálka nad Action |
@@ -258,6 +258,8 @@ a verzují, ručně se neupravují:
 | `public/favicon.svg` | vektor | moderní prohlížeče (kopie zdroje) |
 | `public/favicon.ico` | 16 / 32 / 48 px | záložka prohlížeče |
 | `public/apple-touch-icon.png` | 180 px | ikona na ploše iPhonu |
+| `public/icon-192.png`, `public/icon-512.png` | 192 / 512 px | manifest aplikace (R27) |
+| `public/icon-maskable-512.png` | 512 px | maskovatelná ikona manifestu — logo v bezpečné zóně na plném podkladu (R37) |
 
 Po změně loga (nic se neinstaluje lokálně; vnitřní vykreslovač SVG
 v ImageMagicku nekreslí obrysy, proto PNG dělá resvg):
@@ -266,7 +268,7 @@ cp resources/images/logo.svg public/favicon.svg
 docker compose run --rm --no-deps app sh -lc 'cd /tmp && npm i --no-save --silent @resvg/resvg-js@2.6.2 && NODE_PATH=/tmp/node_modules node /var/www/html/docker/tools/render-icons.cjs'
 docker run --rm -v "$PWD:/w" -w /w --entrypoint sh dpokidov/imagemagick -c '
   cp storage/icons/icon-180.png public/apple-touch-icon.png &&
-  cp storage/icons/icon-192.png storage/icons/icon-512.png public/ &&
+  cp storage/icons/icon-192.png storage/icons/icon-512.png storage/icons/icon-maskable-512.png public/ &&
   magick storage/icons/icon-16.png storage/icons/icon-32.png storage/icons/icon-48.png public/favicon.ico &&
   rm -r storage/icons'
 ```

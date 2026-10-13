@@ -30,6 +30,9 @@ enum MonitoredSource: string
 
     case PlayStation = 'playstation';
 
+    /** Obnova údajů her z ITAD (R34) — doplňkové údaje */
+    case GameInfo = 'game_info';
+
     /** Žánry a režimy ze Steamu (R25) — doplňkové údaje */
     case Steam = 'steam';
 
@@ -38,6 +41,9 @@ enum MonitoredSource: string
 
     /** Doručení upozornění e-mailem a na zařízení (R26) */
     case Alerts = 'alerts';
+
+    /** Týdenní souhrn slev e-mailem (R36) */
+    case WeeklyDigest = 'weekly_digest';
 
     /**
      * Řádek stavu pro zdroj cen.
@@ -48,12 +54,12 @@ enum MonitoredSource: string
     }
 
     /**
-     * Hlásí výpadek monitoringu (/health/zdroje)? Steam a Metacritic ne — žánry,
-     * režimy a hodnocení jsou doplňkové a jejich výpadek neoznačí ani běh cronu
-     * jako chybný (R25, R33).
+     * Hlásí výpadek monitoringu (/health/zdroje)? Obnova údajů, Steam a Metacritic
+     * ne — údaje her, žánry, režimy a hodnocení jsou doplňkové a jejich výpadek
+     * neoznačí ani běh cronu jako chybný (R25, R33, R34).
      */
     public function isCritical(): bool
     {
-        return $this !== self::Steam && $this !== self::Metacritic;
+        return ! in_array($this, [self::GameInfo, self::Steam, self::Metacritic], true);
     }
 }

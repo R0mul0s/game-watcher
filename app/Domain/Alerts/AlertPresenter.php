@@ -99,8 +99,10 @@ final class AlertPresenter
      */
     private function reason(PriceAlert $alert): string
     {
-        return $alert->reason === AlertReason::Target && $alert->target !== null
-            ? __('app.alerts.reason_target', ['target' => $this->money->format($alert->target)])
-            : __('app.alerts.reason_low');
+        return match (true) {
+            $alert->reason === AlertReason::PlusMonthly => (string) __('app.alerts.reason_plus_monthly'),
+            $alert->reason === AlertReason::Target && $alert->target !== null => (string) __('app.alerts.reason_target', ['target' => $this->money->format($alert->target)]),
+            default => (string) __('app.alerts.reason_low'),
+        };
     }
 }

@@ -23,6 +23,7 @@ const props = defineProps({
 const t = useTranslations();
 const form = useForm({
     notify_email: props.settings.notifyEmail,
+    notify_weekly: props.settings.notifyWeekly,
     has_ps_plus: props.settings.hasPsPlus,
 });
 
@@ -126,6 +127,12 @@ function test() {
                     <input v-model="form.notify_email" class="switch__input" type="checkbox" />
                     <span class="switch__track" aria-hidden="true"></span>
                     <span class="switch__label">{{ t('settings.email', { email: settings.email }) }}</span>
+                </label>
+                <!-- Týdenní souhrn jde jen e-mailem (R36) -->
+                <label class="switch">
+                    <input v-model="form.notify_weekly" class="switch__input" type="checkbox" :disabled="!form.notify_email" />
+                    <span class="switch__track" aria-hidden="true"></span>
+                    <span class="switch__label">{{ t('settings.weekly') }}</span>
                 </label>
                 <label class="switch">
                     <input v-model="form.has_ps_plus" class="switch__input" type="checkbox" />

@@ -46,16 +46,18 @@ it('ukáže nastavení — bez klíčů VAPID bez upozornění na zařízení', 
             ->where('push.subscribeUrl', '/nastaveni/zarizeni'));
 });
 
-it('uloží e-mail a PS Plus', function (): void {
+it('uloží e-mail, týdenní souhrn a PS Plus', function (): void {
     $user = user();
 
     $this->actingAs($user)
         ->from('/nastaveni')
-        ->put('/nastaveni', ['notify_email' => false, 'has_ps_plus' => true])
+        ->put('/nastaveni', ['notify_email' => false, 'notify_weekly' => false, 'has_ps_plus' => true])
         ->assertRedirect('/nastaveni');
 
     $user->refresh();
-    expect($user->notify_email)->toBeFalse()->and($user->has_ps_plus)->toBeTrue();
+    expect($user->notify_email)->toBeFalse()
+        ->and($user->notify_weekly)->toBeFalse()
+        ->and($user->has_ps_plus)->toBeTrue();
 });
 
 it('uloží odběr zařízení k účtu a podruhé ho nezdvojí', function (): void {

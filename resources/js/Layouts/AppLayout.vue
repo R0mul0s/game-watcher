@@ -10,6 +10,7 @@ import AppBackdrop from '@/Components/AppBackdrop.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
 import CurrencySwitch from '@/Components/CurrencySwitch.vue';
 import FlashMessage from '@/Components/FlashMessage.vue';
+import PullToRefresh from '@/Components/PullToRefresh.vue';
 import { useTranslations } from '@/lib/i18n';
 import { Link, usePage } from '@inertiajs/vue3';
 
@@ -19,6 +20,7 @@ const page = usePage();
 
 <template>
     <AppBackdrop variant="subtle" />
+    <PullToRefresh />
     <a href="#main" class="skip-link">{{ t('skip_to_content') }}</a>
     <header class="app-header">
         <div class="app-header__inner">

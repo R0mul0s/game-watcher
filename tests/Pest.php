@@ -53,6 +53,8 @@ const PSN_SAROS = 'EP9000-PPSA07631_00-SAROS00000000000';
 const PSN_UNTIL_DAWN = 'EP9000-PPSA15421_00-FULLGAME00000001';
 const PSN_UNTIL_DAWN_CONCEPT = '10007897';
 const PSN_IT_TAKES_TWO = 'EP0006-PPSA02343_00-ITTAKESTWORETAIL';
+/** Měsíční hra PS Plus Essential (tlačítko UPSELL_PS_PLUS_FREE, R35). */
+const PSN_F1_25 = 'EP4291-PPSA16357_00-0286411811680806';
 
 // Steam App ID se zachycenými údaji appdetails (tests/Fixtures/steam)
 const IT_TAKES_TWO_STEAM_ID = 1426210;
@@ -140,6 +142,8 @@ function fakeApis(array $overrides = []): void
         'store.playstation.com/cs-cz/product/'.PSN_UNTIL_DAWN => Http::response(psnFixture('product-until-dawn')),
         // It Takes Two — 2 hráči u jedné konzole i online (R25)
         'store.playstation.com/cs-cz/product/'.PSN_IT_TAKES_TWO => Http::response(psnFixture('product-it-takes-two')),
+        // F1 25 — měsíční hra PS Plus Essential (R35)
+        'store.playstation.com/cs-cz/product/'.PSN_F1_25 => Http::response(psnFixture('product-f1-25')),
         'store.playstation.com/*' => Http::response('Not Found', 404),
         'www.playstation.com/*' => Http::response('Not Found', 404),
         // Metacritic (R33) — zkrácené skutečné stránky (jen JSON-LD), jiná hra 404

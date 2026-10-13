@@ -134,9 +134,11 @@ final class SendPriceAlerts
      */
     private function push(User $user, array $alerts): int
     {
+        // Počet zlevněných her jako číslo na ikoně aplikace (R37)
+        $badge = ['badge' => count($alerts)];
         $messages = count($alerts) > (int) config('games.alerts.max_push_messages')
-            ? [['payload' => $this->presenter->pushSummary($alerts), 'topic' => 'summary']]
-            : array_map(fn (PriceAlert $alert): array => ['payload' => $this->presenter->push($alert), 'topic' => $this->presenter->topic($alert)], $alerts);
+            ? [['payload' => [...$this->presenter->pushSummary($alerts), ...$badge], 'topic' => 'summary']]
+            : array_map(fn (PriceAlert $alert): array => ['payload' => [...$this->presenter->push($alert), ...$badge], 'topic' => $this->presenter->topic($alert)], $alerts);
 
         $sent = 0;
         foreach ($user->pushSubscriptions as $subscription) {

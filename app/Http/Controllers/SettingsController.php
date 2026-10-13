@@ -38,6 +38,7 @@ class SettingsController extends Controller
             'settings' => [
                 'email' => $user->email,
                 'notifyEmail' => $user->notify_email,
+                'notifyWeekly' => $user->notify_weekly,
                 'hasPsPlus' => $user->has_ps_plus,
                 'devices' => $user->pushSubscriptions()->count(),
             ],
@@ -60,6 +61,7 @@ class SettingsController extends Controller
     {
         $this->user($request)->update([
             'notify_email' => $request->boolean('notify_email'),
+            'notify_weekly' => $request->boolean('notify_weekly'),
             'has_ps_plus' => $request->boolean('has_ps_plus'),
         ]);
 

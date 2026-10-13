@@ -31,6 +31,8 @@ use Illuminate\Support\Facades\Route;
 // je stahuje i mimo přihlášenou stránku (aktualizace service workeru)
 Route::get('/manifest.webmanifest', ManifestController::class)->name('manifest');
 Route::get('/sw.js', ServiceWorkerController::class)->name('service-worker');
+// Stránka bez připojení — service worker si ji uloží předem (R37), bez dat účtu
+Route::get('/offline', [ServiceWorkerController::class, 'offline'])->name('offline');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/prihlaseni', [LoginController::class, 'create'])->name('login');

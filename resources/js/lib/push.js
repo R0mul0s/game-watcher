@@ -8,7 +8,7 @@
  */
 
 /** Adresa service workeru (ServiceWorkerController) — v kořeni, rozsah celý web. */
-const SERVICE_WORKER_URL = '/sw.js';
+export const SERVICE_WORKER_URL = '/sw.js';
 /** Cookie s CSRF tokenem, kterou Laravel posílá ke každé stránce. */
 const XSRF_COOKIE = 'XSRF-TOKEN';
 /** Kódování obsahu zprávy, když ho prohlížeč nehlásí (starší Safari). */

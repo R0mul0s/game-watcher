@@ -37,6 +37,14 @@ return [
     ],
 
     /*
+    | Aplikace na ploše (R37) — po návratu do aplikace z pozadí se data načtou
+    | znovu, když jsou starší (ceny se mění s každým během cronu).
+    */
+    'pwa' => [
+        'refresh_after_minutes' => 30,
+    ],
+
+    /*
     | Stav zdrojů a monitoring (R29). Cron běží každé 4 hodiny: výpadek cronu
     | je běh starší než 5 h (interval + hodina rezervy), výpadek zdroje úspěch
     | starší než 9 h — jeden neúspěšný běh nevadí, dva po sobě ano.
@@ -93,6 +101,10 @@ return [
         // „Zobrazit víc“ (R30) — ITAD vrací nejvýš 100, každý výsledek je i dotaz
         // HEAD na playstation.com (v cache týden, R24)
         'search_results_more' => 40,
+        // Obnova údajů sledovaných her z ITAD (R34) — snímek starší než tolik dní,
+        // nejvýš tolik her za běh cronu (každá je jeden požadavek, limit ITAD R15)
+        'info_refresh_days' => 30,
+        'info_refresh_per_run' => 10,
         'search_cache_seconds' => 3600,
         'max_searches_per_minute' => 20,
         // Nejdelší hledaný text — název hry nebo odkaz na Steam
@@ -120,6 +132,11 @@ return [
         'daily_deals_min_drop' => 5,
         // Víc her najednou přijde na telefon jako jedna souhrnná zpráva
         'max_push_messages' => 3,
+        // Týdenní souhrn e-mailem (R36) — den v týdnu (ISO: 1 = pondělí), za kolik
+        // dní se pokles počítá a nejvýš kolik her v e-mailu
+        'weekly_digest_day' => 1,
+        'weekly_digest_days' => 7,
+        'weekly_digest_limit' => 15,
     ],
 
     /*

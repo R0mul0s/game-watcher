@@ -32,7 +32,9 @@
         gap: var(--space-2) var(--space-3);
         max-width: var(--content-max-width);
         margin: 0 auto;
-        padding: var(--space-2) var(--space-3);
+        // Aplikace z plochy jde až k výřezu displeje — stavový řádek a boky (R37)
+        padding: calc(var(--space-2) + env(safe-area-inset-top)) max(var(--space-3), env(safe-area-inset-right)) var(--space-2)
+            max(var(--space-3), env(safe-area-inset-left));
 
         @include from-md {
             flex-wrap: nowrap;

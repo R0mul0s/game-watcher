@@ -13,7 +13,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Domain\Alerts\Actions\SendPriceAlerts;
+use App\Domain\Alerts\Actions\SendWeeklyDigests;
 use App\Domain\Catalog\Actions\RefreshGameDetails;
+use App\Domain\Catalog\Actions\RefreshGameInfo;
 use App\Domain\Currency\Actions\ImportExchangeRates;
 use App\Domain\Maintenance\PruneExpiredCache;
 use App\Domain\Metacritic\Actions\RefreshMetascores;
@@ -55,9 +57,11 @@ class CronController extends Controller
         CronRequest $request,
         ImportExchangeRates $importExchangeRates,
         RefreshPrices $refreshPrices,
+        RefreshGameInfo $refreshGameInfo,
         RefreshGameDetails $refreshGameDetails,
         RefreshMetascores $refreshMetascores,
         SendPriceAlerts $sendPriceAlerts,
+        SendWeeklyDigests $sendWeeklyDigests,
         PruneExpiredCache $pruneExpiredCache,
     ): Response {
         $lock = Cache::lock(self::LOCK_KEY, (int) config('games.cron.lock_seconds'));
@@ -98,6 +102,17 @@ class CronController extends Controller
                         'playstation' => $count(PriceSource::PlayStation),
                     ]);
                 }),
+                // Obnova údajů her z ITAD (R34) — datum vydání, Metascore, obrázky;
+                // doplňkové, výpadek ITAD tady běh neoznačí (ceny ho ohlásí samy)
+                $this->attempt('info', [MonitoredSource::GameInfo], $failedSteps, function () use ($refreshGameInfo): string {
+                    $pending = $refreshGameInfo->pending();
+                    [$count, $error] = $refreshGameInfo->handle($pending);
+                    $error === null
+                        ? $this->monitor->succeeded(MonitoredSource::GameInfo, $count, $pending->count())
+                        : $this->monitor->failed(MonitoredSource::GameInfo, $error);
+
+                    return __($error === null ? 'app.cron.info' : 'app.cron.info_failed', ['count' => $count]);
+                }),
                 // Žánry a režimy pro filtry (R25) — doplňkové údaje, výpadek Steamu
                 // běh neoznačí jako chybný, zbytek dožene další běh
                 $this->attempt('details', [MonitoredSource::Steam], $failedSteps, function () use ($refreshGameDetails): string {
@@ -135,6 +150,18 @@ class CronController extends Controller
                         'emails' => $result->emails,
                         'pushes' => $result->pushes,
                     ]).($result->undelivered > 0 ? __('app.cron.alerts_undelivered', ['count' => $result->undelivered]) : '');
+                }),
+                // Týdenní souhrn (R36) — jen v den souhrnu, jinak nic nedělá
+                $this->attempt('weekly', [MonitoredSource::WeeklyDigest], $failedSteps, function () use ($sendWeeklyDigests, &$failedSteps): string {
+                    [$sent, $failed] = $sendWeeklyDigests->handle();
+                    if ($failed > 0) {
+                        $failedSteps[] = 'weekly';
+                        $this->monitor->failed(MonitoredSource::WeeklyDigest, (string) __('app.monitoring.weekly_undelivered', ['count' => $failed]));
+                    } else {
+                        $this->monitor->succeeded(MonitoredSource::WeeklyDigest, $sent);
+                    }
+
+                    return __('app.cron.weekly', ['count' => $sent]).($failed > 0 ? __('app.cron.alerts_undelivered', ['count' => $failed]) : '');
                 }),
                 $this->attempt('cache', [], $failedSteps, fn (): string => __('app.cron.cache_pruned', ['count' => $pruneExpiredCache->handle()])),
             ];

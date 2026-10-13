@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Domain\PlayStation;
 
 use App\Domain\Pricing\Money;
+use App\Enums\PlusTier;
 use Carbon\CarbonImmutable;
 
 /**
@@ -48,6 +49,9 @@ final readonly class PlayStationProduct
         public ?CarbonImmutable $saleEndsAt,
         public ?Money $plusPrice,
         public bool $inPlusCatalog,
+        // Úroveň katalogu PS Plus (Extra / Premium) a měsíční hra Essential (R35)
+        public ?PlusTier $catalogTier = null,
+        public bool $plusFree = false,
         public ?string $coverUrl = null,
         public ?string $bannerUrl = null,
         public ?string $releaseDate = null,

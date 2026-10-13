@@ -52,6 +52,8 @@ class HandleInertiaRequests extends Middleware
             ] : null,
             'homeUrl' => fn (): string => route('dashboard', absolute: false),
             'timezone' => config('games.display_timezone'),
+            // Aplikace na ploše (R37) — po kolika minutách v pozadí se data načtou znovu
+            'pwa' => ['refreshAfterMinutes' => (int) config('games.pwa.refresh_after_minutes')],
             // Přepínač měny v hlavičce (R14)
             'currency' => fn (): ?array => $user instanceof User ? [
                 'current' => $user->displayCurrency(),

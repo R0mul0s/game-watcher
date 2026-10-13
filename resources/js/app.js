@@ -4,6 +4,7 @@
  * @author Roman Hlaváček
  * @created 2026-10-11
  */
+import { initPwa } from '@/lib/pwa';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { createApp, h } from 'vue';
 
@@ -30,5 +31,7 @@ createInertiaApp({
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .mount(el);
+        // Aplikace na ploše — service worker, číslo na ikoně, obnovení po návratu (R37)
+        initPwa(props.initialPage);
     },
 });

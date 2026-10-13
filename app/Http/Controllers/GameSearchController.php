@@ -71,7 +71,8 @@ class GameSearchController extends Controller
         }
 
         return Inertia::render('Games/Search', [
-            'query' => $request->string('q')->toString(),
+            // I odkaz sdílený z jiné aplikace (R37) — pole hledání ho ukáže
+            'query' => $request->queryText(),
             'searched' => $query !== null,
             'results' => $results,
             // Kolik našel ITAD před filtry — „žádná hra filtrům“ vs. „nic jsme nenašli“

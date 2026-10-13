@@ -14,6 +14,7 @@ namespace App\Models;
 
 use App\Domain\Pricing\Money;
 use App\Enums\Platform;
+use App\Enums\PlusTier;
 use App\Enums\PriceSource;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
@@ -34,6 +35,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $regular_amount
  * @property string|null $member_amount
  * @property bool $member_included
+ * @property PlusTier|null $member_tier
+ * @property bool $member_free
  * @property string $currency
  * @property int $cut
  * @property string|null $drm
@@ -65,6 +68,8 @@ class CurrentPrice extends Model
         'regular_amount',
         'member_amount',
         'member_included',
+        'member_tier',
+        'member_free',
         'currency',
         'cut',
         'drm',
@@ -87,6 +92,8 @@ class CurrentPrice extends Model
             'platform' => Platform::class,
             'member_amount' => 'decimal:2',
             'member_included' => 'boolean',
+            'member_tier' => PlusTier::class,
+            'member_free' => 'boolean',
             'cut' => 'integer',
             'expires_at' => 'immutable_datetime',
             'fetched_at' => 'immutable_datetime',

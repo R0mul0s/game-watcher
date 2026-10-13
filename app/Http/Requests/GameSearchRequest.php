@@ -23,10 +23,17 @@ use Illuminate\Validation\Rule;
 /**
  * Dotaz `q` — název, Steam App ID, odkaz na Steam, PS Store nebo ITAD. Bez
  * dotazu stránka ukáže jen formulář a ITAD se nevolá. Filtry výsledků (druh,
- * platforma, řazení, víc výsledků) jsou další parametry adresy (R30).
+ * platforma, řazení, víc výsledků) jsou další parametry adresy (R30). Odkaz
+ * sdílený z jiné aplikace v telefonu přijde v `url` nebo `text` (R37).
  */
 class GameSearchRequest extends FormRequest
 {
+    /** Nejdelší sdílený text nebo odkaz z jiné aplikace. */
+    private const MAX_SHARED_LENGTH = 1000;
+
+    /** První odkaz ve sdíleném textu („Saros – PS Store https://store.playstation.com/…“). */
+    private const URL_IN_TEXT_PATTERN = '~https?://\S+~';
+
     /**
      * Hledat smí každý přihlášený (middleware `auth`).
      */
@@ -44,6 +51,10 @@ class GameSearchRequest extends FormRequest
     {
         return [
             'q' => ['nullable', 'string', 'max:'.config('games.catalog.max_query_length')],
+            // Sdílení z jiné aplikace v telefonu (share_target v manifestu, R37)
+            'url' => ['nullable', 'string', 'max:'.self::MAX_SHARED_LENGTH],
+            'text' => ['nullable', 'string', 'max:'.self::MAX_SHARED_LENGTH],
+            'title' => ['nullable', 'string', 'max:'.self::MAX_SHARED_LENGTH],
         ];
     }
 
@@ -85,7 +96,29 @@ class GameSearchRequest extends FormRequest
      */
     public function gameQuery(): ?GameQuery
     {
-        return GameQuery::parse($this->string('q')->toString());
+        return GameQuery::parse($this->queryText());
+    }
+
+    /**
+     * Text hledání — `q`, a když chybí, odkaz sdílený z jiné aplikace (R37):
+     * `url`, jinak první odkaz v `text` (obchody posílají odkaz v textu s názvem),
+     * jinak `text` celý.
+     */
+    public function queryText(): string
+    {
+        $query = trim($this->string('q')->toString());
+        if ($query !== '') {
+            return $query;
+        }
+
+        $url = trim($this->string('url')->toString());
+        if ($url !== '') {
+            return $url;
+        }
+
+        $text = trim($this->string('text')->toString());
+
+        return preg_match(self::URL_IN_TEXT_PATTERN, $text, $match) === 1 ? $match[0] : $text;
     }
 
     /**
@@ -93,7 +126,7 @@ class GameSearchRequest extends FormRequest
      */
     public function playStationUrl(): ?string
     {
-        $url = trim($this->string('q')->toString());
+        $url = $this->queryText();
 
         return PlayStationUrl::parse($url) === null ? null : $url;
     }
