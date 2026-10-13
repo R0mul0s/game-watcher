@@ -37,6 +37,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $member_included
  * @property PlusTier|null $member_tier
  * @property bool $member_free
+ * @property CarbonImmutable|null $member_leaves_at
  * @property string $currency
  * @property int $cut
  * @property string|null $drm
@@ -70,6 +71,7 @@ class CurrentPrice extends Model
         'member_included',
         'member_tier',
         'member_free',
+        'member_leaves_at',
         'currency',
         'cut',
         'drm',
@@ -94,6 +96,7 @@ class CurrentPrice extends Model
             'member_included' => 'boolean',
             'member_tier' => PlusTier::class,
             'member_free' => 'boolean',
+            'member_leaves_at' => 'immutable_datetime',
             'cut' => 'integer',
             'expires_at' => 'immutable_datetime',
             'fetched_at' => 'immutable_datetime',

@@ -52,6 +52,8 @@ final readonly class PlayStationProduct
         public bool $inPlusCatalog,
         // Úroveň katalogu PS Plus (Extra / Premium) a měsíční hra Essential (R35)
         public ?PlusTier $catalogTier = null,
+        // Kdy hra z katalogu PS Plus odchází (R49); null = zůstává nebo v něm není
+        public ?CarbonImmutable $catalogLeavesAt = null,
         public bool $plusFree = false,
         public ?string $coverUrl = null,
         public ?string $bannerUrl = null,

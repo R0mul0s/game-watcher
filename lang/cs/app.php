@@ -279,6 +279,8 @@ return [
             'plus_catalog_extra' => 'V katalogu PS Plus Extra',
             'plus_catalog_premium' => 'V katalogu PS Plus Premium',
             'plus_catalog_essential' => 'V PS Plus Essential',
+            // Odchod z katalogu PS Plus (R49) — za názvem katalogu na detailu
+            'plus_leaves' => '— odchází :date',
             'plus_free' => 'Tento měsíc zdarma v PS Plus',
             'playstation_short' => 'PlayStation od :price',
             'platforms' => [
@@ -409,6 +411,8 @@ return [
             'playtime_title' => 'Hlavní příběh podle HowLongToBeat',
             'per_hour' => ':price/h',
             'per_hour_title' => 'Cena za hodinu hlavního příběhu',
+            // Odchod z katalogu PS Plus (R49)
+            'plus_leaving' => 'Odchází z PS Plus :date',
         ],
 
         // Stránka Objevit (R43)

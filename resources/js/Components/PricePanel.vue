@@ -86,7 +86,13 @@ const bestKey = computed(() => props.prices.offers.find((offer) => !isMuted(offe
                     <!-- Měsíční hra PS Plus Essential, jinak cena s PS Plus (R35) -->
                     <span v-if="offer.memberFree" class="offer__plus">{{ t('prices.plus_free') }}</span>
                     <span v-else-if="offer.member" class="offer__plus">{{ t('prices.plus_price', { price: formatPrice(offer.member.price, page.props.locale) }) }}</span>
-                    <span v-if="offer.memberIncluded" class="offer__plus">{{ t(`prices.plus_catalog_${offer.memberTier ?? 'extra'}`) }}</span>
+                    <span v-if="offer.memberIncluded" class="offer__plus">
+                        {{ t(`prices.plus_catalog_${offer.memberTier ?? 'extra'}`) }}
+                        <!-- Odchod z katalogu (R49) -->
+                        <template v-if="offer.memberLeavesAt">
+                            {{ t('prices.plus_leaves', { date: formatDateInZone(offer.memberLeavesAt, page.props.locale, page.props.timezone) }) }}
+                        </template>
+                    </span>
                 </span>
                 <a v-if="offer.url" :href="offer.url" class="button button--small offer__link" target="_blank" rel="noopener noreferrer sponsored">
                     {{ t('prices.open_shop') }}

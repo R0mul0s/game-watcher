@@ -59,6 +59,8 @@ const PSN_UNTIL_DAWN_CONCEPT = '10007897';
 const PSN_IT_TAKES_TWO = 'EP0006-PPSA02343_00-ITTAKESTWORETAIL';
 /** Měsíční hra PS Plus Essential (tlačítko UPSELL_PS_PLUS_FREE, R35). */
 const PSN_F1_25 = 'EP4291-PPSA16357_00-0286411811680806';
+/** Odchází z katalogu PS Plus Extra 20. 10. 2026 (R49). */
+const PSN_SILENT_HILL_2 = 'EP0101-PPSA08709_00-MAINGAME00000000';
 
 // Steam App ID se zachycenými údaji appdetails (tests/Fixtures/steam)
 const IT_TAKES_TWO_STEAM_ID = 1426210;
@@ -177,6 +179,8 @@ function fakeApis(array $overrides = []): void
         'store.playstation.com/cs-cz/product/'.PSN_IT_TAKES_TWO => Http::response(psnFixture('product-it-takes-two')),
         // F1 25 — měsíční hra PS Plus Essential (R35)
         'store.playstation.com/cs-cz/product/'.PSN_F1_25 => Http::response(psnFixture('product-f1-25')),
+        // Silent Hill 2 — odchází z katalogu PS Plus Extra (R49)
+        'store.playstation.com/cs-cz/product/'.PSN_SILENT_HILL_2 => Http::response(psnFixture('product-silent-hill-2')),
         'store.playstation.com/*' => Http::response('Not Found', 404),
         'www.playstation.com/*' => Http::response('Not Found', 404),
         // Metacritic (R33) — zkrácené skutečné stránky (jen JSON-LD), jiná hra 404

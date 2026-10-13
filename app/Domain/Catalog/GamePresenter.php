@@ -22,9 +22,11 @@ use App\Domain\Pricing\PriceFilter;
 use App\Enums\CzechSupport;
 use App\Enums\GameMode;
 use App\Enums\Platform;
+use App\Models\CurrentPrice;
 use App\Models\Game;
 use App\Models\StoreListing;
 use App\Models\WatchlistItem;
+use Carbon\CarbonImmutable;
 
 /**
  * Jedno místo, kde se z hry stává tvar pro Vue — komponenty nic nepočítají
@@ -90,6 +92,8 @@ final class GamePresenter
             'pricePerHour' => $this->pricePerHour($game, $ranked, $currency),
             // Čeština ze Steamu nebo PS Store (R47) — štítek jen titulky a dabing
             'czech' => $game->czechSupport()?->value,
+            // Nejbližší odchod z katalogu PS Plus (R49) — jen štítek, bez upozornění
+            'plusLeavesAt' => $this->plusLeavesAt($game)?->toIso8601String(),
         ];
     }
 
@@ -264,6 +268,22 @@ final class GamePresenter
             fn (GameMode $mode): string => $mode->value,
             array_filter(GameMode::cases(), fn (GameMode $mode): bool => in_array($mode, $played, true)),
         ));
+    }
+
+    /**
+     * Nejbližší budoucí odchod hry z katalogu PS Plus (R49) z cen PS Store
+     * (hra musí mít načtenou vazbu currentPrices); null, když neodchází.
+     */
+    private function plusLeavesAt(Game $game): ?CarbonImmutable
+    {
+        $now = CarbonImmutable::now();
+        $leaving = $game->currentPrices
+            ->map(fn (CurrentPrice $price): ?CarbonImmutable => $price->member_included ? $price->member_leaves_at : null)
+            ->filter(fn (?CarbonImmutable $at): bool => $at !== null && $at->greaterThan($now))
+            ->sort()
+            ->first();
+
+        return $leaving instanceof CarbonImmutable ? $leaving : null;
     }
 
     /**

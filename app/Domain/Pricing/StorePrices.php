@@ -64,6 +64,7 @@ final class StorePrices
             'member_included' => false,
             'member_tier' => null,
             'member_free' => false,
+            'member_leaves_at' => null,
             'currency' => $deal->price->currency,
             'cut' => max(0, $deal->cut),
             'drm' => $deal->drm === [] ? null : mb_substr(implode(self::DRM_SEPARATOR, $deal->drm), 0, self::DRM_MAX_LENGTH),
@@ -97,6 +98,7 @@ final class StorePrices
             'member_included' => false,
             'member_tier' => null,
             'member_free' => false,
+            'member_leaves_at' => null,
             'currency' => $prices->currentKeyshops->currency,
             'cut' => 0,
             'drm' => null,
@@ -141,6 +143,8 @@ final class StorePrices
             // Úroveň katalogu a měsíční hra PS Plus (R35)
             'member_tier' => $product->catalogTier?->value,
             'member_free' => $product->plusFree,
+            // Odchod z katalogu PS Plus (R49)
+            'member_leaves_at' => $product->inPlusCatalog ? $product->catalogLeavesAt : null,
             'currency' => $price->currency,
             'cut' => $product->cut(),
             'drm' => $product->platforms === [] ? null : mb_substr(implode(self::DRM_SEPARATOR, $product->platforms), 0, self::DRM_MAX_LENGTH),

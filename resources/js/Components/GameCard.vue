@@ -17,7 +17,7 @@
 -->
 <script setup>
 import GameBadges from '@/Components/GameBadges.vue';
-import { formatDate, formatHours, formatInteger, formatPrice, formatRating, releaseCountdown } from '@/lib/format';
+import { formatDate, formatDateInZone, formatHours, formatInteger, formatPrice, formatRating, releaseCountdown } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -106,6 +106,10 @@ const playstation = computed(() => {
                 <!-- Měsíční hra PS Plus Essential (R35) — u nejlevnější nabídky i u PS Store zvlášť -->
                 <span v-if="best?.memberFree || playstation?.memberFree" class="game-card__plus">{{ t('prices.plus_free') }}</span>
                 <span v-else-if="!keyshopsRanked && best?.member" class="game-card__plus">{{ t('prices.plus_price', { price: formatPrice(best.member.price, page.props.locale) }) }}</span>
+                <!-- Odchod z katalogu PS Plus (R49) -->
+                <span v-if="game.plusLeavesAt" class="game-card__plus">
+                    {{ t('dashboard.plus_leaving', { date: formatDateInZone(game.plusLeavesAt, page.props.locale, page.props.timezone) }) }}
+                </span>
                 <span v-if="playstation" class="game-card__playstation">
                     {{ t('prices.playstation_short', { price: formatPrice(playstation.price, page.props.locale) }) }}
                     <template v-if="playstation.member"> · {{ t('prices.plus_price', { price: formatPrice(playstation.member.price, page.props.locale) }) }}</template>

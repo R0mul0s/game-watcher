@@ -17,6 +17,7 @@ use App\Enums\PriceSource;
 use App\Models\CurrentPrice;
 use App\Models\Game;
 use App\Models\StoreListing;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -113,6 +114,23 @@ it('PlayStation je ve výpisu cen detailu jako samostatná položka s platformou
             ->where('game.prices.offers.1.platform', 'pc')
             ->has('game.listings', 1)
             ->where('game.listings.0.name', 'Kingdom Come: Deliverance'));
+});
+
+it('hra odcházející z katalogu PS Plus má datum odchodu na detailu i kartě, po odchodu ne (R49)', function (): void {
+    $this->travelTo(CarbonImmutable::parse('2026-10-13 20:00', 'Europe/Prague'));
+    $this->actingAs($this->user)->post('/hry/control-resonant/obchody', ['url' => 'https://store.playstation.com/cs-cz/product/'.PSN_SILENT_HILL_2]);
+
+    $offers = $this->actingAs($this->user)->get('/hry/control-resonant')->viewData('page')['props']['game']['prices']['offers'];
+    expect(collect($offers)->firstWhere('platform', 'playstation'))
+        ->memberIncluded->toBeTrue()
+        ->memberLeavesAt->toBe('2026-10-20T08:00:00+00:00');
+
+    $card = fn (): array => $this->actingAs($this->user)->get('/')->viewData('page')['props']['games'][0];
+    expect($card()['plusLeavesAt'])->toBe('2026-10-20T08:00:00+00:00');
+
+    // Po odchodu (než ho obnova cen smaže) se na kartě neukazuje
+    $this->travelTo(CarbonImmutable::parse('2026-10-20 12:00', 'Europe/Prague'));
+    expect($card()['plusLeavesAt'])->toBeNull();
 });
 
 it('u ceny s PS Plus ukáže obě ceny', function (): void {

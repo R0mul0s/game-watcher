@@ -50,6 +50,16 @@ it('pozná úroveň katalogu PS Plus a zkušební verzi Premium za katalog neber
         ->and($saros?->catalogTier)->toBeNull();
 });
 
+it('přečte odchod hry z katalogu PS Plus, u hry, která zůstává, nic (R49)', function (): void {
+    $silentHill = PlayStationPage::fromHtml(psnFixture('product-silent-hill-2'))->product(PSN_SILENT_HILL_2);
+    $kingdomCome = PlayStationPage::fromHtml(psnFixture('product-kingdom-come'))->product(PSN_KINGDOM_COME);
+
+    expect($silentHill?->inPlusCatalog)->toBeTrue()
+        ->and($silentHill?->catalogTier)->toBe(PlusTier::Extra)
+        ->and($silentHill?->catalogLeavesAt?->toIso8601String())->toBe('2026-10-20T08:00:00+00:00')
+        ->and($kingdomCome?->catalogLeavesAt)->toBeNull();
+});
+
 it('pozná měsíční hru PS Plus Essential — s předplatným za 0 (R35)', function (): void {
     $product = PlayStationPage::fromHtml(psnFixture('product-f1-25'))->product(PSN_F1_25);
 

@@ -26,7 +26,8 @@ use Carbon\CarbonImmutable;
  * - druh ADD_TO_CART (i PREORDER) se `serviceBranding` NONE — běžná cena,
  * - UPSELL_PS_PLUS_DISCOUNT — cena s PS Plus,
  * - UPSELL_PS_PLUS_GAME_CATALOG — hra je v katalogu PS Plus (zdarma v předplatném),
- *   úroveň v `tierLabel` (TIER_20 Extra, TIER_30 Premium, R35),
+ *   úroveň v `tierLabel` (TIER_20 Extra, TIER_30 Premium, R35), odchod z katalogu
+ *   v `endTime` (R49 — u hry, která v katalogu zůstává, null),
  * - UPSELL_PS_PLUS_FREE — měsíční hra PS Plus Essential (zdarma s předplatným, R35).
  *
  * Částky jsou v setinách (`basePriceValue`, `discountedValue`), konec slevy
@@ -137,6 +138,7 @@ final class PlayStationPage
         $plusPrice = null;
         $inPlusCatalog = false;
         $catalogTier = null;
+        $catalogLeavesAt = null;
         $plusFree = false;
         foreach ($this->ctas($productId) as $type => $price) {
             $branding = is_array($price['serviceBranding'] ?? null) ? $price['serviceBranding'] : [];
@@ -144,6 +146,8 @@ final class PlayStationPage
             if ($type === self::PLUS_CATALOG_CTA) {
                 $inPlusCatalog = true;
                 $catalogTier = PlusTier::fromTierLabel($price['tierLabel'] ?? null);
+                // Hra z katalogu odchází (R49) — u her, které v něm zůstávají, je null
+                $catalogLeavesAt = self::timestamp($price['endTime'] ?? null);
             } elseif ($type === self::PLUS_FREE_CTA) {
                 // Měsíční hra — s PS Plus za 0 (R35)
                 $plusFree = true;
@@ -155,7 +159,6 @@ final class PlayStationPage
             }
         }
 
-        $endTime = $regular['endTime'] ?? null;
         $price = $regular === null ? null : self::money($regular, 'discountedValue');
         $platforms = is_array($product['platforms'] ?? null) ? $product['platforms'] : [];
         $media = is_array($product['media'] ?? null) ? $product['media'] : [];
@@ -173,11 +176,12 @@ final class PlayStationPage
             platforms: array_values(array_filter($platforms, 'is_string')),
             price: $price,
             basePrice: $regular === null ? null : self::money($regular, 'basePriceValue'),
-            saleEndsAt: is_string($endTime) && ctype_digit($endTime) ? CarbonImmutable::createFromTimestampMs((int) $endTime)->utc() : null,
+            saleEndsAt: self::timestamp($regular['endTime'] ?? null),
             // Cena s PS Plus, jen když je opravdu nižší než běžná
             plusPrice: $plusPrice !== null && ($price === null || $plusPrice->cents < $price->cents) ? $plusPrice : null,
             inPlusCatalog: $inPlusCatalog,
             catalogTier: $catalogTier,
+            catalogLeavesAt: $catalogLeavesAt,
             plusFree: $plusFree && $plusPrice !== null,
             coverUrl: self::image($media, self::COVER_ROLES, (int) config('games.sources.playstation.cover_width')),
             bannerUrl: self::image($media, self::BANNER_ROLES, (int) config('games.sources.playstation.banner_width')),
@@ -279,6 +283,16 @@ final class PlayStationPage
         }
 
         return $ctas;
+    }
+
+    /**
+     * Čas z `endTime` (milisekundy jako řetězec) v UTC; null, když chybí.
+     */
+    private static function timestamp(mixed $milliseconds): ?CarbonImmutable
+    {
+        return is_string($milliseconds) && ctype_digit($milliseconds)
+            ? CarbonImmutable::createFromTimestampMs((int) $milliseconds)->utc()
+            : null;
     }
 
     /**

@@ -137,6 +137,8 @@ final class PriceBoard
                     // Úroveň katalogu PS Plus a měsíční hra Essential (R35)
                     'memberTier' => $price->member_tier?->value,
                     'memberFree' => $price->member_free,
+                    // Odchod z katalogu PS Plus (R49)
+                    'memberLeavesAt' => $price->member_leaves_at?->toIso8601String(),
                     'drm' => $price->drm,
                     'url' => $price->url,
                     'expiresAt' => $price->expires_at?->toIso8601String(),
