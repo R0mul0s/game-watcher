@@ -7,12 +7,9 @@
 
 @use '../abstracts/mixins' as *;
 
-// Plovoucí — při posouvání zůstává nahoře (R39); výšku pro prvky pod ní
-// (tlačítko Zpět) nastavuje AppLayout do --app-header-height
 .app-header {
-    position: sticky;
-    top: 0;
-    z-index: var(--z-header);
+    position: relative;
+    z-index: var(--z-content);
     background: var(--color-surface);
 
     &::after {

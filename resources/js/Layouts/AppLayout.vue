@@ -1,6 +1,6 @@
 <!--
     Rozvržení stránek přihlášeného uživatele — tlumená kulisa s obzorem (R6),
-    plovoucí hlavička s navigací a odhlášením (R39), obsah.
+    hlavička s navigací a odhlášením, obsah.
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -13,30 +13,16 @@ import FlashMessage from '@/Components/FlashMessage.vue';
 import PullToRefresh from '@/Components/PullToRefresh.vue';
 import { useTranslations } from '@/lib/i18n';
 import { Link, usePage } from '@inertiajs/vue3';
-import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const t = useTranslations();
 const page = usePage();
-const header = ref(null);
-
-/** Hlídá výšku plovoucí hlavičky — mění se se šířkou okna (na telefonu tři řádky). */
-let headerObserver = null;
-
-// Výška hlavičky jako proměnná CSS — plovoucí tlačítko Zpět jede těsně pod ní (R39)
-onMounted(() => {
-    headerObserver = new ResizeObserver(([entry]) => {
-        document.documentElement.style.setProperty('--app-header-height', `${Math.ceil(entry.target.getBoundingClientRect().height)}px`);
-    });
-    headerObserver.observe(header.value);
-});
-onBeforeUnmount(() => headerObserver?.disconnect());
 </script>
 
 <template>
     <AppBackdrop variant="subtle" />
     <PullToRefresh />
     <a href="#main" class="skip-link">{{ t('skip_to_content') }}</a>
-    <header ref="header" class="app-header">
+    <header class="app-header">
         <div class="app-header__inner">
             <Link :href="page.props.homeUrl" class="brand">
                 <BrandLogo />

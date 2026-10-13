@@ -1,6 +1,7 @@
 // _back-link.scss
-// Tlačítko Zpět nad obsahem stránky (BackLink.vue, R38) — plovoucí pod plovoucí
-// hlavičkou (R39): při posouvání zůstává na očích jako neonový štítek.
+// Tlačítko Zpět nad obsahem stránky (BackLink.vue, R38) — při posouvání jede
+// plovoucí u horního okraje jako neonový štítek, který občas problikne jako
+// logo (R39). Hlavička aplikace s posunem odjede.
 //
 // @author Roman Hlaváček
 // @created 2026-10-13
@@ -11,8 +12,9 @@
     @include display-caps;
 
     position: sticky;
-    top: calc(var(--app-header-height) + var(--space-2));
-    z-index: var(--z-header);
+    // Aplikace z plochy jde až k výřezu displeje (R37)
+    top: calc(var(--space-2) + env(safe-area-inset-top));
+    z-index: var(--z-sticky);
     display: inline-flex;
     align-items: center;
     align-self: flex-start;
@@ -20,24 +22,24 @@
     margin-bottom: var(--space-3);
     padding: var(--space-1) var(--space-3);
     background: var(--color-surface);
-    border: var(--border-width) solid var(--color-border);
-    color: var(--color-text-muted);
+    border: var(--border-width) solid var(--color-accent);
+    color: var(--color-accent);
     font-size: var(--font-size-sm);
     text-decoration: none;
+    text-shadow: var(--text-glow-accent);
+    box-shadow: var(--glow-accent);
     cursor: pointer;
-    transition:
-        color var(--duration-fast),
-        border-color var(--duration-fast),
-        box-shadow var(--duration-fast);
+    transition: box-shadow var(--duration-fast);
 
     &:hover {
-        border-color: var(--color-accent);
-        color: var(--color-accent);
-        box-shadow: var(--glow-accent);
-        text-shadow: var(--text-glow-accent);
+        box-shadow: var(--glow-accent-strong);
     }
 
     @include neon-focus;
+
+    @include with-motion {
+        animation: neon-flicker var(--duration-back-flicker) linear infinite;
+    }
 
     &__arrow {
         font-family: var(--font-mono);

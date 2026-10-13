@@ -150,18 +150,18 @@
     --duration-logo-flicker: 7s;
     --duration-logo-flicker-play: 11s;
     --logo-flicker-delay: 3s;
+    // Tlačítko Zpět bliká vlastním rytmem, aby nepohasínalo zároveň s logem (R39)
+    --duration-back-flicker: 9s;
     --duration-radar: 4s;
 
     // --- Vrstvy --------------------------------------------------------------
     --z-backdrop: 0;
     --z-content: 1;
     --z-overlay: 50;
-    // Plovoucí hlavička a tlačítko Zpět nad obsahem (R39)
-    --z-header: 30;
+    // Plovoucí tlačítko Zpět nad obsahem (R39)
+    --z-sticky: 30;
     // Ukazatel stažení dolů — nad hlavičkou, pod řádkováním obrazovky
     --z-pull-refresh: 40;
-    // Výška plovoucí hlavičky — měří ji AppLayout (na telefonu má tři řádky)
-    --app-header-height: 0px;
 
     --opacity-disabled: 0.45;
     // Pohasnutí neonu při problikávání loga

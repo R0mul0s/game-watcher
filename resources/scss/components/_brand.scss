@@ -58,24 +58,3 @@
         }
     }
 }
-
-// Většinu cyklu svítí, ke konci dvakrát krátce pohasne a jednou zakolísá
-@keyframes neon-flicker {
-    0%,
-    88%,
-    90%,
-    93%,
-    96%,
-    100% {
-        opacity: 1;
-    }
-
-    89%,
-    94% {
-        opacity: var(--flicker-dim-opacity);
-    }
-
-    95% {
-        opacity: var(--flicker-half-opacity);
-    }
-}
