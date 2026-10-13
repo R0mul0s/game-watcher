@@ -42,6 +42,14 @@ const TWITCH_TOKEN_URL = 'https://id.twitch.tv/oauth2/token';
 const HTTP_UNAUTHORIZED = 401;
 const HTTP_BAD_REQUEST = 400;
 
+// Krabicové hry na PS5 z českých e-shopů (průzkum 2026-10-13) — produktové stránky se schema.org
+const XZONE_PRODUCT_URL = 'https://www.xzone.cz/ghost-of-yotei-complete-edition-ps5';
+const DATART_PRODUCT_URL = 'https://www.datart.cz/hra-sony-playstation-5-astro-bot-ps711000044754.html';
+const SMARTY_PRODUCT_URL = 'https://www.smarty.cz/Astro-Bot-PS5--4p146144';
+const ALZA_PRODUCT_URL = 'https://www.alza.cz/gaming/astro-bot-ps5-d12388633.htm';
+const ZBOZI_PRODUCT_URL = 'https://www.zbozi.cz/vyrobek/astro-bot-ps5/';
+const HEUREKA_PRODUCT_URL = 'https://hry-na-ps5.heureka.cz/astro-bot/';
+
 // Veřejné Algolia údaje Ubisoft Store (vložené v HTML jejich stránky, mohou se změnit)
 const UBISOFT_ALGOLIA_APP = 'XELY3U4LOD';
 const UBISOFT_ALGOLIA_KEY = 'dc39136c7548697cbee2fbc171d04133';
@@ -113,7 +121,8 @@ function httpRequest(string $url, array $headers = [], ?string $body = null, boo
  */
 function isBlocked(string $body): bool
 {
-    return (bool) preg_match('/Just a moment|cf_challenge|Access Denied|errors\.edgesuite/i', $body);
+    // Alza má vlastní stránku blokace, Allegro DataDome, Heureka výzvu Cloudflare
+    return (bool) preg_match('/Just a moment|cf_challenge|cf_chl|Checking security|Access Denied|errors\.edgesuite|zablokovaly váš přístup|captcha-delivery|datadome/i', $body);
 }
 
 /**
@@ -346,6 +355,45 @@ function checkG2a(): string
 }
 
 /**
+ * Český e-shop – cena produktu ze schema.org: bloky JSON-LD (Product / Offer,
+ * u srovnávače AggregateOffer), jinak microdata (Smarty). Nevalidní blok
+ * (Datart) se přeskočí.
+ *
+ * @param string $url URL produktu
+ * @return string Cena, dostupnost a EAN, nebo popis chyby
+ */
+function checkSchemaOffer(string $url): string
+{
+    $r = httpRequest($url);
+    if ($r['status'] !== 200 || isBlocked($r['body'])) {
+        return describeFailure($r);
+    }
+
+    preg_match_all('~<script[^>]+application/ld\+json[^>]*>(.*?)</script>~si', $r['body'], $blocks);
+    foreach ($blocks[1] as $json) {
+        $data = json_decode(trim($json), true);
+        foreach (is_array($data) ? (array_is_list($data) ? $data : [$data]) : [] as $item) {
+            if (!is_array($item) || !in_array($item['@type'] ?? null, ['Product', ['Product']], true)) {
+                continue;
+            }
+            $offer = $item['offers'] ?? [];
+            $offer = is_array($offer) && array_is_list($offer) ? ($offer[0] ?? []) : $offer;
+            $price = $offer['price'] ?? $offer['lowPrice'] ?? $offer['priceSpecification']['price'] ?? null;
+            $ean = $item['gtin13'] ?? $item['gtin'] ?? $item['gtin8'] ?? $item['mpn'] ?? '?';
+
+            return sprintf('%s %s, %s, EAN %s (JSON-LD)', $price ?? '?', $offer['priceCurrency'] ?? '?', $offer['availability'] ?? '?', $ean);
+        }
+    }
+
+    $price = preg_match('/itemprop="price"[^>]*content="([\d.,]+)"/', $r['body'], $p) ? $p[1] : null;
+    $availability = preg_match('/itemprop="availability"[^>]*href="([^"]+)"/', $r['body'], $a) ? $a[1] : '?';
+
+    return $price !== null
+        ? sprintf('%s, %s (microdata)', $price, $availability)
+        : sprintf('stránka dostupná (%d B), cena ve schema.org nenalezena', strlen($r['body']));
+}
+
+/**
  * Obchody s ochranou – testuje jen, zda se stránka vůbec načte.
  *
  * @param string $url URL stránky
@@ -395,6 +443,14 @@ $checks = [
     'G2A' => fn () => implode(' | ', array_map(fn () => checkG2a(), range(1, G2A_ATTEMPTS))),
     'Loaded' => fn () => checkReachable('https://www.loaded.com/catalogsearch/result/?q=' . SEARCH_TERM),
     'Battle.net' => fn () => checkReachable('https://eu.shop.battle.net/en-gb/product/diablo-iv'),
+    // Krabicové hry na PS5 (průzkum 2026-10-13) — doma Xzone, Datart a Smarty bez výzvy,
+    // Alza jen s plnými hlavičkami prohlížeče, Heureka a Allegro blokují už doma
+    'Xzone' => fn () => checkSchemaOffer(XZONE_PRODUCT_URL),
+    'Datart' => fn () => checkSchemaOffer(DATART_PRODUCT_URL),
+    'Smarty' => fn () => checkSchemaOffer(SMARTY_PRODUCT_URL),
+    'Alza' => fn () => checkSchemaOffer(ALZA_PRODUCT_URL),
+    'Zbozi.cz' => fn () => checkSchemaOffer(ZBOZI_PRODUCT_URL),
+    'Heureka' => fn () => checkReachable(HEUREKA_PRODUCT_URL),
 ];
 
 header('Content-Type: text/plain; charset=utf-8');
