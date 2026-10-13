@@ -39,6 +39,29 @@
 
     @include neon-focus;
 
+    // Obrázek se štítky přes horní roh a odpočtem do vydání dole
+    &__media {
+        position: relative;
+        display: block;
+    }
+
+    &__chips {
+        position: absolute;
+        top: var(--space-2);
+        right: var(--space-2);
+        left: var(--space-2);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-1);
+        pointer-events: none;
+
+        // Přes světlý banner by barevný text nebyl čitelný
+        .badge,
+        .platform {
+            background-color: var(--color-chip-backdrop);
+        }
+    }
+
     &__image {
         display: block;
         width: 100%;
@@ -63,19 +86,39 @@
         padding: var(--space-3);
     }
 
+    // Nejvýš na dva řádky (delší se zkrátí, celý je v title); s víc sloupci má místo na oba
+    // vždy — obsah karet v řadě začíná stejně, v jednom sloupci by to byla jen mezera
     &__title {
+        display: -webkit-box;
+        overflow: hidden;
         font-family: var(--font-display);
         font-weight: var(--font-weight-display);
+        line-height: var(--game-card-title-line-height);
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: var(--game-card-title-lines);
+        line-clamp: var(--game-card-title-lines);
+
+        @include from-sm {
+            min-height: calc(var(--game-card-title-lines) * var(--game-card-title-line-height) * 1em);
+        }
     }
 
+    // Datum vlevo, hodnocení vpravo
     &__meta {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        justify-content: space-between;
         gap: var(--space-2);
         color: var(--color-text-muted);
         font-family: var(--font-mono);
         font-size: var(--font-size-sm);
+    }
+
+    &__ratings {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
     }
 
     // Metascore (R32) — barva podle úrovně jako hodnocení na detailu
@@ -101,12 +144,31 @@
     &__release {
         color: var(--color-release);
         text-shadow: var(--text-glow-release);
+
+        // Na kartě sledované hry přes spodní roh obrázku
+        &--chip {
+            position: absolute;
+            right: var(--space-2);
+            bottom: var(--space-2);
+            padding: 0 var(--space-2);
+            border: var(--border-width) solid currentcolor;
+            background-color: var(--color-chip-backdrop);
+            font-family: var(--font-mono);
+            font-size: var(--font-size-xs);
+        }
     }
 
     // Hodnocení hráčů na PS Store (R33) — barva PlayStationu, hvězdičky ne body
     &__stars {
         color: var(--color-playstation);
         font-weight: var(--font-weight-strong);
+    }
+
+    // Ceny sledované hry — hlavní cena a pod ní vedlejší nabídky
+    &__offers {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
     }
 
     // Nejlevnější cena — dole na kartě, aby ceny všech karet byly v řadě
@@ -141,6 +203,11 @@
     &__shop {
         color: var(--color-text-muted);
         font-size: var(--font-size-sm);
+
+        // Na kartě sledované hry vždy pod cenou — dlouhý i krátký název obchodu stejně
+        &--line {
+            flex-basis: 100%;
+        }
     }
 
     // Hra jen na PlayStationu bez připojeného PS Store (R24)
@@ -172,6 +239,26 @@
         color: var(--color-neon-green);
         font-family: var(--font-mono);
         font-size: var(--font-size-xs);
+    }
+
+    // Patička — délka hraní a cíl, u spodního okraje karty
+    &__footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--space-2);
+        margin-top: auto;
+        padding-top: var(--space-2);
+        border-top: var(--border-width) dashed var(--color-border);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+    }
+
+    &__playtime {
+        display: inline-flex;
+        gap: var(--space-2);
+        color: var(--color-text-muted);
     }
 
     // Cena za hodinu hlavního příběhu (R44)

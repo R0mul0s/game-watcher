@@ -6,6 +6,13 @@
 
 @use 'variables' as *;
 
+/// Styly od šířky, kdy jsou karty her ve dvou sloupcích.
+@mixin from-sm {
+    @media (min-width: $breakpoint-sm) {
+        @content;
+    }
+}
+
 /// Styly od středně širokého displeje výš.
 @mixin from-md {
     @media (min-width: $breakpoint-md) {
