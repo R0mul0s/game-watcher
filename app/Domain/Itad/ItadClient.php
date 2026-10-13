@@ -37,6 +37,8 @@ final class ItadClient
 
     private const HISTORY_PATH = '/games/history/v2';
 
+    private const DEALS_PATH = '/deals/v2';
+
     /**
      * Hry podle názvu, v pořadí relevance podle ITAD.
      *
@@ -136,6 +138,35 @@ final class ItadClient
         return array_values(array_filter(array_map(
             fn (mixed $item): ?ItadPriceChange => is_array($item) ? ItadPriceChange::fromApi($item) : null,
             $data,
+        )));
+    }
+
+    /**
+     * Seznam her ve slevě (R43) — nejlepší aktuální nabídka každé hry v zemi
+     * z konfigurace. Filtr je JSON podle dokumentace ITAD (štítky, druh, značka
+     * minima); řazení hodnotou ITAD (`rank`, `-cut`…).
+     *
+     * @param  array<string, mixed>  $filter
+     * @return list<ItadDealListing>
+     *
+     * @throws ItadUnavailable
+     */
+    public function deals(array $filter, string $sort, int $limit): array
+    {
+        $data = $this->get(self::DEALS_PATH, [
+            'country' => (string) config('games.sources.itad.country'),
+            'limit' => $limit,
+            'sort' => $sort,
+            'filter' => (string) json_encode($filter, JSON_THROW_ON_ERROR),
+        ]);
+
+        if (! is_array($data['list'] ?? null) || ! array_is_list($data['list'])) {
+            throw $this->unexpectedShape(self::DEALS_PATH);
+        }
+
+        return array_values(array_filter(array_map(
+            fn (mixed $item): ?ItadDealListing => is_array($item) ? ItadDealListing::fromApi($item) : null,
+            $data['list'],
         )));
     }
 

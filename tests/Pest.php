@@ -118,6 +118,8 @@ function fakeApis(array $overrides = []): void
         // Historie cen (R28) — zachycená za rok jen u BIOMUTANT, ostatní hry bez historie
         'api.isthereanydeal.com/games/history/v2?id='.BIOMUTANT_ID.'*' => Http::response(jsonFixture('itad/history-biomutant')),
         'api.isthereanydeal.com/games/history/v2*' => Http::response([]),
+        // Seznam slev (R43) — zachycený 13. 10. 2026 (hry, štítky Local Co-Op a RPG, historická minima)
+        'api.isthereanydeal.com/deals/v2*' => Http::response(jsonFixture('itad/deals')),
         'api.isthereanydeal.com/games/prices/v3*' => fn (Request $request): PromiseInterface => Http::response(array_values(array_filter(
             jsonFixture('itad/prices'),
             fn (array $game): bool => in_array($game['id'], $request->data(), true),

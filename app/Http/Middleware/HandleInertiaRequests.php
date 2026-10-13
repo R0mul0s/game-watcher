@@ -28,6 +28,7 @@ class HandleInertiaRequests extends Middleware
     /** Položky hlavní navigace: název routy => klíč textu v app.ui.nav. */
     private const NAVIGATION = [
         'dashboard' => 'dashboard',
+        'discover' => 'discover',
         'games.search' => 'add_game',
         'settings.show' => 'settings',
     ];

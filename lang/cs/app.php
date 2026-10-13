@@ -187,6 +187,7 @@ return [
         'nav' => [
             'label' => 'Hlavní navigace',
             'dashboard' => 'Přehled',
+            'discover' => 'Objevit',
             'add_game' => 'Přidat hru',
             'settings' => 'Nastavení',
         ],
@@ -195,6 +196,7 @@ return [
         'back' => [
             'default' => 'Zpět',
             'dashboard' => 'Zpět na přehled',
+            'discover' => 'Zpět na objevování',
             'add_game' => 'Zpět na hledání',
             'settings' => 'Zpět do nastavení',
         ],
@@ -338,6 +340,33 @@ return [
             'metascore_label' => 'Metacritic :score',
             'player_rating' => '★ :rating',
             'player_rating_title' => 'Hodnocení hráčů na PlayStation Store (:count hodnocení)',
+        ],
+
+        // Stránka Objevit (R43)
+        'discover' => [
+            'title' => 'Objevit',
+            'subtitle' => 'Slevy her, které ještě nesleduješ',
+            'tags' => 'Štítky',
+            'tags_hint' => 'Ze Steamu — stačí jeden z vybraných, bez výběru všechny hry. Čísla = kolik tvých sledovaných her štítek má.',
+            'lows' => 'Jen historická minima',
+            'sorts' => [
+                'popular' => 'Nejoblíbenější',
+                'trending' => 'Teď populární',
+                'cut' => 'Od největší slevy',
+                'price' => 'Od nejlevnější',
+                'newest' => 'Nejnovější slevy',
+            ],
+            'flags' => [
+                'new_low' => 'Nové historické minimum',
+                'low' => 'Historické minimum',
+                'shop_low' => 'Minimum obchodu',
+            ],
+            'regular' => 'běžně :price',
+            'watch' => 'Sledovat',
+            'detail' => 'Detail',
+            'empty' => 'Filtrům teď neodpovídá žádná sleva.',
+            'unavailable' => 'IsThereAnyDeal teď neodpovídá. Zkus to za chvíli.',
+            'source' => 'Slevy v obchodech pro PC podle IsThereAnyDeal — stránka se obnovuje po pár hodinách. PlayStation Store seznam slev nenabízí.',
         ],
 
         // Slevy dne nad přehledem (R26)

@@ -1,0 +1,31 @@
+// _discover.scss
+// Stránka Objevit (Discover.vue, R43) — panel filtrů nad mřížkou slev;
+// skupiny, štítky a přepínač jsou sdílené z _filters.scss, karty z _game-card.scss.
+//
+// @author Roman Hlaváček
+// @created 2026-10-13
+
+@use '../abstracts/mixins' as *;
+
+.discover-filters {
+    margin-bottom: var(--space-4);
+
+    &__row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: var(--space-3) var(--space-4);
+    }
+
+    &__sort {
+        flex: 0 1 var(--game-card-min-width);
+    }
+}
+
+.discover {
+    &__source {
+        margin-top: var(--space-4);
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+    }
+}

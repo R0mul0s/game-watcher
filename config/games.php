@@ -178,6 +178,20 @@ return [
     ],
 
     /*
+    | Stránka Objevit (R43) — slevy z ITAD `deals/v2`. Každá kombinace filtrů je
+    | jeden požadavek (limit ITAD, R15), výsledek drží cache cache_seconds.
+    | Štítky jsou ze Steamu (anglicky, jak je vrací ITAD): předvolené pro hraní
+    | ve dvou a nejčastější štítky sledovaných her.
+    */
+    'discover' => [
+        'limit' => 60,
+        'cache_seconds' => 10800,
+        'max_tags' => 5,
+        'tag_suggestions' => 8,
+        'preset_tags' => ['Local Co-Op', 'Co-op', 'Split Screen'],
+    ],
+
+    /*
     | Kalendář velkých výprodejů (R42) — data zveřejňuje Valve na Steamworks
     | (partner.steamgames.com/doc/marketing/upcoming_events), PlayStation Store
     | svoje akce předem neohlašuje. Doplňovat ručně, když Valve zveřejní další.

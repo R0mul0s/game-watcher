@@ -1,0 +1,417 @@
+{
+    "nextOffset": 6,
+    "hasMore": true,
+    "list": [
+        {
+            "id": "018d937f-5599-70de-b7b0-96f7e67684ff",
+            "slug": "sekiro-shadows-die-twice-goty-edition",
+            "title": "Sekiro™: Shadows Die Twice - GOTY Edition",
+            "type": "game",
+            "mature": false,
+            "assets": {
+                "boxart": "https://assets.isthereanydeal.com/018d937f-5599-70de-b7b0-96f7e67684ff/boxart.jpg?t=1790881811",
+                "banner145": "https://assets.isthereanydeal.com/018d937f-5599-70de-b7b0-96f7e67684ff/banner145.jpg?t=1790881811",
+                "banner300": "https://assets.isthereanydeal.com/018d937f-5599-70de-b7b0-96f7e67684ff/banner300.jpg?t=1790881811",
+                "banner400": "https://assets.isthereanydeal.com/018d937f-5599-70de-b7b0-96f7e67684ff/banner400.jpg?t=1790881811",
+                "banner600": "https://assets.isthereanydeal.com/018d937f-5599-70de-b7b0-96f7e67684ff/banner600.jpg?t=1790881811"
+            },
+            "deal": {
+                "shop": {
+                    "id": 61,
+                    "name": "Steam"
+                },
+                "price": {
+                    "amount": 29.99,
+                    "amountInt": 2999,
+                    "currency": "EUR"
+                },
+                "regular": {
+                    "amount": 59.99,
+                    "amountInt": 5999,
+                    "currency": "EUR"
+                },
+                "cut": 50,
+                "voucher": null,
+                "storeLow": {
+                    "amount": 29.99,
+                    "amountInt": 2999,
+                    "currency": "EUR"
+                },
+                "historyLow": {
+                    "amount": 29.99,
+                    "amountInt": 2999,
+                    "currency": "EUR"
+                },
+                "historyLow_1y": {
+                    "amount": 29.99,
+                    "amountInt": 2999,
+                    "currency": "EUR"
+                },
+                "historyLow_3m": {
+                    "amount": 29.99,
+                    "amountInt": 2999,
+                    "currency": "EUR"
+                },
+                "flag": "H",
+                "drm": [],
+                "platforms": [
+                    {
+                        "id": 1,
+                        "name": "Windows"
+                    }
+                ],
+                "timestamp": "2026-10-01T19:25:17+02:00",
+                "expiry": "2026-10-15T19:00:00+02:00",
+                "url": "https://itad.link/018d9386-c357-704e-9727-309e623efdc3/?app=a5oh1b"
+            }
+        },
+        {
+            "id": "018d937f-1163-73c6-8a57-2660e40ceaf0",
+            "slug": "bioshock-2-remastered",
+            "title": "BioShock 2 Remastered",
+            "type": "game",
+            "mature": false,
+            "assets": {
+                "boxart": "https://assets.isthereanydeal.com/018d937f-1163-73c6-8a57-2660e40ceaf0/boxart.jpg?t=1787262015",
+                "banner145": "https://assets.isthereanydeal.com/018d937f-1163-73c6-8a57-2660e40ceaf0/banner145.jpg?t=1787262015",
+                "banner300": "https://assets.isthereanydeal.com/018d937f-1163-73c6-8a57-2660e40ceaf0/banner300.jpg?t=1787262015",
+                "banner400": "https://assets.isthereanydeal.com/018d937f-1163-73c6-8a57-2660e40ceaf0/banner400.jpg?t=1787262015",
+                "banner600": "https://assets.isthereanydeal.com/018d937f-1163-73c6-8a57-2660e40ceaf0/banner600.jpg?t=1787262015"
+            },
+            "deal": {
+                "shop": {
+                    "id": 6,
+                    "name": "Fanatical"
+                },
+                "price": {
+                    "amount": 2.59,
+                    "amountInt": 259,
+                    "currency": "EUR"
+                },
+                "regular": {
+                    "amount": 19.99,
+                    "amountInt": 1999,
+                    "currency": "EUR"
+                },
+                "cut": 87,
+                "voucher": null,
+                "storeLow": {
+                    "amount": 2.59,
+                    "amountInt": 259,
+                    "currency": "EUR"
+                },
+                "historyLow": {
+                    "amount": 2.59,
+                    "amountInt": 259,
+                    "currency": "EUR"
+                },
+                "historyLow_1y": {
+                    "amount": 2.59,
+                    "amountInt": 259,
+                    "currency": "EUR"
+                },
+                "historyLow_3m": {
+                    "amount": 2.59,
+                    "amountInt": 259,
+                    "currency": "EUR"
+                },
+                "flag": "H",
+                "drm": [
+                    {
+                        "id": 61,
+                        "name": "Steam"
+                    }
+                ],
+                "platforms": [
+                    {
+                        "id": 1,
+                        "name": "Windows"
+                    }
+                ],
+                "timestamp": "2026-10-12T01:23:09+02:00",
+                "expiry": "2026-10-23T00:59:00+02:00",
+                "url": "https://itad.link/019d20b9-dfa3-72c2-a076-43277b7df315/?app=a5oh1b"
+            }
+        },
+        {
+            "id": "018d937f-1586-73b9-9952-4e4fb7c35dc3",
+            "slug": "the-witcher-enhanced-edition-directors-cut",
+            "title": "The Witcher: Enhanced Edition Director's Cut",
+            "type": "game",
+            "mature": false,
+            "assets": {
+                "boxart": "https://assets.isthereanydeal.com/018d937f-1586-73b9-9952-4e4fb7c35dc3/boxart.jpg?t=1786389360",
+                "banner145": "https://assets.isthereanydeal.com/018d937f-1586-73b9-9952-4e4fb7c35dc3/banner145.jpg?t=1786389360",
+                "banner300": "https://assets.isthereanydeal.com/018d937f-1586-73b9-9952-4e4fb7c35dc3/banner300.jpg?t=1786389360",
+                "banner400": "https://assets.isthereanydeal.com/018d937f-1586-73b9-9952-4e4fb7c35dc3/banner400.jpg?t=1786389360",
+                "banner600": "https://assets.isthereanydeal.com/018d937f-1586-73b9-9952-4e4fb7c35dc3/banner600.jpg?t=1786389360"
+            },
+            "deal": {
+                "shop": {
+                    "id": 35,
+                    "name": "GOG"
+                },
+                "price": {
+                    "amount": 1.19,
+                    "amountInt": 119,
+                    "currency": "EUR"
+                },
+                "regular": {
+                    "amount": 7.99,
+                    "amountInt": 799,
+                    "currency": "EUR"
+                },
+                "cut": 85,
+                "voucher": null,
+                "storeLow": {
+                    "amount": 1.19,
+                    "amountInt": 119,
+                    "currency": "EUR"
+                },
+                "historyLow": {
+                    "amount": 1.19,
+                    "amountInt": 119,
+                    "currency": "EUR"
+                },
+                "historyLow_1y": {
+                    "amount": 1.19,
+                    "amountInt": 119,
+                    "currency": "EUR"
+                },
+                "historyLow_3m": {
+                    "amount": 1.19,
+                    "amountInt": 119,
+                    "currency": "EUR"
+                },
+                "flag": "H",
+                "drm": [
+                    {
+                        "id": 1000,
+                        "name": "Drm Free"
+                    }
+                ],
+                "platforms": [
+                    {
+                        "id": 1,
+                        "name": "Windows"
+                    },
+                    {
+                        "id": 2,
+                        "name": "Mac"
+                    }
+                ],
+                "timestamp": "2026-10-12T14:51:24+02:00",
+                "expiry": null,
+                "url": "https://itad.link/018d9386-f628-718e-a244-22b6aa0d078c/?app=a5oh1b"
+            }
+        },
+        {
+            "id": "018d937f-05f8-707d-bd24-938d36001e57",
+            "slug": "borderlands-the-pre-sequel",
+            "title": "Borderlands: The Pre-Sequel",
+            "type": "game",
+            "mature": false,
+            "assets": {
+                "boxart": "https://assets.isthereanydeal.com/018d937f-05f8-707d-bd24-938d36001e57/boxart.jpg?t=1786401109",
+                "banner145": "https://assets.isthereanydeal.com/018d937f-05f8-707d-bd24-938d36001e57/banner145.jpg?t=1786401109",
+                "banner300": "https://assets.isthereanydeal.com/018d937f-05f8-707d-bd24-938d36001e57/banner300.jpg?t=1786401109",
+                "banner400": "https://assets.isthereanydeal.com/018d937f-05f8-707d-bd24-938d36001e57/banner400.jpg?t=1786401109",
+                "banner600": "https://assets.isthereanydeal.com/018d937f-05f8-707d-bd24-938d36001e57/banner600.jpg?t=1786401109"
+            },
+            "deal": {
+                "shop": {
+                    "id": 64,
+                    "name": "WinGameStore"
+                },
+                "price": {
+                    "amount": 2.67,
+                    "amountInt": 267,
+                    "currency": "EUR"
+                },
+                "regular": {
+                    "amount": 35.75,
+                    "amountInt": 3575,
+                    "currency": "EUR"
+                },
+                "cut": 93,
+                "voucher": null,
+                "storeLow": {
+                    "amount": 2.54,
+                    "amountInt": 254,
+                    "currency": "EUR"
+                },
+                "historyLow": {
+                    "amount": 2.5,
+                    "amountInt": 250,
+                    "currency": "EUR"
+                },
+                "historyLow_1y": {
+                    "amount": 2.5,
+                    "amountInt": 250,
+                    "currency": "EUR"
+                },
+                "historyLow_3m": {
+                    "amount": 2.5,
+                    "amountInt": 250,
+                    "currency": "EUR"
+                },
+                "flag": null,
+                "drm": [
+                    {
+                        "id": 61,
+                        "name": "Steam"
+                    }
+                ],
+                "platforms": [
+                    {
+                        "id": 1,
+                        "name": "Windows"
+                    }
+                ],
+                "timestamp": "2026-05-08T18:53:07+02:00",
+                "expiry": null,
+                "url": "https://itad.link/018d9386-359a-731e-832a-62d8c82edb02/?app=a5oh1b"
+            }
+        },
+        {
+            "id": "018d937f-506e-72eb-975a-1a5175b622de",
+            "slug": "lies-of-p",
+            "title": "Lies Of P",
+            "type": "game",
+            "mature": false,
+            "assets": {
+                "boxart": "https://assets.isthereanydeal.com/018d937f-506e-72eb-975a-1a5175b622de/boxart.jpg?t=1786560914",
+                "banner145": "https://assets.isthereanydeal.com/018d937f-506e-72eb-975a-1a5175b622de/banner145.jpg?t=1786560914",
+                "banner300": "https://assets.isthereanydeal.com/018d937f-506e-72eb-975a-1a5175b622de/banner300.jpg?t=1786560914",
+                "banner400": "https://assets.isthereanydeal.com/018d937f-506e-72eb-975a-1a5175b622de/banner400.jpg?t=1786560914",
+                "banner600": "https://assets.isthereanydeal.com/018d937f-506e-72eb-975a-1a5175b622de/banner600.jpg?t=1786560914"
+            },
+            "deal": {
+                "shop": {
+                    "id": 6,
+                    "name": "Fanatical"
+                },
+                "price": {
+                    "amount": 29.99,
+                    "amountInt": 2999,
+                    "currency": "EUR"
+                },
+                "regular": {
+                    "amount": 59.99,
+                    "amountInt": 5999,
+                    "currency": "EUR"
+                },
+                "cut": 50,
+                "voucher": null,
+                "storeLow": {
+                    "amount": 29.99,
+                    "amountInt": 2999,
+                    "currency": "EUR"
+                },
+                "historyLow": {
+                    "amount": 29.99,
+                    "amountInt": 2999,
+                    "currency": "EUR"
+                },
+                "historyLow_1y": {
+                    "amount": 29.99,
+                    "amountInt": 2999,
+                    "currency": "EUR"
+                },
+                "historyLow_3m": {
+                    "amount": 29.99,
+                    "amountInt": 2999,
+                    "currency": "EUR"
+                },
+                "flag": "H",
+                "drm": [
+                    {
+                        "id": 61,
+                        "name": "Steam"
+                    }
+                ],
+                "platforms": [
+                    {
+                        "id": 1,
+                        "name": "Windows"
+                    }
+                ],
+                "timestamp": "2026-10-01T10:19:24+02:00",
+                "expiry": "2026-10-16T00:59:00+02:00",
+                "url": "https://itad.link/018d9386-8d07-73c4-9c42-1013f3fa8a76/?app=a5oh1b"
+            }
+        },
+        {
+            "id": "018d937f-0186-717a-8898-b39f09dd8206",
+            "slug": "tunic",
+            "title": "TUNIC",
+            "type": "game",
+            "mature": false,
+            "assets": {
+                "boxart": "https://assets.isthereanydeal.com/018d937f-0186-717a-8898-b39f09dd8206/boxart.jpg?t=1786999525",
+                "banner145": "https://assets.isthereanydeal.com/018d937f-0186-717a-8898-b39f09dd8206/banner145.jpg?t=1786999525",
+                "banner300": "https://assets.isthereanydeal.com/018d937f-0186-717a-8898-b39f09dd8206/banner300.jpg?t=1786999525",
+                "banner400": "https://assets.isthereanydeal.com/018d937f-0186-717a-8898-b39f09dd8206/banner400.jpg?t=1786999525",
+                "banner600": "https://assets.isthereanydeal.com/018d937f-0186-717a-8898-b39f09dd8206/banner600.jpg?t=1786999525"
+            },
+            "deal": {
+                "shop": {
+                    "id": 37,
+                    "name": "Humble Store"
+                },
+                "price": {
+                    "amount": 13.99,
+                    "amountInt": 1399,
+                    "currency": "EUR"
+                },
+                "regular": {
+                    "amount": 27.99,
+                    "amountInt": 2799,
+                    "currency": "EUR"
+                },
+                "cut": 50,
+                "voucher": null,
+                "storeLow": {
+                    "amount": 13.99,
+                    "amountInt": 1399,
+                    "currency": "EUR"
+                },
+                "historyLow": {
+                    "amount": 13.99,
+                    "amountInt": 1399,
+                    "currency": "EUR"
+                },
+                "historyLow_1y": {
+                    "amount": 13.99,
+                    "amountInt": 1399,
+                    "currency": "EUR"
+                },
+                "historyLow_3m": {
+                    "amount": 13.99,
+                    "amountInt": 1399,
+                    "currency": "EUR"
+                },
+                "flag": "H",
+                "drm": [
+                    {
+                        "id": 1000,
+                        "name": "Drm Free"
+                    }
+                ],
+                "platforms": [
+                    {
+                        "id": 1,
+                        "name": "Windows"
+                    },
+                    {
+                        "id": 2,
+                        "name": "Mac"
+                    }
+                ],
+                "timestamp": "2026-10-08T19:06:52+02:00",
+                "expiry": "2026-10-15T19:00:00+02:00",
+                "url": "https://itad.link/018d9386-ea02-73e3-a686-9c0b0b7640d7/?app=a5oh1b"
+            }
+        }
+    ]
+}

@@ -45,6 +45,8 @@
         display: flex;
         flex: 1 0 100%;
         order: 1;
+        // Na mobilu přes celou šířku — čtyři položky (R43) se tak vejdou i na 360 px
+        justify-content: space-between;
         gap: var(--space-1);
 
         @include from-md {
@@ -58,16 +60,17 @@
         @include display-caps;
 
         position: relative;
-        // Na mobilu užší, aby se tři položky vešly na řádek bez zalomení
-        padding: var(--space-2);
+        // Na mobilu užší a menším písmem, aby se čtyři položky vešly na řádek bez zalomení
+        padding: var(--space-2) var(--space-1);
         color: var(--color-text-muted);
-        font-size: var(--font-size-sm);
+        font-size: var(--font-size-xs);
         text-decoration: none;
         white-space: nowrap;
         transition: color var(--duration-fast);
 
         @include from-md {
             padding: var(--space-2) var(--space-3);
+            font-size: var(--font-size-sm);
         }
 
         &:hover {
@@ -84,12 +87,18 @@
             &::after {
                 content: '';
                 position: absolute;
-                right: var(--space-3);
+                right: var(--space-1);
                 bottom: 0;
-                left: var(--space-3);
+                left: var(--space-1);
                 height: var(--hud-corner-width);
                 background: var(--color-accent);
                 box-shadow: var(--glow-accent);
+
+                // Podtržení pod textem — stejně odsazené jako text odkazu
+                @include from-md {
+                    right: var(--space-3);
+                    left: var(--space-3);
+                }
             }
         }
     }

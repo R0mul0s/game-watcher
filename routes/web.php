@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DiscoverController;
 use App\Http\Controllers\DisplayCurrencyController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameSearchController;
@@ -53,6 +54,12 @@ Route::middleware('auth')->group(function (): void {
         ->middleware('throttle:'.config('games.listings.max_attempts_per_minute').',1')
         ->name('watchlist.store');
     Route::get('/hry/{game}', [GameController::class, 'show'])->name('games.show');
+
+    // Slevy her podle štítků sledovaných her (R43) — každá kombinace filtrů je
+    // dotaz na ITAD (v cache), omezené jako hledání
+    Route::get('/objevit', DiscoverController::class)
+        ->middleware('throttle:catalog-search')
+        ->name('discover');
     Route::put('/hry/{game}/sledovani', [WatchlistController::class, 'update'])->name('watchlist.update');
     // Cílová cena pro upozornění (etapa 6, R26)
     Route::put('/hry/{game}/cil', [WatchlistController::class, 'target'])->name('watchlist.target');
