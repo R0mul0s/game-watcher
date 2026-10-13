@@ -187,6 +187,8 @@ return [
         // Podtitul na přihlašovací stránce
         'tagline' => 'Hlídač cen her',
         'skip_to_content' => 'Přeskočit na obsah',
+        // Návrat na začátek stránky (R45)
+        'scroll_top' => 'Zpět nahoru',
 
         // Aplikace na ploše (R37) — stažení dolů a stránka bez připojení
         'pwa' => [
@@ -264,6 +266,14 @@ return [
             'submit' => 'Připojit',
             'remove' => 'Odpojit',
             'open' => 'Otevřít v obchodě',
+        ],
+
+        // Filtry na telefonu v okně (R45)
+        'filter_sheet' => [
+            'open' => 'Filtry',
+            'close' => 'Zavřít filtry',
+            'show' => 'Zobrazit :count hru|Zobrazit :count hry|Zobrazit :count her',
+            'show_deals' => 'Zobrazit :count slevu|Zobrazit :count slevy|Zobrazit :count slev',
         ],
 
         'filters' => [

@@ -1,6 +1,6 @@
 <!--
     Rozvržení stránek přihlášeného uživatele — tlumená kulisa s obzorem (R6),
-    hlavička s navigací a odhlášením, obsah.
+    hlavička s navigací a odhlášením, obsah, návrat nahoru (R45).
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -11,6 +11,7 @@ import BrandLogo from '@/Components/BrandLogo.vue';
 import CurrencySwitch from '@/Components/CurrencySwitch.vue';
 import FlashMessage from '@/Components/FlashMessage.vue';
 import PullToRefresh from '@/Components/PullToRefresh.vue';
+import ScrollTopButton from '@/Components/ScrollTopButton.vue';
 import { useTranslations } from '@/lib/i18n';
 import { Link, usePage } from '@inertiajs/vue3';
 
@@ -57,4 +58,5 @@ const page = usePage();
         <FlashMessage />
         <slot />
     </main>
+    <ScrollTopButton />
 </template>

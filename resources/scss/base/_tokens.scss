@@ -57,6 +57,8 @@
     --horizon-glow: rgb(255 43 214 / 55%);
     --horizon-sky: #12051f;
     --horizon-sky-soft: rgb(18 5 31 / 70%);
+    // Ztmavení stránky za oknem s filtry (R45)
+    --color-sheet-backdrop: rgb(2 4 10 / 70%);
     // Řádkování „obrazovky" přes celou stránku
     --scanline: rgb(255 255 255 / 2.5%);
     --scanline-gap: 3px;
@@ -93,6 +95,11 @@
     --control-size-small: 2.25rem;
     --logo-size: 2.5rem;
     --logo-size-large: 4.5rem;
+    // Návrat nahoru a plovoucí „Filtry“ (R45) — dost velké na palec
+    --scroll-top-size: 3rem;
+    // Okno s filtry na telefonu — nahoře zůstane kus stránky, ať je vidět, že jde o okno
+    --filter-sheet-max-height: 85dvh;
+    --sheet-close-size: 2.5rem;
     --radar-size: 7rem;
     // Obrázky her z ITAD: banner600 je 600 × 344, banner300 300 × 140, obal 300 × 450
     --banner-aspect: 600 / 344;
@@ -149,6 +156,8 @@
     --trail-delay: 7s;
     --duration-header-trail: 8s;
     --duration-pull-refresh-spin: 0.8s;
+    // Okno s filtry vyjede zespodu (R45)
+    --duration-sheet: 200ms;
     // Problikávání neonového loga — rám a „play“ v různém rytmu
     --duration-logo-flicker: 7s;
     --duration-logo-flicker-play: 11s;

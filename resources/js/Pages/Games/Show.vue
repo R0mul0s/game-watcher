@@ -18,6 +18,7 @@ import SaleOutlook from '@/Components/SaleOutlook.vue';
 import StoreListings from '@/Components/StoreListings.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { formatDate, releaseCountdown } from '@/lib/format';
+import { PHONE_QUERY } from '@/lib/media';
 import { useTranslations } from '@/lib/i18n';
 import { Deferred, Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, defineAsyncComponent, ref } from 'vue';
@@ -38,8 +39,6 @@ const t = useTranslations();
 const page = usePage();
 const processing = ref(false);
 
-/** Telefon — pod $breakpoint-md (abstracts/_variables.scss) je místo obalu na výšku široký banner. */
-const PHONE_MEDIA = '(max-width: 767px)';
 /** Hra má vlastní banner (bannerUrl jinak obsahuje obal). */
 const hasBanner = computed(() => props.game.bannerUrl !== null && props.game.bannerUrl !== props.game.boxartUrl);
 
@@ -106,7 +105,7 @@ function toggleWatch() {
             <header class="game-detail__hero">
                 <!-- Na telefonu široký banner přes celou šířku, jinak obal na výšku (R39) -->
                 <picture v-if="game.boxartUrl && hasBanner" class="game-detail__cover">
-                    <source :media="PHONE_MEDIA" :srcset="game.bannerUrl" />
+                    <source :media="PHONE_QUERY" :srcset="game.bannerUrl" />
                     <img :src="game.boxartUrl" alt="" class="game-detail__boxart game-detail__boxart--with-banner" />
                 </picture>
                 <img v-else-if="game.boxartUrl" :src="game.boxartUrl" alt="" class="game-detail__boxart" />

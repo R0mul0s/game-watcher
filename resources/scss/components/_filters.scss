@@ -1,6 +1,7 @@
 // _filters.scss
 // Pokročilé filtry přehledu (WatchlistFilters.vue, R21) — lišta s hledáním
-// a řazením, pod ní volby v mřížce. Na mobilu jsou volby sbalené.
+// a řazením, pod ní volby v mřížce. Na telefonu jsou volby v okně, které
+// vyjede zespodu (_filter-sheet.scss, R45).
 //
 // @author Roman Hlaváček
 // @created 2026-10-12
@@ -21,8 +22,12 @@
         flex: 1 1 var(--filter-search-min-width);
     }
 
-    // Tlačítko sbalení jen na mobilu — od md jsou volby vidět vždy
+    // Tlačítko okna s volbami jen na telefonu — od md jsou volby vidět vždy
     &__toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+
         @include from-md {
             display: none;
         }
@@ -39,10 +44,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(var(--filter-search-min-width), 1fr));
         }
-    }
-
-    &--open &__advanced {
-        display: grid;
     }
 
     &__group {

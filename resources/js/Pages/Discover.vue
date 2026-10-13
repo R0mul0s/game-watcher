@@ -2,17 +2,19 @@
     Objevit (R43) — slevy her z IsThereAnyDeal, které uživatel ještě nesleduje:
     podle štítků (předvolené pro hraní ve dvou a nejčastější štítky sledovaných
     her), volitelně jen historická minima, řazení. Stav je v adrese, filtruje
-    ITAD (server, v cache); hru jde rovnou přidat ke sledování.
+    ITAD (server, v cache); hru jde rovnou přidat ke sledování. Na telefonu
+    jsou štítky v okně, které vyjede zespodu (FilterSheet, R45).
 
     @author Roman Hlaváček
     @created 2026-10-13
 -->
 <script setup>
+import FilterSheet from '@/Components/FilterSheet.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { formatDateInZone, formatPrice } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
     deals: { type: Array, required: true },
@@ -29,6 +31,12 @@ const page = usePage();
 /** Řazení (enum DiscoverSort); první je výchozí. */
 const SORTS = ['popular', 'trending', 'cut', 'price', 'newest'];
 const DEFAULT_SORT = SORTS[0];
+
+/** Okno se štítky na telefonu (R45). */
+const sheet = ref(null);
+
+/** Kolik filtrů je zapnutých — štítky a vypnutá „jen historická minima“. */
+const activeCount = computed(() => props.filters.tags.length + (props.filters.lows ? 0 : 1));
 
 /** ITAD ID hry, která se právě přidává. */
 const adding = ref(null);
@@ -86,24 +94,6 @@ function watch(deal) {
         </header>
 
         <section class="panel discover-filters" :aria-label="t('filters.title')">
-            <fieldset class="filters__group">
-                <legend class="filters__label">{{ t('discover.tags') }} <span class="filters__hint">{{ t('discover.tags_hint') }}</span></legend>
-                <div class="chips">
-                    <button
-                        v-for="tag in tags"
-                        :key="tag.name"
-                        type="button"
-                        class="chip"
-                        :class="{ 'chip--active': filters.tags.includes(tag.name) }"
-                        :aria-pressed="filters.tags.includes(tag.name)"
-                        @click="toggleTag(tag.name)"
-                    >
-                        {{ tag.name }}
-                        <span v-if="tag.count" class="chip__count">{{ tag.count }}</span>
-                    </button>
-                </div>
-            </fieldset>
-
             <div class="discover-filters__row">
                 <div class="field discover-filters__sort">
                     <label class="filters__label" for="discover-sort">{{ t('filters.sort') }}</label>
@@ -111,12 +101,46 @@ function watch(deal) {
                         <option v-for="sort in SORTS" :key="sort" :value="sort">{{ t(`discover.sorts.${sort}`) }}</option>
                     </select>
                 </div>
-                <label class="switch">
-                    <input class="switch__input" type="checkbox" :checked="filters.lows" @change="apply({ lows: $event.target.checked })" />
-                    <span class="switch__track" aria-hidden="true"></span>
-                    <span class="switch__label">{{ t('discover.lows') }}</span>
-                </label>
+                <!-- Na telefonu otevře okno se štítky (R45) -->
+                <button type="button" class="button button--ghost button--small filters__toggle" aria-haspopup="dialog" @click="sheet.open()">
+                    {{ t('filters.toggle') }}
+                    <span v-if="activeCount" class="filter-sheet__count">{{ activeCount }}</span>
+                </button>
             </div>
+
+            <FilterSheet
+                ref="sheet"
+                :title="t('filters.title')"
+                :active-count="activeCount"
+                :result-label="t('filter_sheet.show_deals', { count: deals.length })"
+                :can-reset="activeCount > 0"
+                @reset="apply({ tags: [], lows: true })"
+            >
+                <div class="discover-filters__options">
+                    <fieldset class="filters__group">
+                        <legend class="filters__label">{{ t('discover.tags') }} <span class="filters__hint">{{ t('discover.tags_hint') }}</span></legend>
+                        <div class="chips">
+                            <button
+                                v-for="tag in tags"
+                                :key="tag.name"
+                                type="button"
+                                class="chip"
+                                :class="{ 'chip--active': filters.tags.includes(tag.name) }"
+                                :aria-pressed="filters.tags.includes(tag.name)"
+                                @click="toggleTag(tag.name)"
+                            >
+                                {{ tag.name }}
+                                <span v-if="tag.count" class="chip__count">{{ tag.count }}</span>
+                            </button>
+                        </div>
+                    </fieldset>
+                    <label class="switch">
+                        <input class="switch__input" type="checkbox" :checked="filters.lows" @change="apply({ lows: $event.target.checked })" />
+                        <span class="switch__track" aria-hidden="true"></span>
+                        <span class="switch__label">{{ t('discover.lows') }}</span>
+                    </label>
+                </div>
+            </FilterSheet>
         </section>
 
         <p v-if="unavailable" class="notice notice--error" role="alert">{{ t('discover.unavailable') }}</p>

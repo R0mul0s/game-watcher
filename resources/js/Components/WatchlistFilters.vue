@@ -1,6 +1,7 @@
 <!--
     Pokročilé filtry přehledu sledovaných her (R21) — hledání, platforma,
-    hráči, žánr (R25), druh, vydání (R41), zdroj ceny (R30), cena, sleva, PS Plus a řazení. Stav je v adrese stránky;
+    hráči, žánr (R25), druh, vydání (R41), zdroj ceny (R30), cena, sleva, PS Plus a řazení. Na telefonu
+    jsou volby v okně, které vyjede zespodu (FilterSheet, R45). Stav je v adrese stránky;
     filtruje server, komponenta jen posílá volby (s krátkou prodlevou při psaní).
 
     @author Roman Hlaváček
@@ -9,7 +10,8 @@
 <script setup>
 import { useTranslations } from '@/lib/i18n';
 import { router, usePage } from '@inertiajs/vue3';
-import { reactive, ref, watch } from 'vue';
+import FilterSheet from '@/Components/FilterSheet.vue';
+import { computed, reactive, ref, watch } from 'vue';
 
 const props = defineProps({
     filters: { type: Object, required: true },
@@ -54,9 +56,17 @@ const form = reactive({
     sort: props.filters.sort,
 });
 
-/** Na mobilu jsou pokročilé volby sbalené, dokud je uživatel neotevře nebo nejsou zapnuté. */
-const open = ref(props.filters.active);
+/** Okno s volbami na telefonu (R45). */
+const sheet = ref(null);
 let timer = null;
+
+/** Kolik filtrů je zapnutých — číslo na plovoucím tlačítku (řazení a zdroj ceny se nepočítají). */
+const activeCount = computed(
+    () =>
+        [form.q.trim(), form.platform, form.genres.length, form.players, form.type, form.release, form.maxPrice, form.minCut, form.deals, form.plus].filter(
+            (value) => value !== null && value !== '' && value !== false && value !== 0,
+        ).length,
+);
 
 /**
  * Parametry adresy — výchozí hodnoty se vynechají, adresa zůstane krátká.
@@ -117,7 +127,7 @@ function reset() {
 </script>
 
 <template>
-    <section class="panel filters" :class="{ 'filters--open': open }" :aria-label="t('filters.title')">
+    <section class="panel filters" :aria-label="t('filters.title')">
         <div class="filters__bar">
             <div class="field filters__search">
                 <label class="visually-hidden" for="filter-q">{{ t('filters.search') }}</label>
@@ -136,172 +146,183 @@ function reset() {
                     <option v-for="sort in SORTS" :key="sort" :value="sort">{{ t(`filters.sort_${sort}`) }}</option>
                 </select>
             </div>
-            <button type="button" class="button button--ghost button--small filters__toggle" :aria-expanded="open" aria-controls="filters-advanced" @click="open = !open">
+            <!-- Na telefonu otevře okno s volbami (R45) -->
+            <button type="button" class="button button--ghost button--small filters__toggle" aria-haspopup="dialog" @click="sheet.open()">
                 {{ t('filters.toggle') }}
+                <span v-if="activeCount" class="filter-sheet__count">{{ activeCount }}</span>
             </button>
         </div>
 
-        <div id="filters-advanced" class="filters__advanced">
-            <fieldset class="filters__group">
-                <legend class="filters__label">{{ t('filters.platform') }}</legend>
-                <div class="segmented segmented--fill">
-                    <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.platform }" :aria-pressed="!form.platform" @click="form.platform = null">
-                        {{ t('filters.all') }}
-                    </button>
-                    <button
-                        v-for="platform in PLATFORMS"
-                        :key="platform"
-                        type="button"
-                        class="segmented__option"
-                        :class="{ 'segmented__option--active': form.platform === platform }"
-                        :aria-pressed="form.platform === platform"
-                        @click="form.platform = platform"
-                    >
-                        {{ t(`prices.platforms.${platform}`) }}
-                    </button>
-                </div>
-            </fieldset>
+        <FilterSheet
+            ref="sheet"
+            :title="t('filters.title')"
+            :active-count="activeCount"
+            :result-label="t('filter_sheet.show', { count: shown })"
+            :can-reset="filters.active"
+            @reset="reset"
+        >
+            <div class="filters__advanced">
+                <fieldset class="filters__group">
+                    <legend class="filters__label">{{ t('filters.platform') }}</legend>
+                    <div class="segmented segmented--fill">
+                        <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.platform }" :aria-pressed="!form.platform" @click="form.platform = null">
+                            {{ t('filters.all') }}
+                        </button>
+                        <button
+                            v-for="platform in PLATFORMS"
+                            :key="platform"
+                            type="button"
+                            class="segmented__option"
+                            :class="{ 'segmented__option--active': form.platform === platform }"
+                            :aria-pressed="form.platform === platform"
+                            @click="form.platform = platform"
+                        >
+                            {{ t(`prices.platforms.${platform}`) }}
+                        </button>
+                    </div>
+                </fieldset>
 
-            <fieldset class="filters__group">
-                <legend class="filters__label" :title="t('filters.players_hint')">{{ t('filters.players') }}</legend>
-                <div class="segmented segmented--fill">
-                    <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.players }" :aria-pressed="!form.players" @click="form.players = null">
-                        {{ t('filters.all') }}
-                    </button>
-                    <button
-                        v-for="players in PLAYERS"
-                        :key="players"
-                        type="button"
-                        class="segmented__option"
-                        :class="{ 'segmented__option--active': form.players === players }"
-                        :aria-pressed="form.players === players"
-                        :title="t(`filters.players_titles.${players}`)"
-                        :aria-label="t(`filters.players_titles.${players}`)"
-                        @click="form.players = players"
-                    >
-                        {{ t(`filters.players_options.${players}`) }}
-                    </button>
-                </div>
-            </fieldset>
+                <fieldset class="filters__group">
+                    <legend class="filters__label" :title="t('filters.players_hint')">{{ t('filters.players') }}</legend>
+                    <div class="segmented segmented--fill">
+                        <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.players }" :aria-pressed="!form.players" @click="form.players = null">
+                            {{ t('filters.all') }}
+                        </button>
+                        <button
+                            v-for="players in PLAYERS"
+                            :key="players"
+                            type="button"
+                            class="segmented__option"
+                            :class="{ 'segmented__option--active': form.players === players }"
+                            :aria-pressed="form.players === players"
+                            :title="t(`filters.players_titles.${players}`)"
+                            :aria-label="t(`filters.players_titles.${players}`)"
+                            @click="form.players = players"
+                        >
+                            {{ t(`filters.players_options.${players}`) }}
+                        </button>
+                    </div>
+                </fieldset>
 
-            <fieldset class="filters__group">
-                <legend class="filters__label">{{ t('filters.type') }}</legend>
-                <div class="segmented segmented--fill">
-                    <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.type }" :aria-pressed="!form.type" @click="form.type = null">
-                        {{ t('filters.all') }}
-                    </button>
-                    <button
-                        v-for="type in TYPES"
-                        :key="type"
-                        type="button"
-                        class="segmented__option"
-                        :class="{ 'segmented__option--active': form.type === type }"
-                        :aria-pressed="form.type === type"
-                        @click="form.type = type"
-                    >
-                        {{ t(`filters.type_${type}`) }}
-                    </button>
-                </div>
-            </fieldset>
+                <fieldset class="filters__group">
+                    <legend class="filters__label">{{ t('filters.type') }}</legend>
+                    <div class="segmented segmented--fill">
+                        <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.type }" :aria-pressed="!form.type" @click="form.type = null">
+                            {{ t('filters.all') }}
+                        </button>
+                        <button
+                            v-for="type in TYPES"
+                            :key="type"
+                            type="button"
+                            class="segmented__option"
+                            :class="{ 'segmented__option--active': form.type === type }"
+                            :aria-pressed="form.type === type"
+                            @click="form.type = type"
+                        >
+                            {{ t(`filters.type_${type}`) }}
+                        </button>
+                    </div>
+                </fieldset>
 
-            <fieldset class="filters__group">
-                <legend class="filters__label" :title="t('filters.release_hint')">{{ t('filters.release') }}</legend>
-                <div class="segmented segmented--fill">
-                    <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.release }" :aria-pressed="!form.release" @click="form.release = null">
-                        {{ t('filters.all') }}
-                    </button>
-                    <button
-                        v-for="release in RELEASES"
-                        :key="release"
-                        type="button"
-                        class="segmented__option"
-                        :class="{ 'segmented__option--active': form.release === release }"
-                        :aria-pressed="form.release === release"
-                        @click="form.release = release"
-                    >
-                        {{ t(`filters.release_options.${release}`) }}
-                    </button>
-                </div>
-            </fieldset>
+                <fieldset class="filters__group">
+                    <legend class="filters__label" :title="t('filters.release_hint')">{{ t('filters.release') }}</legend>
+                    <div class="segmented segmented--fill">
+                        <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.release }" :aria-pressed="!form.release" @click="form.release = null">
+                            {{ t('filters.all') }}
+                        </button>
+                        <button
+                            v-for="release in RELEASES"
+                            :key="release"
+                            type="button"
+                            class="segmented__option"
+                            :class="{ 'segmented__option--active': form.release === release }"
+                            :aria-pressed="form.release === release"
+                            @click="form.release = release"
+                        >
+                            {{ t(`filters.release_options.${release}`) }}
+                        </button>
+                    </div>
+                </fieldset>
 
-            <fieldset class="filters__group">
-                <legend class="filters__label" :title="t('filters.price_basis_hint')">{{ t('filters.price_basis') }}</legend>
-                <div class="segmented segmented--fill">
-                    <button
-                        v-for="basis in PRICE_BASES"
-                        :key="basis"
-                        type="button"
-                        class="segmented__option"
-                        :class="{ 'segmented__option--active': form.price === basis }"
-                        :aria-pressed="form.price === basis"
-                        :title="t(`filters.price_basis_titles.${basis}`)"
-                        :aria-label="t(`filters.price_basis_titles.${basis}`)"
-                        @click="form.price = basis"
-                    >
-                        {{ t(`filters.price_basis_options.${basis}`) }}
-                    </button>
-                </div>
-            </fieldset>
+                <fieldset class="filters__group">
+                    <legend class="filters__label" :title="t('filters.price_basis_hint')">{{ t('filters.price_basis') }}</legend>
+                    <div class="segmented segmented--fill">
+                        <button
+                            v-for="basis in PRICE_BASES"
+                            :key="basis"
+                            type="button"
+                            class="segmented__option"
+                            :class="{ 'segmented__option--active': form.price === basis }"
+                            :aria-pressed="form.price === basis"
+                            :title="t(`filters.price_basis_titles.${basis}`)"
+                            :aria-label="t(`filters.price_basis_titles.${basis}`)"
+                            @click="form.price = basis"
+                        >
+                            {{ t(`filters.price_basis_options.${basis}`) }}
+                        </button>
+                    </div>
+                </fieldset>
 
-            <div class="filters__group">
-                <label class="filters__label" for="filter-max-price">{{ t('filters.max_price') }}</label>
-                <div class="filters__price">
-                    <input id="filter-max-price" v-model.number="form.maxPrice" class="field__input filters__number" type="number" min="0" step="1" inputmode="numeric" />
-                    <span class="filters__unit">{{ page.props.currency?.current }}</span>
+                <div class="filters__group">
+                    <label class="filters__label" for="filter-max-price">{{ t('filters.max_price') }}</label>
+                    <div class="filters__price">
+                        <input id="filter-max-price" v-model.number="form.maxPrice" class="field__input filters__number" type="number" min="0" step="1" inputmode="numeric" />
+                        <span class="filters__unit">{{ page.props.currency?.current }}</span>
+                    </div>
                 </div>
+
+                <fieldset class="filters__group">
+                    <legend class="filters__label">{{ t('filters.min_cut') }}</legend>
+                    <div class="segmented segmented--fill">
+                        <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.minCut }" :aria-pressed="!form.minCut" @click="form.minCut = null">
+                            {{ t('filters.all') }}
+                        </button>
+                        <button
+                            v-for="cut in CUT_OPTIONS"
+                            :key="cut"
+                            type="button"
+                            class="segmented__option"
+                            :class="{ 'segmented__option--active': form.minCut === cut }"
+                            :aria-pressed="form.minCut === cut"
+                            @click="form.minCut = cut"
+                        >
+                            {{ cut }} %
+                        </button>
+                    </div>
+                </fieldset>
+
+                <div class="filters__group filters__switches">
+                    <label class="switch">
+                        <input v-model="form.deals" class="switch__input" type="checkbox" />
+                        <span class="switch__track" aria-hidden="true"></span>
+                        <span class="switch__label">{{ t('filters.deals') }}</span>
+                    </label>
+                    <label class="switch" :title="t('filters.plus_hint')">
+                        <input v-model="form.plus" class="switch__input" type="checkbox" />
+                        <span class="switch__track" aria-hidden="true"></span>
+                        <span class="switch__label">{{ t('filters.plus') }}</span>
+                    </label>
+                </div>
+
+                <fieldset v-if="genres.length" class="filters__group filters__group--wide">
+                    <legend class="filters__label">{{ t('filters.genres') }} <span class="filters__hint">{{ t('filters.genres_hint') }}</span></legend>
+                    <div class="chips">
+                        <button
+                            v-for="genre in genres"
+                            :key="genre.name"
+                            type="button"
+                            class="chip"
+                            :class="{ 'chip--active': form.genres.includes(genre.name) }"
+                            :aria-pressed="form.genres.includes(genre.name)"
+                            @click="toggleGenre(genre.name)"
+                        >
+                            {{ genre.name }}
+                            <span class="chip__count">{{ genre.count }}</span>
+                        </button>
+                    </div>
+                </fieldset>
             </div>
-
-            <fieldset class="filters__group">
-                <legend class="filters__label">{{ t('filters.min_cut') }}</legend>
-                <div class="segmented segmented--fill">
-                    <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.minCut }" :aria-pressed="!form.minCut" @click="form.minCut = null">
-                        {{ t('filters.all') }}
-                    </button>
-                    <button
-                        v-for="cut in CUT_OPTIONS"
-                        :key="cut"
-                        type="button"
-                        class="segmented__option"
-                        :class="{ 'segmented__option--active': form.minCut === cut }"
-                        :aria-pressed="form.minCut === cut"
-                        @click="form.minCut = cut"
-                    >
-                        {{ cut }} %
-                    </button>
-                </div>
-            </fieldset>
-
-            <div class="filters__group filters__switches">
-                <label class="switch">
-                    <input v-model="form.deals" class="switch__input" type="checkbox" />
-                    <span class="switch__track" aria-hidden="true"></span>
-                    <span class="switch__label">{{ t('filters.deals') }}</span>
-                </label>
-                <label class="switch" :title="t('filters.plus_hint')">
-                    <input v-model="form.plus" class="switch__input" type="checkbox" />
-                    <span class="switch__track" aria-hidden="true"></span>
-                    <span class="switch__label">{{ t('filters.plus') }}</span>
-                </label>
-            </div>
-
-            <fieldset v-if="genres.length" class="filters__group filters__group--wide">
-                <legend class="filters__label">{{ t('filters.genres') }} <span class="filters__hint">{{ t('filters.genres_hint') }}</span></legend>
-                <div class="chips">
-                    <button
-                        v-for="genre in genres"
-                        :key="genre.name"
-                        type="button"
-                        class="chip"
-                        :class="{ 'chip--active': form.genres.includes(genre.name) }"
-                        :aria-pressed="form.genres.includes(genre.name)"
-                        @click="toggleGenre(genre.name)"
-                    >
-                        {{ genre.name }}
-                        <span class="chip__count">{{ genre.count }}</span>
-                    </button>
-                </div>
-            </fieldset>
-        </div>
+        </FilterSheet>
 
         <div class="filters__footer">
             <span class="filters__count">{{ t('filters.shown', { shown, total }) }}</span>

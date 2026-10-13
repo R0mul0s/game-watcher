@@ -8,8 +8,7 @@
  * @author Roman Hlaváček
  * @created 2026-10-12
  */
-
-const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
+import { matchesMedia, REDUCED_MOTION_QUERY } from '@/lib/media';
 
 /** Tokeny, které grafy používají: klíč v JS => CSS proměnná. */
 const TOKENS = {
@@ -30,7 +29,7 @@ const TOKENS = {
  * @returns {boolean}
  */
 export function chartAnimation() {
-    return !window.matchMedia(REDUCED_MOTION_QUERY).matches;
+    return !matchesMedia(REDUCED_MOTION_QUERY);
 }
 
 /**

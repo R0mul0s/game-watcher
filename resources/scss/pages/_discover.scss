@@ -20,6 +20,17 @@
     &__sort {
         flex: 0 1 var(--game-card-min-width);
     }
+
+    // Štítky a „jen historická minima“ — od md pod řazením, na telefonu v okně (R45)
+    &__options {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+
+        @include from-md {
+            margin-top: var(--space-3);
+        }
+    }
 }
 
 .discover {

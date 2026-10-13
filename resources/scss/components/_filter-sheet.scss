@@ -1,0 +1,186 @@
+// _filter-sheet.scss
+// Filtry na telefonu v okně (FilterSheet.vue, R45) — nativní <dialog> vyjede
+// zespodu přes celou šířku s neonovou hranou, obsah se posouvá a tlačítka
+// zůstávají dole. Plovoucí tlačítko „Filtry“ vlevo dole (vpravo je návrat nahoru).
+//
+// @author Roman Hlaváček
+// @created 2026-10-13
+
+@use '../abstracts/mixins' as *;
+
+.filter-sheet {
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    max-width: none;
+    max-height: var(--filter-sheet-max-height);
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--color-text);
+
+    &::backdrop {
+        background: var(--color-sheet-backdrop);
+        backdrop-filter: blur(var(--space-1));
+    }
+
+    &[open] {
+        display: flex;
+    }
+
+    @include with-motion {
+        &[open] {
+            animation: filter-sheet-in var(--duration-sheet) ease-out;
+        }
+    }
+
+    &__panel {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-height: 0;
+        background: var(--color-surface);
+        border-top: var(--border-width) solid var(--color-accent);
+        box-shadow: var(--glow-accent);
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-3);
+        padding: var(--space-3) max(var(--space-3), env(safe-area-inset-right)) var(--space-3) max(var(--space-3), env(safe-area-inset-left));
+        border-bottom: var(--border-width) dashed var(--color-border);
+    }
+
+    &__title {
+        @include display-caps;
+
+        margin: 0;
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-display);
+        text-shadow: var(--text-glow-accent);
+    }
+
+    &__close {
+        width: var(--sheet-close-size);
+        height: var(--sheet-close-size);
+        padding: 0;
+        background: none;
+        border: var(--border-width) solid var(--color-border);
+        color: var(--color-text-muted);
+        font-size: var(--font-size-lg);
+        line-height: 1;
+        cursor: pointer;
+
+        &:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+
+        @include neon-focus;
+    }
+
+    // Posouvá se jen obsah, hlavička a tlačítka zůstávají
+    &__body {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: var(--space-3) max(var(--space-3), env(safe-area-inset-right)) var(--space-3) max(var(--space-3), env(safe-area-inset-left));
+    }
+
+    // Volby přehledu jsou v okně vždy vidět (na stránce na telefonu skryté)
+    &__body .filters__advanced {
+        display: grid;
+        padding-top: 0;
+        border-top: 0;
+    }
+
+    &__footer {
+        display: flex;
+        gap: var(--space-2);
+        padding: var(--space-3) max(var(--space-3), env(safe-area-inset-right)) calc(var(--space-3) + env(safe-area-inset-bottom))
+            max(var(--space-3), env(safe-area-inset-left));
+        border-top: var(--border-width) dashed var(--color-border);
+    }
+
+    &__done {
+        flex: 1;
+    }
+
+    &__anchor {
+        display: block;
+    }
+
+    // Plovoucí tlačítko — ukáže se, až filtry na stránce odjedou z obrazovky
+    &__fab {
+        @include display-caps;
+
+        position: fixed;
+        bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
+        left: max(var(--space-3), env(safe-area-inset-left));
+        z-index: var(--z-sticky);
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        min-height: var(--scroll-top-size);
+        padding: 0 var(--space-3);
+        background: var(--color-surface);
+        border: var(--border-width) solid var(--color-accent);
+        color: var(--color-accent);
+        font-size: var(--font-size-sm);
+        text-shadow: var(--text-glow-accent);
+        box-shadow: var(--glow-accent);
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(var(--space-3));
+
+        &--visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: none;
+        }
+
+        @include with-motion {
+            transition:
+                opacity var(--duration-fast),
+                transform var(--duration-fast);
+        }
+
+        @include neon-focus;
+    }
+
+    &__fab-icon {
+        width: var(--font-size-md);
+        height: var(--font-size-md);
+        fill: none;
+        stroke: currentcolor;
+        stroke-width: var(--svg-stroke-logo);
+        stroke-linejoin: round;
+    }
+
+    // Počet zapnutých filtrů
+    &__count {
+        min-width: var(--font-size-lg);
+        padding: 0 var(--space-1);
+        background: var(--color-neon-magenta);
+        color: var(--color-surface);
+        font-family: var(--font-mono);
+        text-align: center;
+        text-shadow: none;
+        box-shadow: var(--glow-magenta);
+    }
+}
+
+@keyframes filter-sheet-in {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: none;
+    }
+}
