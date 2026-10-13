@@ -21,6 +21,7 @@ use App\Domain\Watchlist\Exceptions\GameNotFound;
 use App\Enums\Platform;
 use App\Models\Game;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 
 /**
  * Hru, kterou katalog ještě nemá, nejdřív převezme z ITAD; hru z katalogu
@@ -50,7 +51,11 @@ final class WatchGame
             ?? $this->importGame->handle($itadId)
             ?? throw new GameNotFound($itadId);
 
-        $item = $user->watchlistItems()->firstOrCreate(['game_id' => $game->id]);
+        // Vydaná hra už na vydání ani první slevu neupozorní (R41)
+        $now = CarbonImmutable::now();
+        $item = $user->watchlistItems()->firstOrCreate(['game_id' => $game->id], $game->isReleased()
+            ? ['release_notified_at' => $now, 'first_sale_notified_at' => $now]
+            : []);
         if ($platform !== null && $item->platform !== $platform) {
             $item->update(['platform' => $platform]);
         }

@@ -17,6 +17,7 @@ use App\Domain\Watchlist\WatchlistFilters;
 use App\Enums\Platform;
 use App\Enums\PlayerFilter;
 use App\Enums\PriceBasis;
+use App\Enums\ReleaseFilter;
 use App\Enums\WatchlistSort;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -73,6 +74,7 @@ class DashboardRequest extends FormRequest
             'max_price' => ['numeric', 'min:0', 'max:'.self::MAX_PRICE],
             'min_cut' => ['integer', 'min:1', 'max:'.self::MAX_PERCENT],
             'type' => [Rule::in(self::TYPES)],
+            'release' => [Rule::enum(ReleaseFilter::class)],
             'sort' => [Rule::enum(WatchlistSort::class)],
             'plus' => ['boolean'],
             'price' => [Rule::enum(PriceBasis::class)],
@@ -96,6 +98,7 @@ class DashboardRequest extends FormRequest
             maxPriceCents: is_numeric($maxPrice) ? (int) round((float) $maxPrice * Money::SUBUNITS) : null,
             minCut: is_numeric($minCut) ? (int) $minCut : null,
             type: is_string($type) ? $type : null,
+            release: ReleaseFilter::tryFrom((string) $value('release')),
             sort: WatchlistSort::tryFrom((string) $value('sort')) ?? WatchlistSort::DEFAULT,
             withPlus: filter_var($value('plus'), FILTER_VALIDATE_BOOLEAN),
             basis: PriceBasis::tryFrom((string) $value('price')) ?? PriceBasis::Official,

@@ -37,14 +37,6 @@ beforeEach(function (): void {
 });
 
 /**
- * Text s nezlomitelnými mezerami (Intl je dává mezi částku a měnu) jako s obyčejnými.
- */
-function plainSpaces(string $text): string
-{
-    return str_replace(["\u{a0}", "\u{202f}"], ' ', $text);
-}
-
-/**
  * Nastaví cílovou cenu sledované hry.
  */
 function setTarget(WatchlistItem $item, string $amount, string $currency = 'CZK'): void

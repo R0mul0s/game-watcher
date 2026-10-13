@@ -88,6 +88,7 @@ final class PriceWatch
             url: is_string($offer['url'] ?? null) ? $offer['url'] : null,
             target: $target,
             keyshops: $offer['shopKey'] === CurrentPrice::KEYSHOPS_KEY,
+            discounted: ($offer['cut'] ?? 0) > 0,
         ));
     }
 

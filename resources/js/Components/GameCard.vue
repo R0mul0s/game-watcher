@@ -6,14 +6,15 @@
     když je volba „Cena“ vybere jako nejlevnější, jsou hlavní cenou a oficiální
     nabídka jde na vedlejší řádek (R30).
     Hra hlídaná jen na jedné platformě má štítek a ceny jen té platformy;
-    bez připojeného PS Store vyzve k připojení (R24).
+    bez připojeného PS Store vyzve k připojení (R24). Nevydaná hra má odpočet
+    do vydání (R41).
 
     @author Roman Hlaváček
     @created 2026-10-11
 -->
 <script setup>
 import GameBadges from '@/Components/GameBadges.vue';
-import { formatDate, formatInteger, formatPrice, formatRating } from '@/lib/format';
+import { formatDate, formatInteger, formatPrice, formatRating, releaseCountdown } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -50,6 +51,8 @@ const playstation = computed(() => {
                 </span>
                 <span v-if="game.releaseDate">{{ formatDate(game.releaseDate, page.props.locale) }}</span>
                 <span v-else>{{ t('game.unreleased') }}</span>
+                <!-- Odpočet do vydání (R41) -->
+                <span v-if="game.releaseInDays !== null" class="game-card__release">{{ releaseCountdown(game.releaseInDays, t) }}</span>
                 <!-- Hodnocení kritiků z Metacritic (R32) -->
                 <span
                     v-if="game.metascore"

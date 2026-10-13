@@ -104,6 +104,9 @@ return [
         // Obnova údajů sledovaných her z ITAD (R34) — snímek starší než tolik dní,
         // nejvýš tolik her za běh cronu (každá je jeden požadavek, limit ITAD R15)
         'info_refresh_days' => 30,
+        // Nevydané hry a hry bez data vydání častěji — datum se posouvá a podle
+        // něj chodí upozornění „právě vyšlo“ (R41)
+        'info_refresh_days_upcoming' => 3,
         'info_refresh_per_run' => 10,
         'search_cache_seconds' => 3600,
         'max_searches_per_minute' => 20,
@@ -137,6 +140,11 @@ return [
         'weekly_digest_day' => 1,
         'weekly_digest_days' => 7,
         'weekly_digest_limit' => 15,
+        // Hra sledovaná před vydáním (R41): „právě vyšlo“ nejvýš tolik dní po
+        // vydání (cron mohl vynechat, datum se mohlo posunout), „první sleva od
+        // vydání“ nejvýš tolik dní po vydání
+        'release_alert_days' => 14,
+        'first_sale_window_days' => 365,
     ],
 
     /*

@@ -33,5 +33,7 @@ final readonly class PriceAlert
         public ?Money $target,
         // Nejlevnější jsou obchody s klíči (souhrn gg.deals), ne jeden obchod
         public bool $keyshops = false,
+        // Nabídka je ve slevě — u vydané hry tím odešla i „první sleva“ (R41)
+        public bool $discounted = false,
     ) {}
 }

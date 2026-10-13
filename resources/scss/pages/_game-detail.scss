@@ -88,6 +88,14 @@
         gap: var(--space-3);
     }
 
+    // Odpočet do vydání vedle data (R41)
+    &__release {
+        margin-left: var(--space-2);
+        color: var(--color-release);
+        font-family: var(--font-mono);
+        text-shadow: var(--text-glow-release);
+    }
+
     &__status {
         color: var(--color-neon-green);
         font-family: var(--font-mono);

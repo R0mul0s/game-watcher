@@ -208,7 +208,7 @@ final class GamePresenter
     /**
      * Údaje hry společné pro kartu i detail.
      *
-     * @return array{slug: string, title: string, type: string, bannerUrl: ?string, releaseDate: ?string, url: string}
+     * @return array{slug: string, title: string, type: string, bannerUrl: ?string, releaseDate: ?string, releaseInDays: ?int, url: string}
      */
     private function basics(Game $game): array
     {
@@ -218,6 +218,8 @@ final class GamePresenter
             'type' => $game->type,
             'bannerUrl' => $game->banner_url ?? $game->boxart_url,
             'releaseDate' => $game->release_date?->format(self::DATE_FORMAT),
+            // Odpočet do vydání (R41); null = vyšla nebo datum neznáme
+            'releaseInDays' => $game->daysUntilRelease(),
             'url' => route('games.show', $game, absolute: false),
         ];
     }

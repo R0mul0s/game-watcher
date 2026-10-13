@@ -69,13 +69,14 @@ final class WatchlistView
     }
 
     /**
-     * Filtry, které nezávisí na ceně — hledání, druh, žánr a počet hráčů; hra
+     * Filtry, které nezávisí na ceně — hledání, druh, vydání (R41), žánr a počet hráčů; hra
      * hlídaná jen na jiné platformě, než chce filtr, vypadne (R24).
      */
     private function matchesGame(Game $game, WatchlistFilters $filters, ?Platform $watchPlatform): bool
     {
         return ($filters->query === '' || $this->matchesQuery($game, $filters->query))
             && ($filters->type === null || $game->type === $filters->type)
+            && ($filters->release === null || $filters->release->matches($game))
             && ($filters->platform === null || $watchPlatform === null || $watchPlatform === $filters->platform)
             && ($filters->genres === null || array_intersect($filters->genres, $game->genres ?? []) !== [])
             && ($filters->players === null || $filters->players->matches($game->playModes()));

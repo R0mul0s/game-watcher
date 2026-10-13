@@ -44,15 +44,23 @@ final class AlertPresenter
     }
 
     /**
-     * Předmět e-mailu — u jedné hry hra a cena, jinak počet her.
+     * Předmět e-mailu — u jedné hry hra a cena, jinak počet her; s vydanou
+     * hrou (R41) mezi nimi „novinky“ místo „zlevnilo“.
      *
      * @param  list<PriceAlert>  $alerts
      */
     public function mailSubject(array $alerts): string
     {
-        return count($alerts) === 1
-            ? __('app.alerts.subject_one', ['title' => $alerts[0]->game->title, 'price' => $this->money->format($alerts[0]->price)])
-            : trans_choice('app.alerts.subject_many', count($alerts), ['count' => count($alerts)]);
+        $released = array_filter($alerts, fn (PriceAlert $alert): bool => $alert->reason === AlertReason::Released) !== [];
+
+        if (count($alerts) === 1) {
+            return __($released ? 'app.alerts.subject_released' : 'app.alerts.subject_one', [
+                'title' => $alerts[0]->game->title,
+                'price' => $this->money->format($alerts[0]->price),
+            ]);
+        }
+
+        return trans_choice($released ? 'app.alerts.subject_news' : 'app.alerts.subject_many', count($alerts), ['count' => count($alerts)]);
     }
 
     /**
@@ -95,12 +103,15 @@ final class AlertPresenter
     }
 
     /**
-     * Proč upozornění přišlo — „pod cílovou cenou 500 Kč“, „historické minimum“.
+     * Proč upozornění přišlo — „pod cílovou cenou 500 Kč“, „historické minimum“,
+     * „právě vyšlo“.
      */
     private function reason(PriceAlert $alert): string
     {
         return match (true) {
             $alert->reason === AlertReason::PlusMonthly => (string) __('app.alerts.reason_plus_monthly'),
+            $alert->reason === AlertReason::Released => (string) __('app.alerts.reason_released'),
+            $alert->reason === AlertReason::FirstSale => (string) __('app.alerts.reason_first_sale'),
             $alert->reason === AlertReason::Target && $alert->target !== null => (string) __('app.alerts.reason_target', ['target' => $this->money->format($alert->target)]),
             default => (string) __('app.alerts.reason_low'),
         };

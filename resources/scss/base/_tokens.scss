@@ -35,6 +35,7 @@
     --color-playstation-soft: rgb(61 139 255 / 14%);
     --glow-playstation: 0 0 0.5rem rgb(61 139 255 / 60%), 0 0 1.5rem rgb(61 139 255 / 25%);
     --color-plus: var(--color-neon-amber);
+    --color-release: var(--color-neon-amber);
 
     // Graf vývoje ceny (R28) — čáry podle zdroje; Steam tlumeně modrošedý
     --chart-grid: var(--color-border);
@@ -66,6 +67,8 @@
     --glow-magenta: 0 0 0.5rem rgb(255 43 214 / 60%), 0 0 1.5rem rgb(255 43 214 / 25%);
     --text-glow-accent: 0 0 0.4rem rgb(0 229 255 / 75%), 0 0 1.25rem rgb(0 229 255 / 35%);
     --text-glow-magenta: 0 0 0.4rem rgb(255 43 214 / 75%);
+    // Nevydaná hra — odpočet do vydání (R41)
+    --text-glow-release: 0 0 0.4rem rgb(255 179 0 / 60%);
     // Záře SVG (logo) — filter drop-shadow neumí víc stínů v jednom tokenu
     --svg-glow-accent: drop-shadow(0 0 0.25rem rgb(0 229 255 / 80%));
     --svg-glow-magenta: drop-shadow(0 0 0.25rem rgb(255 43 214 / 80%));

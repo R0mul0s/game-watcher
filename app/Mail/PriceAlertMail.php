@@ -17,7 +17,8 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
 /**
- * Jeden e-mail za běh cronu se všemi hrami, které zlevnily (R26). Odesílá
+ * Jeden e-mail za běh cronu se všemi hrami, které zlevnily (R26) nebo právě
+ * vyšly (R41). Odesílá
  * se synchronně — nesmí implementovat ShouldQueue (hosting nemá frontu, R2).
  */
 class PriceAlertMail extends Mailable

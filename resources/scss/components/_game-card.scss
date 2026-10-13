@@ -97,6 +97,12 @@
         }
     }
 
+    // Odpočet do vydání (R41) — svítí jako upozornění, nevydaná hra se pozná na první pohled
+    &__release {
+        color: var(--color-release);
+        text-shadow: var(--text-glow-release);
+    }
+
     // Hodnocení hráčů na PS Store (R33) — barva PlayStationu, hvězdičky ne body
     &__stars {
         color: var(--color-playstation);

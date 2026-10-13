@@ -120,13 +120,19 @@ return [
     'alerts' => [
         'subject_one' => ':title za :price',
         'subject_many' => 'Zlevnila :count sledovaná hra|Zlevnily :count sledované hry|Zlevnilo :count sledovaných her',
-        'mail_heading' => 'Hry, které sleduješ, zlevnily',
+        // Upozornění chodí i na vydání a první slevu (R41) — nadpis je obecný
+        'mail_heading' => 'Novinky u her, které sleduješ',
+        'subject_released' => 'Právě vyšlo: :title za :price',
+        'subject_news' => 'Novinky u :count sledované hry|Novinky u :count sledovaných her|Novinky u :count sledovaných her',
         'in_shop' => 'v obchodě :shop',
         'in_keyshops' => 'v obchodech s klíči (podle gg.deals)',
         'keyshops' => 'obchody s klíči',
         'reason_target' => 'pod cílovou cenou :target',
         'reason_low' => 'historické minimum',
         'reason_plus_monthly' => 'tento měsíc zdarma v PS Plus',
+        // Hra sledovaná před vydáním (R41)
+        'reason_released' => 'právě vyšlo',
+        'reason_first_sale' => 'první sleva od vydání',
         // Týdenní souhrn e-mailem (R36)
         'weekly_subject' => 'Za týden zlevnila :count sledovaná hra|Za týden zlevnily :count sledované hry|Za týden zlevnilo :count sledovaných her',
         'weekly_heading' => 'Co za týden zlevnilo',
@@ -270,6 +276,13 @@ return [
             'type' => 'Druh',
             'type_game' => 'Hry',
             'type_dlc' => 'DLC',
+            // Vydání (R41) — hra bez data vydání se počítá jako nevydaná
+            'release' => 'Vydání',
+            'release_hint' => 'Hra bez data vydání se počítá jako nevydaná',
+            'release_options' => [
+                'released' => 'Vydané',
+                'upcoming' => 'Nevydané',
+            ],
             'max_price' => 'Cena do',
             'min_cut' => 'Sleva aspoň',
             'deals' => 'Jen ve slevě',
@@ -381,6 +394,9 @@ return [
             'mature' => '18+',
             'release_date' => 'Vydání',
             'unreleased' => 'Datum vydání neznámé',
+            // Odpočet do vydání (R41)
+            'release_tomorrow' => 'vychází zítra',
+            'release_in' => 'vychází za :count den|vychází za :count dny|vychází za :count dní',
             'developers' => 'Vývojář',
             'publishers' => 'Vydavatel',
             'tags' => 'Štítky',
@@ -451,7 +467,7 @@ return [
         'settings' => [
             'title' => 'Nastavení',
             'alerts_title' => 'Upozornění na ceny',
-            'alerts_text' => 'Kontrolujeme ceny s každým stažením (každé 4 hodiny). Upozorníme, když hra klesne na cílovou cenu, a u her bez cíle, když je ve slevě na historickém minimu. Stejnou cenu podruhé neposíláme.',
+            'alerts_text' => 'Kontrolujeme ceny s každým stažením (každé 4 hodiny). Upozorníme, když hra klesne na cílovou cenu, a u her bez cíle, když je ve slevě na historickém minimu. Hru sledovanou před vydáním ohlásíme, až vyjde a až bude poprvé ve slevě. Stejnou cenu podruhé neposíláme.',
             'email' => 'Posílat e-mailem na :email',
             'weekly' => 'Týdenní souhrn — v pondělí e-mail s tím, co za týden zlevnilo',
             'ps_plus' => 'Mám PS Plus',

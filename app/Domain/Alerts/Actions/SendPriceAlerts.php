@@ -18,6 +18,7 @@ use App\Domain\Alerts\DeliveryResult;
 use App\Domain\Alerts\PriceAlert;
 use App\Domain\Alerts\PriceWatch;
 use App\Domain\Alerts\PushSender;
+use App\Domain\Alerts\ReleaseWatch;
 use App\Mail\PriceAlertMail;
 use App\Models\Game;
 use App\Models\User;
@@ -30,7 +31,8 @@ use Throwable;
  * bez kanálu (e-mail vypnutý, žádné zařízení) se přeskočí a jeho stav se
  * nemění — po zapnutí kanálu dostane upozornění na platné ceny. Upozornění
  * se označí jako odeslané, jen když ho doručil aspoň jeden kanál; jinak ho
- * zkusí další běh.
+ * zkusí další běh. Hra bez upozornění na cenu může dostat upozornění na
+ * vydání nebo první slevu (ReleaseWatch, R41) — za běh nejvýš jedno na hru.
  */
 final class SendPriceAlerts
 {
@@ -38,6 +40,7 @@ final class SendPriceAlerts
         private readonly PriceWatch $priceWatch,
         private readonly AlertPresenter $presenter,
         private readonly PushSender $pushSender,
+        private readonly ReleaseWatch $releaseWatch,
     ) {}
 
     /**
@@ -97,8 +100,17 @@ final class SendPriceAlerts
 
             if ($check->alert !== null) {
                 $alerts[] = $check->alert;
-            } elseif (! $check->met && $item->notified_amount !== null) {
+
+                continue;
+            }
+
+            if (! $check->met && $item->notified_amount !== null) {
                 $item->update(['notified_amount' => null, 'notified_currency' => null]);
+            }
+
+            $release = $this->releaseWatch->check($user, $item, $game);
+            if ($release !== null) {
+                $alerts[] = $release;
             }
         }
 
@@ -156,7 +168,8 @@ final class SendPriceAlerts
     }
 
     /**
-     * Zapamatuje upozorněnou cenu — stejná cena podruhé nepřijde.
+     * Zapamatuje upozorněnou cenu — stejná cena podruhé nepřijde — a vydání
+     * či první slevu, které upozornění pokrylo (R41).
      *
      * @param  list<PriceAlert>  $alerts
      */
@@ -164,11 +177,15 @@ final class SendPriceAlerts
     {
         $now = CarbonImmutable::now();
         foreach ($alerts as $alert) {
-            $alert->item->update([
-                'notified_amount' => $alert->price->toDecimal(),
-                'notified_currency' => $alert->price->currency,
-                'notified_at' => $now,
-            ]);
+            if ($alert->reason->isPriceCondition()) {
+                $alert->item->update([
+                    'notified_amount' => $alert->price->toDecimal(),
+                    'notified_currency' => $alert->price->currency,
+                    'notified_at' => $now,
+                ]);
+            }
+
+            $this->releaseWatch->markCovered($alert, $now);
         }
     }
 }

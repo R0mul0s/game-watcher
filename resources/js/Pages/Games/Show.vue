@@ -15,7 +15,7 @@ import GameRatings from '@/Components/GameRatings.vue';
 import PricePanel from '@/Components/PricePanel.vue';
 import StoreListings from '@/Components/StoreListings.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { formatDate } from '@/lib/format';
+import { formatDate, releaseCountdown } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
 import { Deferred, Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, defineAsyncComponent, ref } from 'vue';
@@ -117,6 +117,7 @@ function toggleWatch() {
                             <dt class="facts__label">{{ t('game.release_date') }}</dt>
                             <dd class="facts__value">
                                 {{ game.releaseDate ? formatDate(game.releaseDate, page.props.locale) : t('game.unreleased') }}
+                                <span v-if="game.releaseInDays !== null" class="game-detail__release">{{ releaseCountdown(game.releaseInDays, t) }}</span>
                             </dd>
                         </div>
                         <div v-if="game.developers.length" class="facts__item">

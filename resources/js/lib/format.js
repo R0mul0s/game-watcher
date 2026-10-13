@@ -166,3 +166,14 @@ export function formatInteger(value, locale) {
 
     return cachedFormatter(Intl.NumberFormat, locale, { maximumFractionDigits: 0 }).format(value);
 }
+
+/**
+ * Odpočet do vydání hry (R41) — „vychází zítra“, „vychází za 5 dní“.
+ *
+ * @param {number} days počet dní do vydání (aspoň 1)
+ * @param {(key: string, replacements?: object) => string} t překlady (useTranslations)
+ * @returns {string}
+ */
+export function releaseCountdown(days, t) {
+    return days === 1 ? t('game.release_tomorrow') : t('game.release_in', { count: days });
+}

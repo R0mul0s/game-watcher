@@ -1,6 +1,6 @@
 <!--
     Pokročilé filtry přehledu sledovaných her (R21) — hledání, platforma,
-    hráči, žánr (R25), druh, zdroj ceny (R30), cena, sleva, PS Plus a řazení. Stav je v adrese stránky;
+    hráči, žánr (R25), druh, vydání (R41), zdroj ceny (R30), cena, sleva, PS Plus a řazení. Stav je v adrese stránky;
     filtruje server, komponenta jen posílá volby (s krátkou prodlevou při psaní).
 
     @author Roman Hlaváček
@@ -28,6 +28,8 @@ const DEBOUNCE_MS = 300;
 const CUT_OPTIONS = [25, 50, 75];
 const PLATFORMS = ['pc', 'playstation'];
 const TYPES = ['game', 'dlc'];
+/** Vydání (enum ReleaseFilter, R41). */
+const RELEASES = ['released', 'upcoming'];
 /** Řazení (enum WatchlistSort); první je výchozí — od nejlevnější (R32). */
 const SORTS = ['price', 'score', 'cut', 'release', 'title', 'added'];
 const DEFAULT_SORT = SORTS[0];
@@ -43,6 +45,7 @@ const form = reactive({
     genres: props.filters.genres ?? [],
     players: props.filters.players,
     type: props.filters.type,
+    release: props.filters.release,
     maxPrice: props.filters.maxPrice,
     minCut: props.filters.minCut,
     deals: props.filters.deals,
@@ -67,6 +70,7 @@ function params() {
     if (form.genres.length) result.genres = form.genres;
     if (form.players) result.players = form.players;
     if (form.type) result.type = form.type;
+    if (form.release) result.release = form.release;
     if (form.maxPrice !== null && form.maxPrice !== '') result.max_price = form.maxPrice;
     if (form.minCut) result.min_cut = form.minCut;
     if (form.deals) result.deals = 1;
@@ -108,7 +112,7 @@ function toggleGenre(name) {
  * Vrátí všechny filtry na výchozí hodnoty (řazení a zdroj ceny zůstávají).
  */
 function reset() {
-    Object.assign(form, { q: '', platform: null, genres: [], players: null, type: null, maxPrice: null, minCut: null, deals: false, plus: false });
+    Object.assign(form, { q: '', platform: null, genres: [], players: null, type: null, release: null, maxPrice: null, minCut: null, deals: false, plus: false });
 }
 </script>
 
@@ -196,6 +200,26 @@ function reset() {
                         @click="form.type = type"
                     >
                         {{ t(`filters.type_${type}`) }}
+                    </button>
+                </div>
+            </fieldset>
+
+            <fieldset class="filters__group">
+                <legend class="filters__label" :title="t('filters.release_hint')">{{ t('filters.release') }}</legend>
+                <div class="segmented segmented--fill">
+                    <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.release }" :aria-pressed="!form.release" @click="form.release = null">
+                        {{ t('filters.all') }}
+                    </button>
+                    <button
+                        v-for="release in RELEASES"
+                        :key="release"
+                        type="button"
+                        class="segmented__option"
+                        :class="{ 'segmented__option--active': form.release === release }"
+                        :aria-pressed="form.release === release"
+                        @click="form.release = release"
+                    >
+                        {{ t(`filters.release_options.${release}`) }}
                     </button>
                 </div>
             </fieldset>

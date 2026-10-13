@@ -141,6 +141,35 @@ class Game extends Model
     }
 
     /**
+     * Dnešní místní den (games.display_timezone) — datum vydání je kalendářní
+     * den bez zóny, porovnává se s ním jako Y-m-d.
+     */
+    public static function today(): CarbonImmutable
+    {
+        return CarbonImmutable::now((string) config('games.display_timezone'))->startOfDay();
+    }
+
+    /**
+     * Vyšla hra? Bez data vydání ne — ITAD ho nemá u her, které teprve vyjdou (R41).
+     */
+    public function isReleased(): bool
+    {
+        return $this->release_date !== null && $this->release_date->toDateString() <= self::today()->toDateString();
+    }
+
+    /**
+     * Za kolik dní hra vyjde; null = už vyšla nebo datum neznáme (R41).
+     */
+    public function daysUntilRelease(): ?int
+    {
+        if ($this->release_date === null || $this->isReleased()) {
+            return null;
+        }
+
+        return (int) self::today()->diffInDays(CarbonImmutable::parse($this->release_date->toDateString(), self::today()->getTimezone()));
+    }
+
+    /**
      * Adresa detailu je podle slugu z ITAD (/hry/control-resonant), ne podle ID.
      */
     public function getRouteKeyName(): string

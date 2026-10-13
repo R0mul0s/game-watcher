@@ -22,7 +22,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Seznam je osobní, katalog společný (R11). Platforma říká, kde uživatel hru
  * hlídá — null = všude (R24). Cílová cena v měně, ve které ji uživatel zadal;
  * bez ní se upozorňuje na historické minimum. Poslední upozorněná cena brání
- * tomu, aby stejná cena přišla podruhé (R26).
+ * tomu, aby stejná cena přišla podruhé (R26). Upozornění na vydání a první
+ * slevu (R41) mají vlastní stav — hra sledovaná až po vydání ho má hned vyplněný.
  *
  * @property int $id
  * @property int $user_id
@@ -33,6 +34,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $notified_amount
  * @property string|null $notified_currency
  * @property CarbonImmutable|null $notified_at
+ * @property CarbonImmutable|null $release_notified_at
+ * @property CarbonImmutable|null $first_sale_notified_at
+ * @property CarbonImmutable|null $created_at
  */
 class WatchlistItem extends Model
 {
@@ -48,6 +52,8 @@ class WatchlistItem extends Model
         'notified_amount',
         'notified_currency',
         'notified_at',
+        'release_notified_at',
+        'first_sale_notified_at',
     ];
 
     /**
@@ -60,6 +66,8 @@ class WatchlistItem extends Model
         return [
             'platform' => Platform::class,
             'notified_at' => 'immutable_datetime',
+            'release_notified_at' => 'immutable_datetime',
+            'first_sale_notified_at' => 'immutable_datetime',
         ];
     }
 

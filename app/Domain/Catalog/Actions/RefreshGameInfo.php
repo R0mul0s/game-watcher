@@ -22,24 +22,32 @@ use Illuminate\Support\Collection;
  * datum vydání a Metascore až později (R32). Krok cronu obnoví snímky starší
  * než games.catalog.info_refresh_days, nejvýš info_refresh_per_run her za běh:
  * každá hra je jeden požadavek `games/info` a limit ITAD je 100 za 5 minut
- * pro celý klíč (R15, R34).
+ * pro celý klíč (R15, R34). Nevydané hry a hry bez data vydání se obnovují
+ * po info_refresh_days_upcoming dnech — datum vydání se posouvá (R41).
  */
 final class RefreshGameInfo
 {
     public function __construct(private readonly ImportGame $importGame) {}
 
     /**
-     * Sledované hry s nejstarším snímkem údajů, starším než mez.
+     * Sledované hry s nejstarším snímkem údajů, starším než mez (u nevydaných
+     * her kratší).
      *
      * @return Collection<int, Game>
      */
     public function pending(): Collection
     {
-        $staleBefore = CarbonImmutable::now()->subDays((int) config('games.catalog.info_refresh_days'));
+        $now = CarbonImmutable::now();
+        $staleBefore = $now->subDays((int) config('games.catalog.info_refresh_days'));
+        $upcomingStaleBefore = $now->subDays((int) config('games.catalog.info_refresh_days_upcoming'));
 
         return Game::query()
             ->whereHas('watchlistItems')
-            ->where('info_refreshed_at', '<', $staleBefore)
+            ->where(fn ($query) => $query
+                ->where('info_refreshed_at', '<', $staleBefore)
+                ->orWhere(fn ($upcoming) => $upcoming
+                    ->where('info_refreshed_at', '<', $upcomingStaleBefore)
+                    ->where(fn ($date) => $date->whereNull('release_date')->orWhere('release_date', '>', Game::today()->toDateString()))))
             ->orderBy('info_refreshed_at')
             ->orderBy('id')
             ->limit((int) config('games.catalog.info_refresh_per_run'))

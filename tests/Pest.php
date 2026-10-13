@@ -161,6 +161,14 @@ function fakeApis(array $overrides = []): void
 }
 
 /**
+ * Text s nezlomitelnými mezerami (Intl je dává mezi částku a měnu) jako s obyčejnými.
+ */
+function plainSpaces(string $text): string
+{
+    return str_replace(["\u{a0}", "\u{202f}"], ' ', $text);
+}
+
+/**
  * Chybová odpověď API ve tvaru ITAD (`status_code`, `reason_phrase`).
  */
 function apiError(int $status, string $reason = 'Service Unavailable'): PromiseInterface
