@@ -30,6 +30,17 @@ const METACRITIC_GAME_URL = 'https://www.metacritic.com/game/saros/';
 // HowLongToBeat — délka hraní (R44); token hledání je vázaný na IP a User-Agent
 const HLTB_URL = 'https://howlongtobeat.com';
 const SECONDS_PER_HOUR = 3600;
+// Nadcházející hry (průzkum 2026-10-13): Steam „Popular Upcoming“, PS Store GraphQL, IGDB
+const STEAM_UPCOMING_URL = 'https://store.steampowered.com/search/results/?filter=popularcomingsoon&cc=cz&category1=998&count=10&infinite=1';
+const PSN_GRAPHQL_URL = 'https://web.np.playstation.com/api/graphql/v1/op';
+// Persisted query webu PS Store pro mřížku kategorie a kategorie „All games“ (při změně webu se mění)
+const PSN_CATEGORY_GRID_HASH = '4ce7d410a4db2c8b635a48c1dcec375906ff63b19dadd87e073f8fd0c0481d35';
+const PSN_ALL_GAMES_CATEGORY = '28c9c2b2-cecc-415c-9a08-482a605cb104';
+const PSN_GRID_SIZE = 10;
+const IGDB_GAMES_URL = 'https://api.igdb.com/v4/games';
+const TWITCH_TOKEN_URL = 'https://id.twitch.tv/oauth2/token';
+const HTTP_UNAUTHORIZED = 401;
+const HTTP_BAD_REQUEST = 400;
 
 // Veřejné Algolia údaje Ubisoft Store (vložené v HTML jejich stránky, mohou se změnit)
 const UBISOFT_ALGOLIA_APP = 'XELY3U4LOD';
@@ -201,6 +212,72 @@ function checkHltb(): string
 }
 
 /**
+ * Steam – „Popular Upcoming“ z vyhledávání obchodu (HTML ve JSON, App ID a datum vydání).
+ *
+ * @return string Počet her s první hrou nebo popis chyby
+ */
+function checkSteamUpcoming(): string
+{
+    $r = httpRequest(STEAM_UPCOMING_URL, ['Accept' => 'application/json']);
+    $html = json_decode($r['body'], true)['results_html'] ?? '';
+    if (!preg_match_all('/data-ds-appid="(\d+)"/', $html, $ids) || !$ids[1]) {
+        return describeFailure($r);
+    }
+    $date = preg_match('/search_released[^>]*>\s*([^<]+?)\s*</', $html, $m) ? $m[1] : '?';
+
+    return sprintf('%d her, první app %s vychází %s', count($ids[1]), $ids[1][0], $date);
+}
+
+/**
+ * PlayStation Store – GraphQL mřížka kategorie „All games“ od nejpozdějšího vydání
+ * (nahoře jsou nadcházející hry). Locale en-CZ — cs-CZ vrací prázdnou kategorii.
+ *
+ * @return string Počet konceptů s prvními názvy nebo popis chyby
+ */
+function checkPsnUpcoming(): string
+{
+    $variables = [
+        'id' => PSN_ALL_GAMES_CATEGORY,
+        'pageArgs' => ['size' => PSN_GRID_SIZE, 'offset' => 0],
+        'sortBy' => ['name' => 'conceptReleaseDate', 'isAscending' => false],
+        'filterBy' => [],
+        'facetOptions' => [],
+    ];
+    $url = PSN_GRAPHQL_URL . '?' . http_build_query([
+        'operationName' => 'categoryGridRetrieve',
+        'variables' => json_encode($variables),
+        'extensions' => json_encode(['persistedQuery' => ['version' => 1, 'sha256Hash' => PSN_CATEGORY_GRID_HASH]]),
+    ]);
+    $r = httpRequest($url, ['Accept' => 'application/json', 'Content-Type' => 'application/json', 'x-psn-store-locale-override' => 'en-CZ']);
+    $concepts = json_decode($r['body'], true)['data']['categoryGridRetrieve']['concepts'] ?? null;
+    if (!$concepts) {
+        return describeFailure($r);
+    }
+
+    return sprintf('%d konceptů: %s', count($concepts), implode(', ', array_slice(array_column($concepts, 'name'), 0, 3)));
+}
+
+/**
+ * IGDB a Twitch – jen dostupnost: bez klíče IGDB vrací 401 a Twitch 400 (JSON),
+ * blokace by vrátila HTML stránku nebo jiný stav.
+ *
+ * @return string Výsledek obou koncových bodů
+ */
+function checkIgdb(): string
+{
+    $igdb = httpRequest(IGDB_GAMES_URL, ['Accept' => 'application/json'], 'fields name; limit 1;');
+    $twitch = httpRequest(TWITCH_TOKEN_URL, ['Accept' => 'application/json'], '');
+    $igdbOk = $igdb['status'] === HTTP_UNAUTHORIZED && str_contains($igdb['body'], 'Authorization');
+    $twitchOk = $twitch['status'] === HTTP_BAD_REQUEST && json_decode($twitch['body'], true) !== null;
+
+    return sprintf(
+        'IGDB %s | Twitch %s',
+        $igdbOk ? 'dostupné (401 bez klíče)' : describeFailure($igdb),
+        $twitchOk ? 'dostupné (400 bez údajů)' : describeFailure($twitch)
+    );
+}
+
+/**
  * Kinguin – interní JSON API vyhledávání, vrací nejlevnější nabídku.
  *
  * @return string Cena nebo popis chyby
@@ -307,6 +384,9 @@ $checks = [
     'PS web' => 'checkPsnGamePage',
     'Metacritic' => 'checkMetacritic',
     'HLTB' => 'checkHltb',
+    'Steam brzy' => 'checkSteamUpcoming',
+    'PS brzy' => 'checkPsnUpcoming',
+    'IGDB' => 'checkIgdb',
     'Kinguin' => 'checkKinguin',
     'Eneba' => 'checkEneba',
     'Ubisoft' => 'checkUbisoft',

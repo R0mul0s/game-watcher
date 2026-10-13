@@ -99,6 +99,34 @@ u zobrazených dat): podle Steam App ID vrací jen souhrn — nejnižší aktuá
 a historickou cenu oficiálních obchodů a obchodů s klíči. Cenu konkrétního
 obchodu (G2A, Loaded) nedává. Region `cz` nezná, `eu` vrací EUR.
 
+### Nadcházející hry — průzkum zdrojů (2026-10-13, návrh, O7)
+
+Cíl: seznam připravovaných her pro PC a PS5, ze kterého jde hru jedním klikem
+začít sledovat (pak upozornění na vydání a první slevu, R41). Ověřeno lokálně
+i **z hostingu (13. 10. 2026, všechny tři zdroje dostupné)** skriptem
+[research/check-stores.php](research/check-stores.php) (řádky „Steam brzy“,
+„PS brzy“, „IGDB“). Skutečný dotaz na IGDB s klíčem zatím neproběhl.
+
+| Zdroj | Přístup | Co dá | Párování s ITAD (R10) | Poznámka |
+|---|---|---|---|---|
+| **Steam „Popular Upcoming“** | ✅ bez klíče — `store/search/results/?filter=popularcomingsoon&category1=998&infinite=1` (JSON s HTML) | App ID, název, datum vydání, štítky (`data-ds-tagids`); seřazeno podle popularity (wishlisty) | **přesně** podle Steam App ID (`games/lookup`) — ITAD zná i nevydané hry (4 ze 4) | neoficiální, formát HTML se může změnit; datum podle `Accept-Language` |
+| **PS Store GraphQL** | ✅ bez klíče — `web.np.playstation.com/api/graphql/v1/op`, `categoryGridRetrieve` (persisted query), kategorie „All games“ řazená `conceptReleaseDate` | ID konceptu a název (nahoře nejpozdější vydání: GTA VI, Fable, God of War Laufey…) | koncept → stávající připojení PS Store (R20) a hledání exkluzivit (R22) | locale `en-CZ` (`cs-CZ` vrací prázdnou kategorii); datum vydání jen ze stránky konceptu; bez popularity — mezi hrami i shovelware; hash persisted query se při změně webu mění |
+| **IGDB** (Twitch) | ✅ dostupné (bez klíče 401) — oficiální API, zdarma pro nekomerční použití, klíč přes registraci aplikace na dev.twitch.tv (client credentials) | data vydání po platformách a regionech (`release_dates`), `hypes` a `popularity_primitives` (i Steam wishlisty), obaly, žánry, **`multiplayer_modes`** (offline co-op, split screen) | přes `external_games` (Steam App ID; PlayStation Store jen US) | limit 4 požadavky/s, 500 výsledků na dotaz; očekává se uvedení zdroje; platformy PC = 6, PS5 = 167 |
+| RAWG, GiantBomb, MobyGames | — | — | — | slabší data, nejistý provoz nebo placené — nepoužívat |
+
+Návrh řešení (upřesní se po rozhodnutí O7):
+
+- **Hry z těchto zdrojů nejdou do `games`.** Samostatná tabulka `upcoming_releases`
+  (zdroj + ID ve zdroji unikátně, název, datum vydání a jeho přesnost, platformy,
+  obrázek, popularita, Steam App ID / ID konceptu PS Store, `itad_id` po spárování)
+  plněná krokem cronu jednou denně dávkou; hry po vydání se mažou
+- **Stránka „Nadcházející“** (nebo záložka Objevit): filtr platformy, žánru a hráčů,
+  řazení podle data nebo popularity, skrytí už sledovaných her
+- **Sledovat až na kliknutí** — teprve tehdy se hra spáruje s ITAD (Steam App ID přesně,
+  PS exkluzivita přes `lookupTitle()` a připojení konceptu) a projde běžným `ImportGame`
+- Nový zdroj zapisuje stav přes `SourceMonitor` (R29); parser rozliší „nic nového“
+  od „jiný formát“
+
 ---
 
 ## 3. Technologie
@@ -212,6 +240,7 @@ nesmí zastavit ostatní.
 | 5 | **Přímé zdroje** — PlayStation Store, Kinguin, Eneba: připojení produktu ke hře přes URL, stahování v cronu, testy nad zachycenými odpověďmi, hlídání změny formátu. Spolu s PS Store pokročilé filtry přehledu (R21) | PlayStation Store a filtry hotovo a nasazeno 2026-10-12 (R20–R25); Kinguin a Eneba odloženo s O4 (TODO) |
 | 6 | **Hlídání cen** — cílová cena, upozornění e-mailem a Web Push (R13), „slevy dne“ ve sledovaných | hotovo a nasazeno 2026-10-12 (R26, R27, `b261ed2`) |
 | 7 | **Historie cen** — graf vývoje ceny (ECharts) | hotovo a nasazeno 2026-10-12 (R28, `3948076`) |
+| 8 | **Nadcházející hry** — seznam připravovaných her pro PC a PS5 nezávisle na ITAD (tabulka `upcoming_releases`, krok cronu), stránka s filtry, sledování jedním klikem se spárováním s ITAD (sekce 2) | návrh — zdroj podle O7 |
 
 ---
 
@@ -225,6 +254,7 @@ nesmí zastavit ostatní.
 | O4 | **Stačí pro G2A a Loaded souhrnná cena z gg.deals?** Konkrétní cenu z hostingu nezískáme (R7, R8) | odloženo 2026-10-12: zatím stačí souhrn z gg.deals; Kinguin a Eneba (zbytek etapy 5) až s tímhle rozhodnutím |
 | O5 | **Které edice a regiony u obchodů s klíči?** Navrženo: jen klíče platné v ČR/EU pro PC (Steam), bez účtů, darů a „Mystery“ klíčů — gg.deals podle všeho filtruje podobně | |
 | O6 | **Jak často stahovat ceny** — limit ITAD 100 požadavků / 5 min s dávkou 200 her nevadí, přímé zdroje stahovat šetrně (po jednom listingu, s pauzou) | rozhodnuto (R19): cron každé 4 hodiny; přímé zdroje (etapa 5) se upřesní |
+| O7 | **Odkud brát nadcházející hry?** (průzkum v sekci 2) Varianty: (a) Steam „Popular Upcoming“ + PS Store GraphQL — bez klíčů, párování s ITAD přesné, ale dva neoficiální formáty a PS bez popularity; (b) IGDB — jeden oficiální zdroj pro PC i PS5 s popularitou a údaji o couch co-op, ale registrace na Twitchi a párování přes `external_games`; (c) kombinace — IGDB jako seznam, Steam App ID z něj pro ITAD. Doporučeno: (c); bez registrace na Twitchi (a) | otevřené — dostupnost z hostingu ověřena 13. 10. 2026 (všechny tři zdroje) |
 
 ---
 
