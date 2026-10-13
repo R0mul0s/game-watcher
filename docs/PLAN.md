@@ -99,7 +99,7 @@ u zobrazených dat): podle Steam App ID vrací jen souhrn — nejnižší aktuá
 a historickou cenu oficiálních obchodů a obchodů s klíči. Cenu konkrétního
 obchodu (G2A, Loaded) nedává. Region `cz` nezná, `eu` vrací EUR.
 
-### Nadcházející hry — průzkum zdrojů (2026-10-13, návrh, O7)
+### Nadcházející hry — průzkum zdrojů (2026-10-13, zvoleno IGDB, R46)
 
 Cíl: seznam připravovaných her pro PC a PS5, ze kterého jde hru jedním klikem
 začít sledovat (pak upozornění na vydání a první slevu, R41). Ověřeno lokálně
@@ -114,18 +114,19 @@ i **z hostingu (13. 10. 2026, všechny tři zdroje dostupné)** skriptem
 | **IGDB** (Twitch) | ✅ dostupné (bez klíče 401) — oficiální API, zdarma pro nekomerční použití, klíč přes registraci aplikace na dev.twitch.tv (client credentials) | data vydání po platformách a regionech (`release_dates`), `hypes` a `popularity_primitives` (i Steam wishlisty), obaly, žánry, **`multiplayer_modes`** (offline co-op, split screen) | přes `external_games` (Steam App ID; PlayStation Store jen US) | limit 4 požadavky/s, 500 výsledků na dotaz; očekává se uvedení zdroje; platformy PC = 6, PS5 = 167 |
 | RAWG, GiantBomb, MobyGames | — | — | — | slabší data, nejistý provoz nebo placené — nepoužívat |
 
-Návrh řešení (upřesní se po rozhodnutí O7):
+Řešení podle R46 (podrobnosti se upřesní po prvních dotazech na IGDB s klíčem):
 
-- **Hry z těchto zdrojů nejdou do `games`.** Samostatná tabulka `upcoming_releases`
-  (zdroj + ID ve zdroji unikátně, název, datum vydání a jeho přesnost, platformy,
-  obrázek, popularita, Steam App ID / ID konceptu PS Store, `itad_id` po spárování)
-  plněná krokem cronu jednou denně dávkou; hry po vydání se mažou
-- **Stránka „Nadcházející“** (nebo záložka Objevit): filtr platformy, žánru a hráčů,
-  řazení podle data nebo popularity, skrytí už sledovaných her
-- **Sledovat až na kliknutí** — teprve tehdy se hra spáruje s ITAD (Steam App ID přesně,
-  PS exkluzivita přes `lookupTitle()` a připojení konceptu) a projde běžným `ImportGame`
-- Nový zdroj zapisuje stav přes `SourceMonitor` (R29); parser rozliší „nic nového“
-  od „jiný formát“
+- **Hry z IGDB nejdou do `games`.** Samostatná tabulka `upcoming_releases` (IGDB ID
+  unikátně, název, datum vydání a jeho přesnost — den / měsíc / čtvrtletí, platformy,
+  obal, popularita, žánry, režimy hry, Steam App ID z `external_games`) plněná krokem
+  cronu jednou denně dávkou; hry po vydání se mažou
+- **Záložka „Nadcházející“ na stránce Objevit** (vedle dnešních slev, R43): filtr
+  platformy, žánru a hráčů, řazení podle data nebo popularity, skrytí už sledovaných her
+- **Sledovat až na kliknutí** — teprve tehdy se hra spáruje s ITAD (Steam App ID přesně
+  přes `games/lookup`, exkluzivita PS5 bez Steamu přes `lookupTitle()`, R22) a projde
+  běžným `ImportGame`; dál ji hlídá `ReleaseWatch` (R41)
+- Nový zdroj zapisuje stav přes `SourceMonitor` (R29); změna formátu je výpadek,
+  nikdy důvod mazat seznam
 
 ---
 
@@ -240,7 +241,7 @@ nesmí zastavit ostatní.
 | 5 | **Přímé zdroje** — PlayStation Store, Kinguin, Eneba: připojení produktu ke hře přes URL, stahování v cronu, testy nad zachycenými odpověďmi, hlídání změny formátu. Spolu s PS Store pokročilé filtry přehledu (R21) | PlayStation Store a filtry hotovo a nasazeno 2026-10-12 (R20–R25); Kinguin a Eneba odloženo s O4 (TODO) |
 | 6 | **Hlídání cen** — cílová cena, upozornění e-mailem a Web Push (R13), „slevy dne“ ve sledovaných | hotovo a nasazeno 2026-10-12 (R26, R27, `b261ed2`) |
 | 7 | **Historie cen** — graf vývoje ceny (ECharts) | hotovo a nasazeno 2026-10-12 (R28, `3948076`) |
-| 8 | **Nadcházející hry** — seznam připravovaných her pro PC a PS5 nezávisle na ITAD (tabulka `upcoming_releases`, krok cronu), stránka s filtry, sledování jedním klikem se spárováním s ITAD (sekce 2) | návrh — zdroj podle O7 |
+| 8 | **Nadcházející hry** — seznam připravovaných her pro PC a PS5 nezávisle na ITAD (tabulka `upcoming_releases`, krok cronu), stránka s filtry, sledování jedním klikem se spárováním s ITAD (sekce 2, R46) | rozhodnuto 2026-10-13 (R46), čeká na klíč IGDB |
 
 ---
 
@@ -254,7 +255,7 @@ nesmí zastavit ostatní.
 | O4 | **Stačí pro G2A a Loaded souhrnná cena z gg.deals?** Konkrétní cenu z hostingu nezískáme (R7, R8) | odloženo 2026-10-12: zatím stačí souhrn z gg.deals; Kinguin a Eneba (zbytek etapy 5) až s tímhle rozhodnutím |
 | O5 | **Které edice a regiony u obchodů s klíči?** Navrženo: jen klíče platné v ČR/EU pro PC (Steam), bez účtů, darů a „Mystery“ klíčů — gg.deals podle všeho filtruje podobně | |
 | O6 | **Jak často stahovat ceny** — limit ITAD 100 požadavků / 5 min s dávkou 200 her nevadí, přímé zdroje stahovat šetrně (po jednom listingu, s pauzou) | rozhodnuto (R19): cron každé 4 hodiny; přímé zdroje (etapa 5) se upřesní |
-| O7 | **Odkud brát nadcházející hry?** (průzkum v sekci 2) Varianty: (a) Steam „Popular Upcoming“ + PS Store GraphQL — bez klíčů, párování s ITAD přesné, ale dva neoficiální formáty a PS bez popularity; (b) IGDB — jeden oficiální zdroj pro PC i PS5 s popularitou a údaji o couch co-op, ale registrace na Twitchi a párování přes `external_games`; (c) kombinace — IGDB jako seznam, Steam App ID z něj pro ITAD. Doporučeno: (c); bez registrace na Twitchi (a) | otevřené — dostupnost z hostingu ověřena 13. 10. 2026 (všechny tři zdroje) |
+| O7 | **Odkud brát nadcházející hry?** (průzkum v sekci 2) Varianty: (a) Steam „Popular Upcoming“ + PS Store GraphQL — bez klíčů, párování s ITAD přesné, ale dva neoficiální formáty a PS bez popularity; (b) IGDB — jeden oficiální zdroj pro PC i PS5 s popularitou a údaji o couch co-op, ale registrace na Twitchi a párování přes `external_games`; (c) kombinace — IGDB jako seznam, Steam App ID z něj pro ITAD. Doporučeno: (c); bez registrace na Twitchi (a) | vyřešeno (R46): varianta (c) — IGDB jako seznam, Steam App ID z něj pro ITAD |
 
 ---
 
@@ -307,3 +308,4 @@ nesmí zastavit ostatní.
 | R43 | 2026-10-13 | **Stránka Objevit — slevy her, které uživatel nesleduje.** Nová položka hlavní navigace `/objevit`: `DiscoverDeals` volá ITAD `deals/v2` (země CZ, jen hry, volitelně jen historická minima = značka `H`, štítky `tagsUnion`, řazení `DiscoverSort` → `rank`, `-trending`, `-cut`, `price`, `-time` — ověřeno proti API), výsledek drží cache 3 h na kombinaci filtrů (limit ITAD, R15) a omezení jako hledání. Hry, které uživatel sleduje, se vynechají, hry z katalogu odkazují na detail; „Sledovat“ přidá hru jako z hledání. Nabídka štítků: předvolené pro hraní ve dvou (`discover.preset_tags`: Local Co-Op, Co-op, Split Screen) a nejčastější štítky sledovaných her (Steam, anglicky jako v ITAD). Jen obchody pro PC — PlayStation Store seznam slev nenabízí. Navigace na telefonu menším písmem, aby se vešly čtyři položky | Nápad z přehledu možností (2026-10-13). Žánry ze Steamu (`games.genres`) ITAD filtrovat neumí, štítky ano — a štítky her z ITAD už katalog má. |
 | R44 | 2026-10-13 | **Délka hraní z HowLongToBeat a cena za hodinu.** Zdroj zvolil uživatel (místo oficiálního IGDB přes Twitch nebo ručního zadávání): neveřejné API webu HLTB — `HltbClient` dělá totéž co web (token z `/api/search/site/init` v cache, hledání `POST /api/search/site` s hlavičkou `x-auth-token`, při 403 jednou nový token; stránka hry `/game/<id>` s daty v `__NEXT_DATA__`). Token je vázaný na IP a User-Agent, proto vždy IPv4. Hra se najde podle názvu jen při přesné shodě písmen a číslic (napřed celý název, pak bez přípony edice, při víc shodách rozhodne rok vydání); jinak odkaz od uživatele (`HltbUrl::parse()`, SSRF). Uloží se `games.hltb_id` a délky v minutách; cron (`RefreshPlaytimes`, krok „délka hraní“, `MonitoredSource::Hltb` — doplňkový) po 10 hrách s pauzou 1 s, obnova po 30 dnech, DLC se nehledají; přidání hry ji zkusí hned. Změna formátu = výpadek, nikdy se neuloží odhad ani nesmažou dosavadní údaje. Cena za hodinu = cena ÷ hlavní příběh: na kartě podle volby „Cena“ (R30), na detailu nejlevnější oficiální nabídka hlídané platformy; nové řazení přehledu `per_hour` | Nápad z přehledu možností (2026-10-13). HLTB má nejpřesnější data, ale API se může kdykoli změnit — proto přísná shoda názvu, odkaz jako záloha a hlídání ve stavu zdrojů. Z hostingu ověřeno diagnostikou 13. 10. 2026 (R7). |
 | R45 | 2026-10-13 | **Návrat nahoru a filtry na telefonu v okně.** Vpravo dole po sjetí o víc než výšku okna neonový šestiúhelník jako logo se šipkou nahoru (`ScrollTopButton` v `AppLayout`; s omezeným pohybem skok místo plynulého posunu, fokus na začátek obsahu). Na telefonu (pod `$breakpoint-md`, v JS `PHONE_QUERY` z `lib/media.js`) jsou volby filtrů přehledu i štítky stránky Objevit v okně, které vyjede zespodu (`FilterSheet`: nativní `<dialog>`, obsah se tam přesune `Teleport`em, na širší obrazovce zůstane na místě). Okno otevře tlačítko „Zobrazit filtry“ u hledání nebo plovoucí „Filtry“ vlevo dole s počtem zapnutých filtrů — to se ukáže, až filtry odjedou z obrazovky. Filtry se používají hned, tlačítko „Zobrazit N her“ okno jen zavře. Plovoucí tlačítko je teleportované do `<body>` — panel má `backdrop-filter` a `position: fixed` by se uvnitř vztahovalo k panelu | Podnět uživatele z telefonu: rozbalené filtry posunuly seznam o celou obrazovku a po sjetí dolů k nim nebyla cesta zpět. |
+| R46 | 2026-10-13 | **Nadcházející hry z IGDB, párování s ITAD přes Steam App ID** (O7, etapa 8). Seznam připravovaných her pro **PC a PS5** s datem vydání **do 12 měsíců** (i jen měsíc nebo čtvrtletí, bez data „TBD“ ne) nad prahem popularity IGDB — řádově 100–300 her. Ukládá se do samostatné tabulky `upcoming_releases`, ne do `games` (identita hry zůstává ITAD ID, R10); s ITAD se hra spáruje až při kliknutí na „Sledovat“ (Steam App ID z `external_games` → `games/lookup`, exkluzivita PS5 přes `lookupTitle()`, R22). Zobrazení jako **záložka „Nadcházející“ na stránce Objevit** (R43). **Jen seznam** — upozornění chodí dál jen na sledované hry (R41), týdenní souhrn se nemění. Klíč: `GAMES_IGDB_CLIENT_ID` a `GAMES_IGDB_CLIENT_SECRET` (aplikace na dev.twitch.tv, token client credentials v cache) | Průzkum v sekci 2: IGDB je jediný oficiální zdroj pro PC i PS5 s popularitou a údaji o couch co-op (`multiplayer_modes`); Steam „Popular Upcoming“ a PS Store GraphQL jsou neoficiální a PS Store nemá popularitu. ITAD zná i nevydané hry ze Steamu a páruje je přesně. Umístění, rozsah a „jen seznam“ zvolil uživatel. |
