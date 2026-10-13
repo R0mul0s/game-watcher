@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\CzechSupport;
 use App\Enums\GameMode;
 use Carbon\CarbonImmutable;
 use Database\Factories\GameFactory;
@@ -21,8 +22,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Údaje přebírá z IsThereAnyDeal `ImportGame` — identitou je `itad_id` (R10).
- * Katalog je společný pro všechny účty (R11). Žánry a režimy jsou ze Steamu
- * (`RefreshGameDetails`, R25).
+ * Katalog je společný pro všechny účty (R11). Žánry, režimy a čeština jsou ze Steamu
+ * (`RefreshGameDetails`, R25, R47).
  *
  * @property int $id
  * @property string $itad_id
@@ -37,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property list<string>|null $tags
  * @property list<string>|null $genres
  * @property list<string>|null $modes
+ * @property CzechSupport|null $czech
  * @property list<array{source: string, score: int, count: int|null, url: string|null}>|null $reviews
  * @property string|null $boxart_url
  * @property string|null $banner_url
@@ -80,6 +82,7 @@ class Game extends Model
         'tags',
         'genres',
         'modes',
+        'czech',
         'reviews',
         'boxart_url',
         'banner_url',
@@ -113,6 +116,7 @@ class Game extends Model
             'tags' => 'array',
             'genres' => 'array',
             'modes' => 'array',
+            'czech' => CzechSupport::class,
             'reviews' => 'array',
             'info_refreshed_at' => 'immutable_datetime',
             'steam_details_at' => 'immutable_datetime',
@@ -156,6 +160,16 @@ class Game extends Model
         }
 
         return array_values($unique);
+    }
+
+    /**
+     * Čeština ve hře (R47) — nejlepší ze Steamu a z připojených produktů PS
+     * Store (hra musí mít načtenou vazbu storeListings); null, když ji žádný
+     * zdroj nezná.
+     */
+    public function czechSupport(): ?CzechSupport
+    {
+        return CzechSupport::best($this->czech, ...$this->storeListings->map(fn (StoreListing $listing): ?CzechSupport => $listing->czech)->all());
     }
 
     /**

@@ -45,7 +45,7 @@ const playstation = computed(() => {
         <span class="game-card__body">
             <span class="game-card__title">{{ game.title }}</span>
             <span class="game-card__meta">
-                <GameBadges :type="game.type" :mature="game.isMature" />
+                <GameBadges :type="game.type" :mature="game.isMature" :czech="game.czech" />
                 <span v-if="game.watchPlatform" class="platform" :class="`platform--${game.watchPlatform}`">
                     {{ t(`game.watch_platforms.${game.watchPlatform}`) }}
                 </span>

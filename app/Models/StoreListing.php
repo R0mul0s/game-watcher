@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\CzechSupport;
 use App\Enums\PriceSource;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $online_players
  * @property string|null $star_rating
  * @property int|null $star_ratings_count
+ * @property CzechSupport|null $czech
  * @property string $url
  */
 class StoreListing extends Model
@@ -50,6 +52,7 @@ class StoreListing extends Model
         'online_players',
         'star_rating',
         'star_ratings_count',
+        'czech',
         'url',
     ];
 
@@ -66,6 +69,7 @@ class StoreListing extends Model
             'online_players' => 'integer',
             'star_rating' => 'decimal:2',
             'star_ratings_count' => 'integer',
+            'czech' => CzechSupport::class,
         ];
     }
 

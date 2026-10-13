@@ -114,6 +114,46 @@ it('couch co-op pozná i z počtu hráčů v PS Store', function (): void {
         ->assertInertia(fn (Assert $page) => $page->where('game.modes', ['multi', 'local_multi']));
 });
 
+it('filtruje podle češtiny ze Steamu i z PS Store — neznámá vypadne (R47)', function (): void {
+    // BIOMUTANT a CONTROL Resonant češtinu nemají, Alan Wake 2 ji nezná (není na Steamu)
+    $cyberpunk = Game::factory()->create(['title' => 'Cyberpunk 2077', 'steam_app_id' => CYBERPUNK_STEAM_ID]);
+    $kingdomCome = Game::factory()->create(['title' => 'Kingdom Come']);
+    $this->user->watchlistItems()->create(['game_id' => $cyberpunk->id]);
+    $this->user->watchlistItems()->create(['game_id' => $kingdomCome->id]);
+    app(RefreshGameDetails::class)->handle(collect([$cyberpunk]));
+    app(ConnectPlayStationProduct::class)->handle($kingdomCome, 'https://store.playstation.com/cs-cz/product/'.PSN_KINGDOM_COME);
+
+    expect(dashboardTitles(['czech' => 'text', 'sort' => 'title']))->toBe(['Cyberpunk 2077', 'Kingdom Come'])
+        ->and(dashboardTitles(['czech' => 'voice']))->toBe(['Kingdom Come']);
+
+    $cards = collect($this->actingAs($this->user)->get('/')->viewData('page')['props']['games'])->pluck('czech', 'title');
+    expect($cards->all())->toMatchArray([
+        'Cyberpunk 2077' => 'text',
+        'Kingdom Come' => 'voice',
+        'BIOMUTANT' => 'none',
+        'Alan Wake 2' => null,
+    ]);
+});
+
+it('na detailu ukáže češtinu po platformách, jen když se liší (R47)', function (): void {
+    $game = Game::factory()->create(['title' => 'Kingdom Come', 'steam_app_id' => CYBERPUNK_STEAM_ID]);
+    $this->user->watchlistItems()->create(['game_id' => $game->id]);
+    app(RefreshGameDetails::class)->handle(collect([$game]));
+
+    $this->actingAs($this->user)
+        ->get('/hry/'.$game->slug)
+        ->assertInertia(fn (Assert $page) => $page->where('game.czech', [['platform' => null, 'support' => 'text']]));
+
+    app(ConnectPlayStationProduct::class)->handle($game, 'https://store.playstation.com/cs-cz/product/'.PSN_KINGDOM_COME);
+
+    $this->actingAs($this->user)
+        ->get('/hry/'.$game->slug)
+        ->assertInertia(fn (Assert $page) => $page->where('game.czech', [
+            ['platform' => 'pc', 'support' => 'text'],
+            ['platform' => 'playstation', 'support' => 'voice'],
+        ]));
+});
+
 it('jen ve slevě, sleva aspoň a cena do', function (array $query, array $titles): void {
     expect(dashboardTitles([...$query, 'sort' => 'title']))->toBe($titles);
 })->with([
@@ -149,7 +189,7 @@ it('s PS Plus počítá u PlayStation Store cenu pro předplatitele', function (
 
 it('neplatné hodnoty filtrů ignoruje a přehled ukáže', function (): void {
     $this->actingAs($this->user)
-        ->get('/?platform=xbox&sort=nahodne&min_cut=500&max_price=-1&genres=akcni&players=10')
+        ->get('/?platform=xbox&sort=nahodne&min_cut=500&max_price=-1&genres=akcni&players=10&czech=none')
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->has('games', 3)

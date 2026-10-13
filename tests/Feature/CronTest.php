@@ -10,6 +10,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\CzechSupport;
 use App\Models\CurrentPrice;
 use App\Models\ExchangeRate;
 use App\Models\Game;
@@ -107,7 +108,8 @@ it('doplní žánry a režimy ze Steamu sledovaným hrám, které je nemají (R2
     $this->get(CRON_URL)->assertOk()->assertSeeText('žánry a režimy ze Steamu — her: 1');
 
     expect($game->fresh()?->genres)->toBe(['Akční', 'Dobrodružné'])
-        ->and($game->fresh()?->modes)->toContain('local_coop');
+        ->and($game->fresh()?->modes)->toContain('local_coop')
+        ->and($game->fresh()?->czech)->toBe(CzechSupport::None);
 
     // Podruhé už má údaje čerstvé
     $this->get(CRON_URL)->assertSeeText('žánry a režimy ze Steamu — her: 0');

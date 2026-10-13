@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Domain\PlayStation;
 
 use App\Domain\Pricing\Money;
+use App\Enums\CzechSupport;
 use App\Enums\PlusTier;
 use Carbon\CarbonImmutable;
 
@@ -61,13 +62,16 @@ final readonly class PlayStationProduct
         // Hodnocení hráčů na PS Store (R33) — průměr hvězdiček 0–5 a počet hodnocení
         public ?float $starRating = null,
         public ?int $starRatingsCount = null,
+        // Čeština (R47); null = produkt jazyky neuvádí
+        public ?CzechSupport $czech = null,
     ) {}
 
     /**
      * Údaje produktu, které se ukládají k propojení (store_listings) při
-     * připojení i každé obnově ceny — počet hráčů (R25) a hodnocení hráčů (R33).
+     * připojení i každé obnově ceny — počet hráčů (R25), hodnocení hráčů (R33)
+     * a čeština (R47).
      *
-     * @return array{local_players: int|null, online_players: int|null, star_rating: string|null, star_ratings_count: int|null}
+     * @return array{local_players: int|null, online_players: int|null, star_rating: string|null, star_ratings_count: int|null, czech: CzechSupport|null}
      */
     public function listingDetails(): array
     {
@@ -76,6 +80,7 @@ final readonly class PlayStationProduct
             'online_players' => $this->onlinePlayers,
             'star_rating' => $this->starRating === null ? null : number_format($this->starRating, self::STAR_DECIMALS, '.', ''),
             'star_ratings_count' => $this->starRatingsCount,
+            'czech' => $this->czech,
         ];
     }
 

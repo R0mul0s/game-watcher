@@ -14,6 +14,7 @@ namespace App\Domain\Watchlist;
 
 use App\Domain\Pricing\Money;
 use App\Domain\Pricing\PriceFilter;
+use App\Enums\CzechSupport;
 use App\Enums\Platform;
 use App\Enums\PlayerFilter;
 use App\Enums\PriceBasis;
@@ -24,7 +25,7 @@ use App\Enums\WatchlistSort;
  * Stav filtrů je v adrese (`?platform=playstation&deals=1…`) — jde sdílet
  * a vrátit se k němu (R21). Ověřuje ho DashboardRequest, sem jdou jen platné
  * hodnoty. Cena je v měně zobrazení účtu. Žánr a počet hráčů (R25) jsou
- * údaje hry, ne ceny; stejně tak vydání (R41).
+ * údaje hry, ne ceny; stejně tak vydání (R41) a čeština (R47).
  */
 final readonly class WatchlistFilters
 {
@@ -36,6 +37,8 @@ final readonly class WatchlistFilters
         public ?Platform $platform = null,
         public ?array $genres = null,
         public ?PlayerFilter $players = null,
+        // Aspoň tahle čeština (Text / Voice, R47); null = bez ohledu na češtinu
+        public ?CzechSupport $czech = null,
         public bool $dealsOnly = false,
         public ?int $maxPriceCents = null,
         public ?int $minCut = null,
@@ -69,7 +72,7 @@ final readonly class WatchlistFilters
     public function isActive(): bool
     {
         return $this->query !== '' || $this->type !== null || $this->release !== null || $this->genres !== null
-            || $this->players !== null || $this->requiresPrice();
+            || $this->players !== null || $this->czech !== null || $this->requiresPrice();
     }
 
     /**
@@ -84,6 +87,7 @@ final readonly class WatchlistFilters
             'platform' => $this->platform?->value,
             'genres' => $this->genres,
             'players' => $this->players?->value,
+            'czech' => $this->czech?->value,
             'deals' => $this->dealsOnly,
             'maxPrice' => $this->maxPriceCents === null ? null : $this->maxPriceCents / Money::SUBUNITS,
             'minCut' => $this->minCut,

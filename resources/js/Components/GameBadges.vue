@@ -1,5 +1,6 @@
 <!--
-    Štítky hry — druh (jen když nejde o běžnou hru) a obsah pro dospělé.
+    Štítky hry — druh (jen když nejde o běžnou hru), obsah pro dospělé
+    a čeština (titulky nebo dabing, R47).
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -11,10 +12,14 @@ import { computed } from 'vue';
 const props = defineProps({
     type: { type: String, required: true },
     mature: { type: Boolean, default: false },
+    // Čeština ve hře (enum CzechSupport); null = neznámá
+    czech: { type: String, default: null },
 });
 
 /** Druh, který se jako štítek neukazuje — běžná hra. */
 const DEFAULT_TYPE = 'game';
+/** Čeština, která má štítek — bez češtiny ani neznámá ho nemají. */
+const CZECH_BADGES = ['text', 'voice'];
 
 const t = useTranslations();
 
@@ -25,11 +30,14 @@ const typeLabel = computed(() => {
 
     return label === key ? props.type : label;
 });
+
+const hasCzech = computed(() => CZECH_BADGES.includes(props.czech));
 </script>
 
 <template>
-    <span v-if="type !== DEFAULT_TYPE || mature" class="badges">
+    <span v-if="type !== DEFAULT_TYPE || mature || hasCzech" class="badges">
         <span v-if="type !== DEFAULT_TYPE" class="badge">{{ typeLabel }}</span>
         <span v-if="mature" class="badge badge--warning">{{ t('game.mature') }}</span>
+        <span v-if="hasCzech" class="badge badge--language" :title="t(`game.czech_titles.${czech}`)">{{ t(`game.czech_badges.${czech}`) }}</span>
     </span>
 </template>

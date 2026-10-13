@@ -139,6 +139,21 @@ function toggleWatch() {
                             <dt class="facts__label">{{ t('game.modes') }}</dt>
                             <dd class="facts__value">{{ game.modes.map((mode) => t(`game.mode_names.${mode}`)).join(', ') }}</dd>
                         </div>
+                        <!-- Čeština po platformách, když se liší (R47) -->
+                        <div v-if="game.czech.length" class="facts__item">
+                            <dt class="facts__label">{{ t('game.czech') }}</dt>
+                            <dd class="facts__value">
+                                {{
+                                    game.czech
+                                        .map((entry) =>
+                                            entry.platform
+                                                ? t('game.czech_on_platform', { platform: t(`prices.platforms.${entry.platform}`), support: t(`game.czech_names.${entry.support}`) })
+                                                : t(`game.czech_names.${entry.support}`),
+                                        )
+                                        .join(', ')
+                                }}
+                            </dd>
+                        </div>
                     </dl>
 
                     <div class="game-detail__actions">

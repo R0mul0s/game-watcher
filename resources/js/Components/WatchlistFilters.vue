@@ -1,6 +1,6 @@
 <!--
     Pokročilé filtry přehledu sledovaných her (R21) — hledání, platforma,
-    hráči, žánr (R25), druh, vydání (R41), zdroj ceny (R30), cena, sleva, PS Plus a řazení. Na telefonu
+    hráči, žánr (R25), čeština (R47), druh, vydání (R41), zdroj ceny (R30), cena, sleva, PS Plus a řazení. Na telefonu
     jsou volby v okně, které vyjede zespodu (FilterSheet, R45). Stav je v adrese stránky;
     filtruje server, komponenta jen posílá volby (s krátkou prodlevou při psaní).
 
@@ -37,6 +37,8 @@ const SORTS = ['price', 'per_hour', 'score', 'cut', 'release', 'title', 'added']
 const DEFAULT_SORT = SORTS[0];
 /** Filtr hráčů (enum PlayerFilter). */
 const PLAYERS = ['solo', 'duo', 'couch'];
+/** Filtr češtiny (enum CzechSupport, R47) — aspoň titulky, nebo dabing. */
+const CZECH = ['text', 'voice'];
 /** Zdroj ceny pro řazení a „cena do“ (enum PriceBasis, R30); první je výchozí. */
 const PRICE_BASES = ['official', 'cheapest', 'keyshops'];
 const DEFAULT_PRICE_BASIS = PRICE_BASES[0];
@@ -46,6 +48,7 @@ const form = reactive({
     platform: props.filters.platform,
     genres: props.filters.genres ?? [],
     players: props.filters.players,
+    czech: props.filters.czech,
     type: props.filters.type,
     release: props.filters.release,
     maxPrice: props.filters.maxPrice,
@@ -63,7 +66,7 @@ let timer = null;
 /** Kolik filtrů je zapnutých — číslo na plovoucím tlačítku (řazení a zdroj ceny se nepočítají). */
 const activeCount = computed(
     () =>
-        [form.q.trim(), form.platform, form.genres.length, form.players, form.type, form.release, form.maxPrice, form.minCut, form.deals, form.plus].filter(
+        [form.q.trim(), form.platform, form.genres.length, form.players, form.czech, form.type, form.release, form.maxPrice, form.minCut, form.deals, form.plus].filter(
             (value) => value !== null && value !== '' && value !== false && value !== 0,
         ).length,
 );
@@ -79,6 +82,7 @@ function params() {
     if (form.platform) result.platform = form.platform;
     if (form.genres.length) result.genres = form.genres;
     if (form.players) result.players = form.players;
+    if (form.czech) result.czech = form.czech;
     if (form.type) result.type = form.type;
     if (form.release) result.release = form.release;
     if (form.maxPrice !== null && form.maxPrice !== '') result.max_price = form.maxPrice;
@@ -122,7 +126,7 @@ function toggleGenre(name) {
  * Vrátí všechny filtry na výchozí hodnoty (řazení a zdroj ceny zůstávají).
  */
 function reset() {
-    Object.assign(form, { q: '', platform: null, genres: [], players: null, type: null, release: null, maxPrice: null, minCut: null, deals: false, plus: false });
+    Object.assign(form, { q: '', platform: null, genres: [], players: null, czech: null, type: null, release: null, maxPrice: null, minCut: null, deals: false, plus: false });
 }
 </script>
 
@@ -200,6 +204,28 @@ function reset() {
                             @click="form.players = players"
                         >
                             {{ t(`filters.players_options.${players}`) }}
+                        </button>
+                    </div>
+                </fieldset>
+
+                <fieldset class="filters__group">
+                    <legend class="filters__label" :title="t('filters.czech_hint')">{{ t('filters.czech') }}</legend>
+                    <div class="segmented segmented--fill">
+                        <button type="button" class="segmented__option" :class="{ 'segmented__option--active': !form.czech }" :aria-pressed="!form.czech" @click="form.czech = null">
+                            {{ t('filters.all') }}
+                        </button>
+                        <button
+                            v-for="czech in CZECH"
+                            :key="czech"
+                            type="button"
+                            class="segmented__option"
+                            :class="{ 'segmented__option--active': form.czech === czech }"
+                            :aria-pressed="form.czech === czech"
+                            :title="t(`filters.czech_titles.${czech}`)"
+                            :aria-label="t(`filters.czech_titles.${czech}`)"
+                            @click="form.czech = czech"
+                        >
+                            {{ t(`filters.czech_options.${czech}`) }}
                         </button>
                     </div>
                 </fieldset>

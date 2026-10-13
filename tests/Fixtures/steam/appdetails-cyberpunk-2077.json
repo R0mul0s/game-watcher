@@ -1,0 +1,127 @@
+{
+  "1091500": {
+    "success": true,
+    "data": {
+      "type": "game",
+      "name": "Cyberpunk 2077",
+      "steam_appid": 1091500,
+      "required_age": "18",
+      "is_free": false,
+      "controller_support": "full",
+      "dlc": [
+        2138330,
+        1495710,
+        2060310
+      ],
+      "detailed_description": "<h1>Cyberpunk 2077: Ultimate Edition</h1><p><p class=\"bb_paragraph\" ><span class=\"bb_img_ctn\"><img class=\"bb_img\" src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/2e005843527d8e0e58ab07f13576d2cc.avif?t=1784714077\" width=616 height=670 /></span></p></p><br><h1>O hře</h1><p class=\"bb_paragraph\" ><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3406ba6f4a02e0dfb2946b8d0944757b.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3406ba6f4a02e0dfb2946b8d0944757b.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3406ba6f4a02e0dfb2946b8d0944757b.mp4?t=1784714077\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/d8499f83bbd3bf299ff812d514904489.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/d8499f83bbd3bf299ff812d514904489.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/d8499f83bbd3bf299ff812d514904489.mp4?t=1784714077\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/e11996dfbeac14b60cced61e5872d428.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/e11996dfbeac14b60cced61e5872d428.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/e11996dfbeac14b60cced61e5872d428.mp4?t=1784714077\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/9a950eb7c0b37b6b8dd206df8cf6c092.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/9a950eb7c0b37b6b8dd206df8cf6c092.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/9a950eb7c0b37b6b8dd206df8cf6c092.mp4?t=1784714077\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/42a2331000fbec2d03801fba354d6e5b.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/42a2331000fbec2d03801fba354d6e5b.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/42a2331000fbec2d03801fba354d6e5b.mp4?t=1784714077\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3c73a0e40b8c4e547ad2e6180d4b7489.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3c73a0e40b8c4e547ad2e6180d4b7489.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3c73a0e40b8c4e547ad2e6180d4b7489.mp4?t=1784714077\" type=\"video/mp4\"></video></span></p>",
+      "about_the_game": "<p class=\"bb_paragraph\" ><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3406ba6f4a02e0dfb2946b8d0944757b.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3406ba6f4a02e0dfb2946b8d0944757b.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3406ba6f4a02e0dfb2946b8d0944757b.mp4?t=1784714077\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/d8499f83bbd3bf299ff812d514904489.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/d8499f83bbd3bf299ff812d514904489.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/d8499f83bbd3bf299ff812d514904489.mp4?t=1784714077\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/e11996dfbeac14b60cced61e5872d428.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/e11996dfbeac14b60cced61e5872d428.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/e11996dfbeac14b60cced61e5872d428.mp4?t=1784714077\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/9a950eb7c0b37b6b8dd206df8cf6c092.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/9a950eb7c0b37b6b8dd206df8cf6c092.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/9a950eb7c0b37b6b8dd206df8cf6c092.mp4?t=1784714077\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/42a2331000fbec2d03801fba354d6e5b.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/42a2331000fbec2d03801fba354d6e5b.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/42a2331000fbec2d03801fba354d6e5b.mp4?t=1784714077\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3c73a0e40b8c4e547ad2e6180d4b7489.poster.avif?t=1784714077\" width=1170 height=450 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3c73a0e40b8c4e547ad2e6180d4b7489.webm?t=1784714077\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/extras/3c73a0e40b8c4e547ad2e6180d4b7489.mp4?t=1784714077\" type=\"video/mp4\"></video></span></p>",
+      "short_description": "Cyberpunk 2077 je akční dobrodružné RPG v otevřeném světě zasazené do temné budoucnosti Night City — nebezpečné megalopole posedlé mocí, půvabem a neustálými tělesnými modifikacemi.",
+      "supported_languages": "Angličtina<strong>*</strong>, Francouzština<strong>*</strong>, Italština<strong>*</strong>, Němčina<strong>*</strong>, Evropská španělština<strong>*</strong>, Arabština, Čeština, Maďarština, Japonština<strong>*</strong>, Korejština<strong>*</strong>, Polština<strong>*</strong>, Brazilská portugalština<strong>*</strong>, Ruština<strong>*</strong>, Zjednodušená čínština<strong>*</strong>, Latin. španělština, Thajština, Tradiční čínština, Turečtina, Ukrajinština<br><strong>*</strong>jazyky s plnou zvukovou podporou",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/e9047d8ec47ae3d94bb8b464fb0fc9e9972b4ac7/header.jpg?t=1784714077",
+      "capsule_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/590e0988a2fb79f44d3e31e41fd4949eb76abc41/capsule_231x87.jpg?t=1784714077",
+      "capsule_imagev5": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/590e0988a2fb79f44d3e31e41fd4949eb76abc41/capsule_184x69.jpg?t=1784714077",
+      "website": "https://www.cyberpunk.net",
+      "pc_requirements": {
+        "minimum": "<strong>Minimální:</strong><br><ul class=\"bb_ul\"><li>Vyžaduje 64bitový procesor a operační systém<br></li><li><strong>OS:</strong> 64-bit Windows 10<br></li><li><strong>Procesor:</strong> Core i7-6700 or Ryzen 5 1600<br></li><li><strong>Paměť:</strong> 12 GB RAM<br></li><li><strong>Grafická karta:</strong> GeForce GTX 1060 6GB or Radeon RX 580 8GB or Arc A380<br></li><li><strong>DirectX:</strong> Verze 12<br></li><li><strong>Pevný disk:</strong> 70 GB volného místa<br></li><li><strong>Dodatečné poznámky:</strong> SSD required. Attention: In this game you will encounter a variety of visual effects that may provide seizures or loss of consciousness in a minority of people. If you or someone you know experiences any of the above symptoms while playing, stop and seek medical attention immediately.</li></ul>",
+        "recommended": "<strong>Doporučené:</strong><br><ul class=\"bb_ul\"><li>Vyžaduje 64bitový procesor a operační systém<br></li><li><strong>OS:</strong> 64-bit Windows 10<br></li><li><strong>Procesor:</strong> Core i7-12700 or Ryzen 7 7800X3D<br></li><li><strong>Paměť:</strong> 16 GB RAM<br></li><li><strong>Grafická karta:</strong> GeForce RTX 2060 SUPER or Radeon RX 5700 XT or Arc A770<br></li><li><strong>DirectX:</strong> Verze 12<br></li><li><strong>Pevný disk:</strong> 70 GB volného místa<br></li><li><strong>Dodatečné poznámky:</strong> SSD required.</li></ul>"
+      },
+      "mac_requirements": {
+        "minimum": "<strong>Minimální:</strong><br><ul class=\"bb_ul\"><li>Vyžaduje procesor Apple<br></li><li><strong>OS:</strong> macOS: 15.5 or later<br></li><li><strong>Procesor:</strong> M1<br></li><li><strong>Paměť:</strong> 16 GB RAM<br></li><li><strong>Pevný disk:</strong> 92 GB volného místa</li></ul>",
+        "recommended": "<strong>Doporučené:</strong><br><ul class=\"bb_ul\"><li>Vyžaduje procesor Apple<br></li><li><strong>OS:</strong> macOS: 15.5 or later<br></li><li><strong>Procesor:</strong> M3 Pro<br></li><li><strong>Paměť:</strong> 18 GB RAM<br></li><li><strong>Pevný disk:</strong> 92 GB volného místa</li></ul>"
+      },
+      "linux_requirements": {
+        "minimum": "<strong>Minimální:</strong><br><ul class=\"bb_ul\"></ul>",
+        "recommended": "<strong>Doporučené:</strong><br><ul class=\"bb_ul\"></ul>"
+      },
+      "legal_notice": "CD PROJEKT®, Cyberpunk®, Cyberpunk 2077® are registered trademarks of CD PROJEKT S.A. © CD PROJEKT S.A. All rights reserved. All other copyrights and trademarks are the property of their respective owners.",
+      "categories": [
+        {
+          "id": 2,
+          "description": "Režim pro jednoho hráče"
+        },
+        {
+          "id": 22,
+          "description": "Achievementy"
+        },
+        {
+          "id": 28,
+          "description": "Plná podpora ovladačů"
+        },
+        {
+          "id": 29,
+          "description": "Sběratelské karty"
+        },
+        {
+          "id": 64,
+          "description": "Nastavitelná velikost textu"
+        },
+        {
+          "id": 67,
+          "description": "Nastavení pohybů kamery"
+        },
+        {
+          "id": 66,
+          "description": "Nastavení barev"
+        },
+        {
+          "id": 68,
+          "description": "Oddělená nastavení hlasitosti"
+        },
+        {
+          "id": 78,
+          "description": "Nastavitelná obtížnost"
+        },
+        {
+          "id": 74,
+          "description": "Možnost hraní bez QTE"
+        },
+        {
+          "id": 55,
+          "description": "Podpora ovladače DualShock"
+        },
+        {
+          "id": 57,
+          "description": "Podpora ovladače DualSense"
+        },
+        {
+          "id": 58,
+          "description": "Podpora ovladače DualSense"
+        },
+        {
+          "id": 79,
+          "description": "Neomezené ukládání"
+        },
+        {
+          "id": 69,
+          "description": "Stereo zvuk"
+        },
+        {
+          "id": 65,
+          "description": "Detailní nastavení titulků"
+        },
+        {
+          "id": 70,
+          "description": "Prostorový zvuk"
+        },
+        {
+          "id": 23,
+          "description": "Steam Cloud"
+        },
+        {
+          "id": 61,
+          "description": "Technologie HDR"
+        },
+        {
+          "id": 62,
+          "description": "Sdílení v rodině"
+        }
+      ],
+      "genres": [
+        {
+          "id": "3",
+          "description": "RPG"
+        }
+      ]
+    }
+  }
+}

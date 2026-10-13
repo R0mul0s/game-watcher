@@ -310,6 +310,17 @@ return [
                 'duo' => 'Pro dva a víc — co-op nebo hra pro víc hráčů, online i u jedné obrazovky',
                 'couch' => 'Co-op nebo hra pro víc hráčů u jedné obrazovky (sdílená nebo rozdělená)',
             ],
+            // Čeština ve hře (R47) — „titulky“ najdou i hru s dabingem
+            'czech' => 'Čeština',
+            'czech_hint' => 'Podle Steamu a PlayStation Store — hra bez údaje o jazycích vypadne',
+            'czech_options' => [
+                'text' => 'Titulky',
+                'voice' => 'Dabing',
+            ],
+            'czech_titles' => [
+                'text' => 'Aspoň české titulky nebo rozhraní',
+                'voice' => 'Český dabing',
+            ],
             'type' => 'Druh',
             'type_game' => 'Hry',
             'type_dlc' => 'DLC',
@@ -514,6 +525,22 @@ return [
                 'online_coop' => 'Co-op online',
                 'local_coop' => 'Couch co-op',
                 'local_multi' => 'Víc hráčů u jedné obrazovky',
+            ],
+            // Čeština ve hře (R47) — popis na detailu, štítek na kartě
+            'czech' => 'Čeština',
+            'czech_names' => [
+                'none' => 'ne',
+                'text' => 'titulky a rozhraní',
+                'voice' => 'dabing i titulky',
+            ],
+            'czech_on_platform' => ':platform — :support',
+            'czech_badges' => [
+                'text' => 'CZ',
+                'voice' => 'CZ dabing',
+            ],
+            'czech_titles' => [
+                'text' => 'České titulky a rozhraní',
+                'voice' => 'Český dabing',
             ],
             'reviews' => 'Hodnocení',
             'reviews_count' => ':count hodnocení',

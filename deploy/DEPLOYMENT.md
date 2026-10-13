@@ -213,6 +213,7 @@ je jediná cesta, jak ji neztratit.
 | `migrations-2026-10-13-release-alerts.sql` | nevydané hry (R41): ve `watchlist_items` `release_notified_at`, `first_sale_notified_at`; vydané hry označí jako upozorněné; opakovatelný, pustit **po** PS Plus a souhrnu a **před** nahráním kódu | 2026-10-13 |
 | `migrations-2026-10-13-playtime.sql` | délka hraní (R44): v `games` sloupce `hltb_*` — prázdné, doplní je cron a přidání hry; opakovatelný, pustit **po** nevydaných hrách a **před** nahráním kódu | 2026-10-13 |
 | `migrations-2026-10-13-upcoming-releases.sql` | nadcházející hry (R46): tabulka `upcoming_releases` — prázdná, naplní ji první běh cronu s klíčem IGDB v `.env`; opakovatelný, pustit **po** délce hraní a **před** nahráním kódu | 2026-10-13 |
+| `migrations-2026-10-13-czech.sql` | čeština ve hře (R47): v `games` a `store_listings` sloupec `czech`; při prvním běhu vynuluje `games.steam_details_at`, aby cron po dávkách stáhl údaje ze Steamu znovu i s jazyky (PS Store doplní obnova cen); opakovatelný, pustit **po** nadcházejících hrách a **před** nahráním kódu | |
 
 ## Nasazené verze
 

@@ -24,8 +24,11 @@ use Illuminate\Support\Facades\Log;
  */
 final class SteamClient
 {
+    /** Části odpovědi appdetails — basic kvůli seznamu jazyků (R47), samostatně ho Steam nevrátí. */
+    private const FILTERS = 'basic,categories,genres';
+
     /**
-     * Žánry a režimy hry; null, když Steam hru nezná nebo ji nenabízí
+     * Žánry, režimy a čeština hry; null, když Steam hru nezná nebo ji nenabízí
      * (stažená, jen v jiné zemi).
      *
      * @throws SteamUnavailable
@@ -41,7 +44,7 @@ final class SteamClient
                     'appids' => $appId,
                     'cc' => config('games.sources.steam.country'),
                     'l' => config('games.sources.steam.language'),
-                    'filters' => 'categories,genres',
+                    'filters' => self::FILTERS,
                 ]);
         } catch (ConnectionException $e) {
             Log::warning("Steam appdetails {$appId} neodpovídá: ".$e->getMessage());

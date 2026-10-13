@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Žánry a režimy her ze Steamu.
+ * Žánry, režimy a čeština her ze Steamu.
  *
  * @author Roman Hlaváček
  *
@@ -21,7 +21,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Sleep;
 
 /**
- * Filtr přehledu podle žánru a počtu hráčů (R25) potřebuje údaje, které ITAD
+ * Filtr přehledu podle žánru, počtu hráčů (R25) a češtiny (R47) potřebuje údaje, které ITAD
  * nemá — ze Steamu jen pro hry se Steam App ID. Cron doplňuje sledované hry
  * bez údajů nebo se starými údaji po malých dávkách (limit Steamu), nově
  * přidaná hra je dostane hned. Hra, kterou Steam nezná, se označí jako
@@ -78,6 +78,7 @@ final class RefreshGameDetails
             $game->update([
                 'genres' => $details?->genres,
                 'modes' => $details === null ? null : array_map(fn (GameMode $mode): string => $mode->value, $details->modes),
+                'czech' => $details?->czech,
                 'steam_details_at' => CarbonImmutable::now(),
             ]);
             $count++;

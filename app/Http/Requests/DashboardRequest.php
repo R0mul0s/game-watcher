@@ -14,6 +14,7 @@ namespace App\Http\Requests;
 
 use App\Domain\Pricing\Money;
 use App\Domain\Watchlist\WatchlistFilters;
+use App\Enums\CzechSupport;
 use App\Enums\Platform;
 use App\Enums\PlayerFilter;
 use App\Enums\PriceBasis;
@@ -70,6 +71,8 @@ class DashboardRequest extends FormRequest
             'genres' => ['array'],
             'genres.*' => ['string', 'max:'.self::MAX_GENRE_LENGTH],
             'players' => [Rule::enum(PlayerFilter::class)],
+            // Filtr „aspoň titulky / dabing“ (R47) — „bez češtiny“ se nefiltruje
+            'czech' => [Rule::enum(CzechSupport::class)->only([CzechSupport::Text, CzechSupport::Voice])],
             'deals' => ['boolean'],
             'max_price' => ['numeric', 'min:0', 'max:'.self::MAX_PRICE],
             'min_cut' => ['integer', 'min:1', 'max:'.self::MAX_PERCENT],
@@ -94,6 +97,7 @@ class DashboardRequest extends FormRequest
             platform: Platform::tryFrom((string) $value('platform')),
             genres: is_array($genres) && $genres !== [] ? array_values(array_map('strval', $genres)) : null,
             players: PlayerFilter::tryFrom((string) $value('players')),
+            czech: CzechSupport::tryFrom((string) $value('czech')),
             dealsOnly: filter_var($value('deals'), FILTER_VALIDATE_BOOLEAN),
             maxPriceCents: is_numeric($maxPrice) ? (int) round((float) $maxPrice * Money::SUBUNITS) : null,
             minCut: is_numeric($minCut) ? (int) $minCut : null,

@@ -55,4 +55,6 @@ v [PLAN.md](PLAN.md); větší celky se z toho stávají etapou.
 - **kalendář výprodejů** (R42): doplnit Steam Autumn Sale 2027 a další, až je Valve zveřejní
   (Steamworks → Upcoming Steam Events); případně i jiné obchody (GOG, Epic), kdyby se daly zjistit dopředu
 - **graf ceny**: historické kurzy ČNB (dnes se přepočítává dnešním kurzem, R28), historie obchodů s klíči odjinud než z vlastních záznamů, značky slev (začátek a konec akce)
+- **velikost hry na disku** (PS5) — web PS Store ji neuvádí (R47, ověřeno 13. 10. 2026); vrátit se k tomu,
+  kdyby se našel jiný zdroj
 - porovnání regionů (stejná hra na PS Store v CZ vs. TR/AR) — zajímavé, ale na hranici pravidel obchodů

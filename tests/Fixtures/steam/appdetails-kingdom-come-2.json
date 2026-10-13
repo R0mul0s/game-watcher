@@ -1,0 +1,115 @@
+{
+  "1771300": {
+    "success": true,
+    "data": {
+      "type": "game",
+      "name": "Kingdom Come: Deliverance II",
+      "steam_appid": 1771300,
+      "required_age": "18",
+      "is_free": false,
+      "controller_support": "full",
+      "dlc": [
+        3368620,
+        3368610,
+        3119920,
+        3368600,
+        4184930,
+        3468550,
+        4075290,
+        3118100,
+        3118110,
+        3118120
+      ],
+      "detailed_description": "<p class=\"bb_paragraph\" ><span class=\"bb_img_ctn\"><img class=\"bb_img\" src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/00d03039da88e060ba12a87ed067411c.avif?t=1777975568\" width=1560 height=988 /></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/63e6bb2f31d9f6e32c2f232d78d7f4ee.poster.avif?t=1777975568\" width=606 height=186 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/63e6bb2f31d9f6e32c2f232d78d7f4ee.webm?t=1777975568\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/63e6bb2f31d9f6e32c2f232d78d7f4ee.mp4?t=1777975568\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/a553c02f611c151649bfbd89eebbd64d.poster.avif?t=1777975568\" width=606 height=186 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/a553c02f611c151649bfbd89eebbd64d.webm?t=1777975568\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/a553c02f611c151649bfbd89eebbd64d.mp4?t=1777975568\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/93940a4d2b36457a4c1065e440bfc83c.poster.avif?t=1777975568\" width=606 height=186 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/93940a4d2b36457a4c1065e440bfc83c.webm?t=1777975568\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/93940a4d2b36457a4c1065e440bfc83c.mp4?t=1777975568\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/3f02008cc146552819946947305b42e3.poster.avif?t=1777975568\" width=606 height=186 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/3f02008cc146552819946947305b42e3.webm?t=1777975568\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/3f02008cc146552819946947305b42e3.mp4?t=1777975568\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/7d530b092d30407bed8f7c083841a49b.poster.avif?t=1777975568\" width=606 height=186 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/7d530b092d30407bed8f7c083841a49b.webm?t=1777975568\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/7d530b092d30407bed8f7c083841a49b.mp4?t=1777975568\" type=\"video/mp4\"></video></span></p>",
+      "about_the_game": "<p class=\"bb_paragraph\" ><span class=\"bb_img_ctn\"><img class=\"bb_img\" src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/00d03039da88e060ba12a87ed067411c.avif?t=1777975568\" width=1560 height=988 /></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/63e6bb2f31d9f6e32c2f232d78d7f4ee.poster.avif?t=1777975568\" width=606 height=186 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/63e6bb2f31d9f6e32c2f232d78d7f4ee.webm?t=1777975568\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/63e6bb2f31d9f6e32c2f232d78d7f4ee.mp4?t=1777975568\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/a553c02f611c151649bfbd89eebbd64d.poster.avif?t=1777975568\" width=606 height=186 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/a553c02f611c151649bfbd89eebbd64d.webm?t=1777975568\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/a553c02f611c151649bfbd89eebbd64d.mp4?t=1777975568\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/93940a4d2b36457a4c1065e440bfc83c.poster.avif?t=1777975568\" width=606 height=186 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/93940a4d2b36457a4c1065e440bfc83c.webm?t=1777975568\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/93940a4d2b36457a4c1065e440bfc83c.mp4?t=1777975568\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/3f02008cc146552819946947305b42e3.poster.avif?t=1777975568\" width=606 height=186 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/3f02008cc146552819946947305b42e3.webm?t=1777975568\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/3f02008cc146552819946947305b42e3.mp4?t=1777975568\" type=\"video/mp4\"></video></span><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/7d530b092d30407bed8f7c083841a49b.poster.avif?t=1777975568\" width=606 height=186 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/7d530b092d30407bed8f7c083841a49b.webm?t=1777975568\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/extras/7d530b092d30407bed8f7c083841a49b.mp4?t=1777975568\" type=\"video/mp4\"></video></span></p>",
+      "short_description": "Kingdom Come: Deliverance II Napínavé příběhové akční RPG s obrovským otevřeným světem, které se odehrává ve středověké Evropě 15. století. Zažijte nezapomenutelné dobrodružství očima mladého Jindřicha a vydejte se na cestu plnou velkolepých zážitků.",
+      "supported_languages": "Angličtina<strong>*</strong>, Italština, Francouzština<strong>*</strong>, Němčina<strong>*</strong>, Evropská španělština<strong>*</strong>, Čeština<strong>*</strong>, Japonština<strong>*</strong>, Korejština, Polština, Brazilská portugalština, Zjednodušená čínština, Tradiční čínština, Turečtina, Ruština, Ukrajinština<br><strong>*</strong>jazyky s plnou zvukovou podporou",
+      "reviews": "“An action-packed medieval saga fit for a Hollywood blockbuster.”<br>9/10 – IGN<br><br>“The new king of open-world role-playing games.”<br>90/100 – Gamestar<br><br>“A must play medieval RPG.”<br>9/10 – PCGamesN<br>",
+      "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/header.jpg?t=1777975568",
+      "capsule_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/93e28946c46f09d761bbfab1e17e8c1c4a8323a0/capsule_231x87.jpg?t=1777975568",
+      "capsule_imagev5": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/93e28946c46f09d761bbfab1e17e8c1c4a8323a0/capsule_184x69.jpg?t=1777975568",
+      "website": "https://www.kingdomcomerpg.com/",
+      "pc_requirements": {
+        "minimum": "<strong>Minimální:</strong><br><ul class=\"bb_ul\"><li>Vyžaduje 64bitový procesor a operační systém<br></li><li><strong>OS:</strong> Windows 10 64-bit (or newer)<br></li><li><strong>Procesor:</strong> Intel Core i5-8400, AMD Ryzen 5 2600<br></li><li><strong>Paměť:</strong> 16 GB RAM<br></li><li><strong>Grafická karta:</strong> NVIDIA GeForce GTX 1060 (6GB), AMD Radeon RX 580<br></li><li><strong>Pevný disk:</strong> 100 GB volného místa<br></li><li><strong>Dodatečné poznámky:</strong> SSD required</li></ul>",
+        "recommended": "<strong>Doporučené:</strong><br><ul class=\"bb_ul\"><li>Vyžaduje 64bitový procesor a operační systém<br></li><li><strong>OS:</strong> Windows 10 64-bit (or newer)<br></li><li><strong>Procesor:</strong> Intel Core i7-13700K, AMD Ryzen 7 7800X3D<br></li><li><strong>Paměť:</strong> 32 GB RAM<br></li><li><strong>Grafická karta:</strong> NVIDIA GeForce RTX 4070, AMD Radeon RX 7800 XT<br></li><li><strong>Pevný disk:</strong> 100 GB volného místa<br></li><li><strong>Dodatečné poznámky:</strong> SSD required</li></ul>"
+      },
+      "mac_requirements": {
+        "minimum": "<strong>Minimální:</strong><br><ul class=\"bb_ul\"></ul>",
+        "recommended": "<strong>Doporučené:</strong><br><ul class=\"bb_ul\"></ul>"
+      },
+      "linux_requirements": {
+        "minimum": "<strong>Minimální:</strong><br><ul class=\"bb_ul\"></ul>",
+        "recommended": "<strong>Doporučené:</strong><br><ul class=\"bb_ul\"></ul>"
+      },
+      "legal_notice": "© 2025 Warhorse Studios s.r.o. Published by Deep Silver. Deep Silver is a division of PLAION. Deep Silver and Plaion and their respective logos are trademarks of Plaion GmbH, Embracer Platz 1, 6604 Hoefen, Austria. Warhorse and Kingdom Come: Deliverance are registered trademarks of Warhorse Studios s.r.o. Portions of this software are included under license © 2019-2025 Crytek GmbH. All rights reserved. Crytek, Cryengine and their respective logos are trademarks of Crytek GmbH. All other trademarks, logos and copyrights are property of their respective owners. All rights reserved.",
+      "categories": [
+        {
+          "id": 2,
+          "description": "Režim pro jednoho hráče"
+        },
+        {
+          "id": 22,
+          "description": "Achievementy"
+        },
+        {
+          "id": 28,
+          "description": "Plná podpora ovladačů"
+        },
+        {
+          "id": 29,
+          "description": "Sběratelské karty"
+        },
+        {
+          "id": 68,
+          "description": "Oddělená nastavení hlasitosti"
+        },
+        {
+          "id": 74,
+          "description": "Možnost hraní bez QTE"
+        },
+        {
+          "id": 55,
+          "description": "Podpora ovladače DualShock"
+        },
+        {
+          "id": 57,
+          "description": "Podpora ovladače DualSense"
+        },
+        {
+          "id": 58,
+          "description": "Podpora ovladače DualSense"
+        },
+        {
+          "id": 69,
+          "description": "Stereo zvuk"
+        },
+        {
+          "id": 70,
+          "description": "Prostorový zvuk"
+        },
+        {
+          "id": 23,
+          "description": "Steam Cloud"
+        },
+        {
+          "id": 62,
+          "description": "Sdílení v rodině"
+        }
+      ],
+      "genres": [
+        {
+          "id": "1",
+          "description": "Akční"
+        },
+        {
+          "id": "25",
+          "description": "Dobrodružné"
+        },
+        {
+          "id": "3",
+          "description": "RPG"
+        }
+      ]
+    }
+  }
+}

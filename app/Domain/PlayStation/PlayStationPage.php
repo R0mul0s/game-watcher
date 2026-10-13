@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Domain\PlayStation;
 
 use App\Domain\Pricing\Money;
+use App\Enums\CzechSupport;
 use App\Enums\PlusTier;
 use Carbon\CarbonImmutable;
 
@@ -63,6 +64,15 @@ final class PlayStationPage
 
     /** Čísla v hodnotě počtu hráčů („2“, „1 - 4“). */
     private const NUMBER_PATTERN = '/\d+/';
+
+    /** Kód češtiny v seznamech jazyků produktu (R47). */
+    private const CZECH_CODE = 'cs';
+
+    /** Jazyky rozhraní a titulků — sjednocené přes PS4 i PS5. */
+    private const SCREEN_LANGUAGES = 'screenLanguages';
+
+    /** Jazyky dabingu — sjednocené přes PS4 i PS5. */
+    private const SPOKEN_LANGUAGES = 'spokenLanguages';
 
     /** @var array<string, array<string, mixed>> objekty cache podle klíče */
     private array $cache = [];
@@ -180,7 +190,27 @@ final class PlayStationPage
             onlinePlayers: self::players($product, self::ONLINE_PLAYERS_NOTICES),
             starRating: $rated ? $rating : null,
             starRatingsCount: $rated ? $ratingsCount : null,
+            czech: self::czech($product),
         );
+    }
+
+    /**
+     * Čeština produktu (R47) — v dabingu, nebo jen v rozhraní a titulcích.
+     * Produkt s prázdnými seznamy jazyků (bývá u DLC) je neznámý, ne bez češtiny.
+     *
+     * @param  array<mixed>  $product
+     */
+    private static function czech(array $product): ?CzechSupport
+    {
+        $screen = is_array($product[self::SCREEN_LANGUAGES] ?? null) ? $product[self::SCREEN_LANGUAGES] : [];
+        $spoken = is_array($product[self::SPOKEN_LANGUAGES] ?? null) ? $product[self::SPOKEN_LANGUAGES] : [];
+
+        return match (true) {
+            in_array(self::CZECH_CODE, $spoken, true) => CzechSupport::Voice,
+            in_array(self::CZECH_CODE, $screen, true) => CzechSupport::Text,
+            $screen === [] && $spoken === [] => null,
+            default => CzechSupport::None,
+        };
     }
 
     /**

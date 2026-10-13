@@ -62,10 +62,16 @@ const PSN_F1_25 = 'EP4291-PPSA16357_00-0286411811680806';
 
 // Steam App ID se zachycenými údaji appdetails (tests/Fixtures/steam)
 const IT_TAKES_TWO_STEAM_ID = 1426210;
+/** České titulky bez dabingu (R47). */
+const CYBERPUNK_STEAM_ID = 1091500;
+/** Český dabing (R47). */
+const KINGDOM_COME_2_STEAM_ID = 1771300;
 const STEAM_DETAILS_FIXTURES = [
     597820 => 'biomutant',
     3669870 => 'control-resonant',
     IT_TAKES_TWO_STEAM_ID => 'it-takes-two',
+    CYBERPUNK_STEAM_ID => 'cyberpunk-2077',
+    KINGDOM_COME_2_STEAM_ID => 'kingdom-come-2',
 ];
 
 /**

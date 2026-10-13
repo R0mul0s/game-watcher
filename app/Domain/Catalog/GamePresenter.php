@@ -19,6 +19,7 @@ use App\Domain\Metacritic\MetacriticUrl;
 use App\Domain\Pricing\Money;
 use App\Domain\Pricing\PriceBoard;
 use App\Domain\Pricing\PriceFilter;
+use App\Enums\CzechSupport;
 use App\Enums\GameMode;
 use App\Enums\Platform;
 use App\Models\Game;
@@ -87,6 +88,8 @@ final class GamePresenter
             // Hlavní příběh podle HowLongToBeat a cena za hodinu podle volby „Cena“ (R44)
             'playtime' => $game->hltb_main_minutes,
             'pricePerHour' => $this->pricePerHour($game, $ranked, $currency),
+            // Čeština ze Steamu nebo PS Store (R47) — štítek jen titulky a dabing
+            'czech' => $game->czechSupport()?->value,
         ];
     }
 
@@ -117,6 +120,7 @@ final class GamePresenter
             // Žánry ze Steamu a režimy ze Steamu a PS Store (R25)
             'genres' => $game->genres ?? [],
             'modes' => $this->modes($game),
+            'czech' => $this->czech($game),
             'reviews' => array_map(fn (array $review): array => [
                 ...$review,
                 'level' => $this->reviewLevel($review['score']),
@@ -260,6 +264,33 @@ final class GamePresenter
             fn (GameMode $mode): string => $mode->value,
             array_filter(GameMode::cases(), fn (GameMode $mode): bool => in_array($mode, $played, true)),
         ));
+    }
+
+    /**
+     * Čeština po platformách (R47) — PC ze Steamu, PlayStation z připojených
+     * produktů. Shodná na obou platformách (nebo známá jen u jedné) jde jako
+     * jedna položka bez platformy; neznámá se vynechá.
+     *
+     * @return list<array{platform: string|null, support: string}>
+     */
+    private function czech(Game $game): array
+    {
+        $byPlatform = array_filter([
+            Platform::Pc->value => $game->czech,
+            Platform::PlayStation->value => CzechSupport::best(...$game->storeListings->map(fn (StoreListing $listing): ?CzechSupport => $listing->czech)->all()),
+        ]);
+
+        if (count(array_unique(array_map(fn (CzechSupport $support): string => $support->value, $byPlatform))) <= 1) {
+            $support = reset($byPlatform);
+
+            return $support === false ? [] : [['platform' => null, 'support' => $support->value]];
+        }
+
+        return array_map(
+            fn (string $platform, CzechSupport $support): array => ['platform' => $platform, 'support' => $support->value],
+            array_keys($byPlatform),
+            array_values($byPlatform),
+        );
     }
 
     /**
