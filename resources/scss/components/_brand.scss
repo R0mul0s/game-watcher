@@ -6,8 +6,10 @@
 
 @use '../abstracts/mixins' as *;
 
+// Na telefonu menší logo i název — vedle je zvonek, měna a odhlášení na jednom řádku
 .brand {
     display: inline-flex;
+    flex-shrink: 0;
     align-items: center;
     gap: var(--space-2);
     color: var(--color-text);
@@ -18,15 +20,34 @@
     &__name {
         @include display-caps;
 
-        font-size: var(--font-size-md);
+        font-size: var(--font-size-sm);
         font-weight: var(--font-weight-display);
+        letter-spacing: var(--letter-spacing-caps);
         text-shadow: var(--text-glow-accent);
+        white-space: nowrap;
+
+        // Na malém telefonu jen logo — název zůstane pro čtečku obrazovky
+        @include below-phone {
+            @include visually-hidden;
+        }
+
+        @include from-md {
+            font-size: var(--font-size-md);
+            letter-spacing: var(--letter-spacing-display);
+        }
     }
 }
 
 .brand-logo {
-    width: var(--logo-size);
-    height: var(--logo-size);
+    flex-shrink: 0;
+    width: var(--logo-size-compact);
+    height: var(--logo-size-compact);
+
+    @include from-md {
+        width: var(--logo-size);
+        height: var(--logo-size);
+    }
+
     overflow: visible;
     fill: none;
     stroke-linejoin: round;

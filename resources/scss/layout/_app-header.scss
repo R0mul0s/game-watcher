@@ -23,7 +23,8 @@
         box-shadow: var(--glow-accent);
     }
 
-    // Na mobilu dva řádky: logo a uživatel nahoře, navigace pod nimi
+    // Na telefonu a tabletu dva řádky: logo a uživatel nahoře, navigace pod nimi;
+    // jeden řádek až od $breakpoint-xl — užší by se navigace překryla s logem
     &__inner {
         display: flex;
         flex-wrap: wrap;
@@ -36,7 +37,7 @@
         padding: calc(var(--space-2) + env(safe-area-inset-top)) max(var(--space-3), env(safe-area-inset-right)) var(--space-2)
             max(var(--space-3), env(safe-area-inset-left));
 
-        @include from-md {
+        @include from-xl {
             flex-wrap: nowrap;
         }
     }
@@ -49,7 +50,13 @@
         justify-content: space-between;
         gap: var(--space-1);
 
+        // Na tabletu na druhém řádku zleva, ne roztažená přes celou šířku
         @include from-md {
+            justify-content: flex-start;
+            gap: var(--space-2);
+        }
+
+        @include from-xl {
             flex: 1;
             order: 0;
             justify-content: flex-end;
@@ -67,6 +74,12 @@
         text-decoration: none;
         white-space: nowrap;
         transition: color var(--duration-fast);
+
+        // Malý telefon (320 px) — užší prostrkání, ať se vejde i „Nastavení“
+        @include below-phone {
+            padding-inline: 0;
+            letter-spacing: var(--letter-spacing-caps);
+        }
 
         @include from-md {
             padding: var(--space-2) var(--space-3);
@@ -95,6 +108,11 @@
                 box-shadow: var(--glow-accent);
 
                 // Podtržení pod textem — stejně odsazené jako text odkazu
+                @include below-phone {
+                    right: 0;
+                    left: 0;
+                }
+
                 @include from-md {
                     right: var(--space-3);
                     left: var(--space-3);
@@ -103,10 +121,50 @@
         }
     }
 
+    // Zvonek, měna a odhlášení — na telefonu těsněji, ať se vejdou na řádek s logem
     &__user {
         display: flex;
+        flex-shrink: 0;
         align-items: center;
-        gap: var(--space-3);
+        gap: var(--space-2);
+
+        @include from-md {
+            gap: var(--space-3);
+        }
+    }
+
+    // Odhlášení: na telefonu čtvercové tlačítko s ikonou, od tabletu text
+    &__logout {
+        width: var(--control-size-small);
+        padding: 0;
+
+        @include from-md {
+            width: auto;
+            padding: 0 var(--space-3);
+        }
+    }
+
+    &__logout-icon {
+        flex-shrink: 0;
+        width: var(--icon-size);
+        height: var(--icon-size);
+        fill: none;
+        stroke: currentcolor;
+        stroke-width: var(--svg-stroke-icon);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+
+        @include from-md {
+            display: none;
+        }
+    }
+
+    &__logout-label {
+        @include visually-hidden;
+
+        @include from-md {
+            @include visually-shown;
+        }
     }
 
     // Na mobilu jen tlačítko — jméno by se vedle loga nevešlo

@@ -6,6 +6,13 @@
 
 @use 'variables' as *;
 
+/// Styly jen pro malé telefony (užší než $breakpoint-phone).
+@mixin below-phone {
+    @media (max-width: ($breakpoint-phone - 1px)) {
+        @content;
+    }
+}
+
 /// Styly od šířky, kdy jsou karty her ve dvou sloupcích.
 @mixin from-sm {
     @media (min-width: $breakpoint-sm) {
@@ -23,6 +30,13 @@
 /// Styly od širokého displeje výš.
 @mixin from-lg {
     @media (min-width: $breakpoint-lg) {
+        @content;
+    }
+}
+
+/// Styly od velmi širokého displeje výš (hlavička na jednom řádku).
+@mixin from-xl {
+    @media (min-width: $breakpoint-xl) {
         @content;
     }
 }

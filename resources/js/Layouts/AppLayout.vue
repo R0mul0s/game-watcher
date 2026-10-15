@@ -48,8 +48,20 @@ const page = usePage();
                 <span class="app-header__user-name" :title="t('auth.signed_in_as', { name: page.props.auth.name })">
                     {{ page.props.auth.name }}
                 </span>
-                <Link :href="page.props.auth.logoutUrl" method="post" as="button" class="button button--ghost button--small">
-                    {{ t('auth.logout') }}
+                <!-- Na telefonu jen ikona, ať se uživatel vejde na řádek s logem -->
+                <Link
+                    :href="page.props.auth.logoutUrl"
+                    method="post"
+                    as="button"
+                    class="button button--ghost button--small app-header__logout"
+                    :title="t('auth.logout')"
+                >
+                    <svg class="app-header__logout-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <path d="M16 17l5-5-5-5" />
+                        <path d="M21 12H9" />
+                    </svg>
+                    <span class="app-header__logout-label">{{ t('auth.logout') }}</span>
                 </Link>
             </div>
         </div>
