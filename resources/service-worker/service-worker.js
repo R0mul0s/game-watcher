@@ -73,7 +73,8 @@ self.addEventListener('push', (event) => {
         lang: 'cs',
         data: { url: message.url },
     });
-    // Počet zlevněných her na ikoně aplikace (R37) — jen kde to systém umí; smaže ho otevření aplikace
+    // Počet nepřečtených upozornění na ikoně aplikace (R37, R53) — jen kde to systém umí;
+    // aplikace ho po přečtení sníží (lib/pwa.js)
     const badge = message.badge && self.navigator.setAppBadge ? self.navigator.setAppBadge(message.badge).catch(() => undefined) : Promise.resolve();
 
     event.waitUntil(Promise.all([shown, badge]));

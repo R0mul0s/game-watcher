@@ -47,6 +47,7 @@
     --chart-height: 18rem;
     --color-success-soft: rgb(57 255 143 / 10%);
     --color-danger-soft: rgb(255 77 109 / 12%);
+    --color-warning-soft: rgb(255 179 0 / 12%);
     --color-on-accent: #021016;
 
     // Mřížka pozadí a podlahy přihlášení
@@ -86,6 +87,8 @@
     --space-6: 4rem;
 
     --radius-sm: 0.125rem;
+    // Kolečko s počtem (zvonek) — u víc číslic se protáhne do oválu
+    --radius-pill: 999px;
     --border-width: 1px;
     // Rohové lišty panelů (HUD)
     --hud-corner-size: 0.875rem;
@@ -145,6 +148,14 @@
     --trail-magenta-position: 0.62;
     // Šipka vlastního selectu (field__select)
     --select-arrow-size: 0.75rem;
+    // Centrum upozornění (R53) — kolečko nepřečtených u zvonku, proužek nepřečteného
+    // záznamu a kolečko s ikonou druhu
+    --icon-size: 1.25rem;
+    --svg-stroke-icon: 2;
+    --notification-count-size: 1.125rem;
+    --notification-count-offset: -0.25rem;
+    --notification-unread-width: 3px;
+    --notification-icon-box-size: 2.25rem;
     // Ukazatel stažení dolů v aplikaci z plochy (R37); šipka se otočí o tolik na px tahu
     --pull-refresh-size: 2.5rem;
     --pull-refresh-icon-size: 1.25rem;
@@ -170,6 +181,11 @@
     // Tlačítko Zpět bliká vlastním rytmem, aby nepohasínalo zároveň s logem (R39)
     --duration-back-flicker: 9s;
     --duration-radar: 4s;
+    // Zvonek s nepřečtenými po načtení stránky dvakrát zacinká (R53) — ne donekonečna
+    --bell-ring-duration: 3s;
+    --bell-ring-iterations: 2;
+    --bell-ring-delay: 0.6s;
+    --bell-ring-angle: 14deg;
 
     // --- Vrstvy --------------------------------------------------------------
     --z-backdrop: 0;

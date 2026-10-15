@@ -21,6 +21,7 @@ use App\Http\Controllers\GameSearchController;
 use App\Http\Controllers\HltbController;
 use App\Http\Controllers\ManifestController;
 use App\Http\Controllers\MetacriticController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\ServiceWorkerController;
 use App\Http\Controllers\SettingsController;
@@ -96,6 +97,13 @@ Route::middleware('auth')->group(function (): void {
 
     // Stav zdrojů cen — kdy se který naposledy povedl (R29)
     Route::get('/stav-zdroju', SourceStatusController::class)->name('sources.show');
+
+    // Centrum upozornění (R53) — otevření záznamu ho označí a přejde na hru
+    Route::get('/upozorneni', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/upozorneni/precteno', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::get('/upozorneni/{notification}', [NotificationController::class, 'open'])
+        ->whereUuid('notification')
+        ->name('notifications.open');
 
     // Nastavení upozornění a zařízení s Web Push (etapa 6, R13, R26)
     Route::get('/nastaveni', [SettingsController::class, 'show'])->name('settings.show');

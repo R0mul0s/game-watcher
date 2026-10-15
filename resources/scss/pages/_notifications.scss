@@ -1,0 +1,138 @@
+// _notifications.scss
+// Centrum upozornění (R53, Notifications.vue): záznamy po dnech s ikonou druhu,
+// nepřečtené s neonovým proužkem. Převzato z Agregátoru letáků.
+//
+// @author Roman Hlaváček
+// @created 2026-10-15
+
+@use '../abstracts/mixins' as *;
+
+.notifications {
+    // „Označit vše jako přečtené“ nad seznamem vpravo
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: var(--space-3);
+    }
+
+    &__day {
+        margin-bottom: var(--space-4);
+    }
+
+    &__day-title {
+        @include display-caps;
+
+        margin-bottom: var(--space-2);
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-display);
+    }
+
+    // Panel bez vnitřního odsazení — řádky jdou od kraje ke kraji
+    &__list {
+        gap: 0;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+}
+
+.notification-item {
+    border-top: var(--border-width) solid var(--color-border);
+
+    &:first-child {
+        border-top: 0;
+    }
+
+    &__link {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+        border-left: var(--notification-unread-width) solid transparent;
+        color: inherit;
+        text-decoration: none;
+        transition: background var(--duration-fast);
+
+        &:hover {
+            background: var(--color-accent-soft);
+        }
+
+        @include neon-focus;
+    }
+
+    // Nepřečtený při otevření stránky: svítící proužek vlevo a výraznější nadpis
+    &--unread &__link {
+        border-left-color: var(--color-accent);
+        box-shadow: inset var(--notification-unread-width) 0 var(--space-2) calc(-1 * var(--space-1)) var(--color-accent);
+    }
+
+    &--unread &__title {
+        color: var(--color-text);
+    }
+
+    // Ikona druhu záznamu: cenovka (hra), kalendář (týdenní souhrn), výstraha (zdroje)
+    &__icon {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: var(--notification-icon-box-size);
+        height: var(--notification-icon-box-size);
+        border: var(--border-width) solid currentcolor;
+        border-radius: var(--radius-sm);
+        background: var(--color-accent-soft);
+        color: var(--color-accent);
+
+        &--weekly_digest {
+            background: var(--color-success-soft);
+            color: var(--color-neon-green);
+        }
+
+        &--sources {
+            background: var(--color-warning-soft);
+            color: var(--color-neon-amber);
+        }
+
+        svg {
+            width: var(--icon-size);
+            height: var(--icon-size);
+            fill: none;
+            stroke: currentcolor;
+            stroke-width: var(--svg-stroke-icon);
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    }
+
+    &__body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: var(--space-1);
+        min-width: 0;
+    }
+
+    &__title {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--color-text-muted);
+        font-weight: var(--font-weight-strong);
+        overflow-wrap: anywhere;
+    }
+
+    &__text {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
+        overflow-wrap: anywhere;
+    }
+
+    &__time {
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-sm);
+        white-space: nowrap;
+    }
+}

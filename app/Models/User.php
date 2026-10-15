@@ -12,23 +12,27 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\EmailFrequency;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 
 /**
  * Účet zakládá správce (games:create-user), registrace není (R4). Upozornění
- * na cenu chodí e-mailem (notify_email) a na zařízení s odběrem Web Push (R13).
+ * se zapisují do centra upozornění (databázové notifikace, R53), chodí na
+ * zařízení s odběrem Web Push (R13) a e-mailem podle email_frequency.
  *
  * @property int $id
  * @property string $name
  * @property string $email
  * @property string $display_currency
- * @property bool $notify_email
+ * @property EmailFrequency $email_frequency
+ * @property CarbonImmutable|null $alert_email_sent_at
  * @property bool $has_ps_plus
  * @property bool $has_game_pass
  * @property bool $notify_weekly
@@ -39,6 +43,8 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
+    use Notifiable;
+
     /**
      * @var list<string>
      */
@@ -47,7 +53,8 @@ class User extends Authenticatable
         'email',
         'password',
         'display_currency',
-        'notify_email',
+        'email_frequency',
+        'alert_email_sent_at',
         'has_ps_plus',
         'has_game_pass',
         'notify_weekly',
@@ -61,7 +68,7 @@ class User extends Authenticatable
      * @var array<string, mixed>
      */
     protected $attributes = [
-        'notify_email' => true,
+        'email_frequency' => 'daily',
         'has_ps_plus' => false,
         'has_game_pass' => false,
         'notify_weekly' => true,
@@ -84,7 +91,8 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
-            'notify_email' => 'boolean',
+            'email_frequency' => EmailFrequency::class,
+            'alert_email_sent_at' => 'immutable_datetime',
             'has_ps_plus' => 'boolean',
             'has_game_pass' => 'boolean',
             'notify_weekly' => 'boolean',

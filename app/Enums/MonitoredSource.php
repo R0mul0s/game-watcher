@@ -57,8 +57,11 @@ enum MonitoredSource: string
     /** Nadcházející hry z IGDB (R46) — doplňkové údaje */
     case Igdb = 'igdb';
 
-    /** Doručení upozornění e-mailem a na zařízení (R26) */
+    /** Upozornění — zápis do centra a zprávy na zařízení (R26, R53) */
     case Alerts = 'alerts';
+
+    /** E-mail s upozorněními z centra — souhrn ráno, nebo po každém běhu (R53) */
+    case AlertEmails = 'alert_emails';
 
     /** Týdenní souhrn slev e-mailem (R36) */
     case WeeklyDigest = 'weekly_digest';

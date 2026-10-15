@@ -1,6 +1,6 @@
 <!--
     Rozvržení stránek přihlášeného uživatele — tlumená kulisa s obzorem (R6),
-    hlavička s navigací a odhlášením, obsah, návrat nahoru (R45).
+    hlavička s navigací, zvonkem centra upozornění (R53) a odhlášením, obsah, návrat nahoru (R45).
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -10,6 +10,7 @@ import AppBackdrop from '@/Components/AppBackdrop.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
 import CurrencySwitch from '@/Components/CurrencySwitch.vue';
 import FlashMessage from '@/Components/FlashMessage.vue';
+import NotificationBell from '@/Components/NotificationBell.vue';
 import PullToRefresh from '@/Components/PullToRefresh.vue';
 import ScrollTopButton from '@/Components/ScrollTopButton.vue';
 import { useTranslations } from '@/lib/i18n';
@@ -42,6 +43,7 @@ const page = usePage();
                 </Link>
             </nav>
             <div v-if="page.props.auth" class="app-header__user">
+                <NotificationBell />
                 <CurrencySwitch />
                 <span class="app-header__user-name" :title="t('auth.signed_in_as', { name: page.props.auth.name })">
                     {{ page.props.auth.name }}

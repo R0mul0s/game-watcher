@@ -114,12 +114,14 @@ curl -I "https://game-watcher.rhsoft.cz/prihlaseni"
 
 ## Cron: stahování cen
 
-Kurzy ČNB, ceny sledovaných her, obnovu údajů her, žánry ze Steamu, Metascore z Metacritic, upozornění na ceny, týdenní souhrn a úklid cache obstarává URL volaná cronem
+Kurzy ČNB, ceny sledovaných her, obnovu údajů her, žánry ze Steamu, Metascore z Metacritic, upozornění na ceny (centrum, zařízení, e-mail), týdenní souhrn, úklid centra upozornění a cache obstarává URL volaná cronem
 ve WebAdminu (R19) — hosting nemá scheduler ani artisan.
 
 1. V `.env` na hostingu vyplň `GAMES_CRON_TOKEN` — náhodný řetězec:
    `docker compose exec app php -r "echo bin2hex(random_bytes(24));"`
-2. Ve WebAdminu založ cron s voláním URL **každé 4 hodiny**:
+2. Ve WebAdminu založ cron s voláním URL **každé 4 hodiny, s během v 7:00**
+   (3, 7, 11, 15, 19 a 23 h) — ranní souhrn e-mailem pošle první běh od 7:00 (R53,
+   `games.alerts.digest_hour`):
    `https://game-watcher.rhsoft.cz/cron/ceny?token=<GAMES_CRON_TOKEN>`
 3. Ověř v prohlížeči stejnou URL — odpověď je prostý text:
    ```
@@ -128,8 +130,10 @@ ve WebAdminu (R19) — hosting nemá scheduler ani artisan.
    údaje her z ITAD — obnoveno: 3
    žánry a režimy ze Steamu — her: 2
    Metascore z Metacritic — her: 1
-   upozornění — her: 1, e-mailů: 1, na zařízení: 1
+   upozornění — her: 1, na zařízení: 1
+   e-maily s upozorněními — odesláno: 1
    týdenní souhrn — e-mailů: 0
+   centrum upozornění — záznamů o zdrojích: 0, smazáno starých: 0
    cache — smazáno prošlých záznamů: 6
    ```
    Špatný nebo chybějící token vrací **404**.
@@ -140,8 +144,9 @@ neplatný klíč), ostatní proběhnou, místo čísla je „chyba“ a URL vrá
 vrátí **409** a nic neudělá; zámek po pádu PHP vyprší sám za 10 minut
 (`games.cron.lock_seconds`). Ceny se stahují jen hrám, které někdo sleduje;
 kurz ČNB jen tehdy, když uložený není dnešní (o víkendu platí páteční).
-Upozornění, které nedoručil žádný kanál (chyba SMTP i push), se v souhrnu
-ukáže jako „nedoručeno“, URL vrátí **500** a zkusí ho další běh (R26).
+Upozornění se zapíše do centra upozornění vždy; e-mail, který neodešel (chyba
+SMTP), se v souhrnu ukáže jako „nedoručeno“, URL vrátí **500** a zkusí ho další
+běh (R53).
 
 Výsledek každého zdroje ukazuje stránka **Nastavení → Stav zdrojů** (`/stav-zdroju`,
 R29): kdy se který zdroj naposledy povedl, kolik toho stáhl a poslední chyba.
@@ -216,6 +221,7 @@ je jediná cesta, jak ji neztratit.
 | `migrations-2026-10-13-czech.sql` | čeština ve hře (R47): v `games` a `store_listings` sloupec `czech`; při prvním běhu vynuluje `games.steam_details_at`, aby cron po dávkách stáhl údaje ze Steamu znovu i s jazyky (PS Store doplní obnova cen); opakovatelný, pustit **po** nadcházejících hrách a **před** nahráním kódu | 2026-10-13 |
 | `migrations-2026-10-13-plus-leaving.sql` | odchod z katalogu PS Plus (R49): v `current_prices` sloupec `member_leaves_at` — prázdný, doplní ho obnova cen; opakovatelný, pustit **po** češtině a **před** nahráním kódu | 2026-10-13 |
 | `migrations-2026-10-13-game-pass-and-bundles.sql` | Game Pass a bundly (R50, R51): v `games` `in_game_pass` a `game_pass_leaves_at`, v `users` `has_game_pass` (vypnuto), ve `watchlist_items` `game_pass_notified_at` a `notified_bundles`, nová tabulka `game_bundles` — vše doplní cron; opakovatelný, pustit **po** odchodu z PS Plus a **před** nahráním kódu | 2026-10-13 |
+| `migrations-2026-10-15-centrum-upozorneni.sql` | centrum upozornění a ranní souhrn (R53): tabulka `notifications` (prázdná, plní ji cron), v `users` `email_frequency` místo `notify_email` (vypnutý e-mail → `off`, zapnutý → `daily`) a `alert_email_sent_at`; opakovatelný (ověřeno dvakrát po sobě i s převodem dat), pustit **po** Game Passu a bundlech a **před** nahráním kódu | |
 
 ## Nasazené verze
 

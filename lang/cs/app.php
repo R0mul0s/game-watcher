@@ -105,8 +105,10 @@ return [
         'metacritic_failed' => 'Metascore z Metacritic — her: :count, Metacritic neodpovídá (doplní další běh)',
         'hltb' => 'Délka hraní z HowLongToBeat — her: :count',
         'hltb_failed' => 'Délka hraní z HowLongToBeat — her: :count, HowLongToBeat neodpovídá (doplní další běh)',
-        'alerts' => 'upozornění — her: :alerts, e-mailů: :emails, na zařízení: :pushes',
-        'alerts_undelivered' => ', nedoručeno: :count (zkusí další běh, podrobnosti v logu)',
+        'alerts' => 'upozornění — her: :alerts, na zařízení: :pushes',
+        'emails' => 'e-maily s upozorněními — odesláno: :count',
+        'undelivered' => ', nedoručeno: :count (zkusí další běh, podrobnosti v logu)',
+        'notifications' => 'centrum upozornění — záznamů o zdrojích: :sources, smazáno starých: :pruned',
         'upcoming' => 'nadcházející hry z IGDB — her: :count',
         'upcoming_failed' => 'nadcházející hry z IGDB — IGDB neodpovídá (seznam zůstává z minula)',
         'upcoming_disabled' => 'nadcházející hry — IGDB není nastavené (GAMES_IGDB_CLIENT_ID), přeskočeno',
@@ -126,8 +128,10 @@ return [
             'hltb' => 'délka hraní',
             'upcoming' => 'nadcházející hry',
             'alerts' => 'upozornění',
+            'emails' => 'e-maily s upozorněními',
             'weekly' => 'týdenní souhrn',
             'canary' => 'kontrola parserů',
+            'notifications' => 'centrum upozornění',
             'cache' => 'cache',
         ],
     ],
@@ -145,7 +149,7 @@ return [
         'igdb_format' => 'IGDB :path nevrátil očekávaná data — nejspíš změnil API',
         'igdb_empty' => 'IGDB nevrátil žádnou nadcházející hru — seznam zůstává z minula',
         'steam_failed' => 'Steam neodpovídá — údaje doplní další běh',
-        'alerts_undelivered' => 'Nedoručená upozornění: :count — podrobnosti v logu aplikace',
+        'emails_undelivered' => 'Nedoručené e-maily s upozorněními: :count — podrobnosti v logu aplikace',
         'weekly_undelivered' => 'Nedoručené týdenní souhrny: :count — podrobnosti v logu aplikace',
         'cron_failed' => 'Selhalo: :steps',
         // Kontrola parserů na referenčních hrách (R48) — zdroj: co chybí
@@ -206,10 +210,10 @@ return [
         'weekly_subject' => 'Za týden zlevnila :count sledovaná hra|Za týden zlevnily :count sledované hry|Za týden zlevnilo :count sledovaných her',
         'weekly_heading' => 'Co za týden zlevnilo',
         'weekly_line' => 'před týdnem :previous · −:drop %',
-        'weekly_footer' => 'Souhrn chodí jednou týdně v pondělí, jen když něco zlevnilo. Vypnout ho jde v',
-        'open_shop' => 'Do obchodu',
+        'weekly_footer' => 'Souhrn chodí jednou týdně v pondělí, jen když něco zlevnilo. Vypnout ho jde v',        'open_shop' => 'Do obchodu',
         'open_app' => 'Otevřít Game Watcher',
-        'mail_footer' => 'Upozornění chodí na hry z tvého seznamu — cílovou cenu nastavíš na detailu hry, e-mail a telefon v',
+        'open_center' => 'Všechna upozornění',
+        'mail_footer' => 'Upozornění chodí na hry z tvého seznamu — cílovou cenu nastavíš na detailu hry, jak často chodí e-mail, v',
         'settings' => 'Nastavení',
         'push_title' => ':title za :price',
         'push_body' => ':reason · :shop',
@@ -223,9 +227,20 @@ return [
         'keys_generated' => 'Klíče VAPID — vlož je do .env (veřejný i soukromý). Po změně klíčů je potřeba upozornění na zařízeních zapnout znovu.',
     ],
 
+    // Centrum upozornění (R53) — záznamy o zdrojích; upozornění na hry nesou
+    // texty z alerts, týdenní souhrn alerts.weekly_subject
+    'notifications' => [
+        'sources_down_title' => 'Výpadek zdrojů cen',
+        'sources_down_text' => ':sources — ceny nemusí být aktuální',
+        'sources_up_title' => 'Zdroje cen zase fungují',
+        'sources_up_text' => 'Ceny se zase stahují ze všech hlídaných zdrojů.',
+    ],
+
     'validation' => [
         'push_endpoint' => 'Adresa odběru musí být HTTPS u známé push služby.',
         'push_key' => 'Klíč odběru nemá správný tvar.',
+        'notification_ids' => 'Seznam upozornění nemá správný tvar.',
+        'email_frequency' => 'Vyber, jak často má e-mail chodit.',
     ],
 
     // Zakládání účtů (games:create-user) — jen konzole
@@ -278,6 +293,21 @@ return [
 
         'currency' => [
             'label' => 'Měna cen',
+        ],
+
+        // Centrum upozornění a zvonek v hlavičce (R53)
+        'notifications' => [
+            'title' => 'Upozornění',
+            'intro' => 'Upozornění na sledované hry, týdenní souhrny a výpadky zdrojů za posledních :days dní. Jak často chodí e-mailem, nastavíš v Nastavení.',
+            'bell' => 'Upozornění',
+            'bell_unread' => 'Upozornění — nepřečtených: :count',
+            'unread' => 'Nové',
+            'mark_all_read' => 'Označit vše jako přečtené',
+            'today' => 'Dnes',
+            'yesterday' => 'Včera',
+            'empty_title' => 'Zatím žádná upozornění',
+            'empty' => 'Až sledovaná hra zlevní, vyjde nebo bude v Game Passu či bundlu, objeví se to tady.',
+            'empty_link' => 'Na přehled',
         ],
 
         'prices' => [
@@ -723,9 +753,15 @@ return [
         'settings' => [
             'title' => 'Nastavení',
             'alerts_title' => 'Upozornění na ceny',
-            'alerts_text' => 'Kontrolujeme ceny s každým stažením (každé 4 hodiny). Upozorníme, když hra klesne na cílovou cenu, a u her bez cíle, když je ve slevě na historickém minimu. Hru sledovanou před vydáním ohlásíme, až vyjde a až bude poprvé ve slevě. Stejnou cenu podruhé neposíláme.',
-            'email' => 'Posílat e-mailem na :email',
-            'weekly' => 'Týdenní souhrn — v pondělí e-mail s tím, co za týden zlevnilo',
+            'alerts_text' => 'Kontrolujeme ceny s každým stažením (každé 4 hodiny). Upozorníme, když hra klesne na cílovou cenu, a u her bez cíle, když je ve slevě na historickém minimu. Hru sledovanou před vydáním ohlásíme, až vyjde a až bude poprvé ve slevě. Stejnou cenu podruhé neposíláme. Všechna upozornění najdeš pod zvonkem v hlavičce.',
+            'email' => 'E-mail na :email',
+            'email_options' => [
+                'daily' => 'Souhrn jednou denně ráno',
+                'instant' => 'Hned po každé kontrole cen',
+                'off' => 'Neposílat',
+            ],
+            'email_hint' => 'Ranní souhrn přijde kolem :hour:00 se vším, co za poslední den přibylo pod zvonkem.',
+            'weekly' => 'Týdenní souhrn — v pondělí pod zvonkem (a e-mailem) to, co za týden zlevnilo',
             'ps_plus' => 'Mám PS Plus',
             'ps_plus_hint' => 'Upozornění u PlayStation Store počítají cenu pro předplatitele a dají vědět, když je sledovaná hra měsíční hrou PS Plus.',
             'game_pass' => 'Mám Game Pass',
@@ -786,7 +822,8 @@ return [
                 'metacritic' => 'Metacritic — Metascore her mimo ITAD',
                 'hltb' => 'HowLongToBeat — délka hraní',
                 'igdb' => 'IGDB — nadcházející hry',
-                'alerts' => 'Upozornění — e-mail a zařízení',
+                'alerts' => 'Upozornění — centrum a zařízení',
+                'alert_emails' => 'Upozornění — e-mail',
                 'weekly_digest' => 'Týdenní souhrn — e-mail',
                 'canary' => 'Kontrola parserů — PS Store, Steam, HowLongToBeat, Metacritic, Xzone, Heureka',
             ],

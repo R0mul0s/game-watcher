@@ -15,7 +15,6 @@ use App\Domain\Currency\Actions\ImportExchangeRates;
 use App\Domain\Pricing\Actions\RefreshBundles;
 use App\Domain\Pricing\Actions\RefreshSubscriptions;
 use App\Enums\Platform;
-use App\Mail\PriceAlertMail;
 use App\Models\Game;
 use App\Models\GameBundle;
 use App\Models\User;
@@ -101,9 +100,8 @@ it('účtu s Game Passem upozorní jednou, bez Game Passu ne (R50)', function (b
         ->and(app(SendPriceAlerts::class)->handle()->alerts)->toBe(0);
 
     if ($alerts > 0) {
-        Mail::assertSent(PriceAlertMail::class, fn (PriceAlertMail $mail): bool => $mail->hasTo($user->email)
-            && $mail->subjectLine === 'Fable — je v Game Passu, který máš'
-            && $mail->lines[0]['price'] === '');
+        expect(lastAlert($user)->headline)->toBe('Fable — je v Game Passu, který máš')
+            ->and(lastAlert($user)->price)->toBe('');
     }
 })->with([
     'má Game Pass' => [true, 1],
@@ -131,11 +129,11 @@ it('upozorní na každý bundle jednou, s cenou v měně účtu (R51)', function
         ->and(app(SendPriceAlerts::class)->handle()->alerts)->toBe(0)
         ->and(WatchlistItem::query()->sole()->notified_bundles)->toBe([16655]);
 
-    Mail::assertSent(PriceAlertMail::class, fn (PriceAlertMail $mail): bool => $mail->hasTo($user->email)
-        && str_contains(plainSpaces($mail->subjectLine), ' v bundlu za ')
-        && $mail->lines[0]['shop'] === 'na GreenManGaming'
-        && plainSpaces($mail->lines[0]['reason']) === 'v bundlu „The Darksiders Collection Bundle“ do 27. 10.'
-        && str_ends_with(plainSpaces($mail->lines[0]['price']), 'Kč'));
+    $record = lastAlert($user);
+    expect(plainSpaces($record->headline))->toContain(' v bundlu za ')
+        ->and($record->shop)->toBe('na GreenManGaming')
+        ->and(plainSpaces($record->reason))->toBe('v bundlu „The Darksiders Collection Bundle“ do 27. 10.')
+        ->and(plainSpaces($record->price))->toEndWith('Kč');
 });
 
 it('hra hlídaná jen na PlayStationu na bundle neupozorní (R51)', function (): void {

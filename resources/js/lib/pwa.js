@@ -29,7 +29,7 @@ let refreshAfterMinutes = 0;
 /** Kdy stránka naposledy dostala data ze serveru. */
 let lastLoadedAt = Date.now();
 
-/** Je někdo přihlášený — číslo na ikoně a nové načtení jen pro přihlášeného. */
+/** Je někdo přihlášený — nové načtení jen pro přihlášeného. */
 let signedIn = false;
 
 /**
@@ -42,21 +42,28 @@ export function isStandalone() {
 }
 
 /**
- * Smaže číslo na ikoně aplikace — uživatel aplikaci otevřel, slevy uvidí.
+ * Číslo na ikoně aplikace podle nepřečtených záznamů centra upozornění (R53) — stejné jako
+ * u zvonku. Zpráva na zařízení ho nastaví sama (service worker), tady se po přečtení sníží
+ * nebo smaže; po odhlášení (bez centra) zmizí.
+ *
+ * @param {{unread: number}|null|undefined} notificationCenter Sdílená vlastnost notificationCenter
  */
-function clearAppBadge() {
-    navigator.clearAppBadge?.().catch(() => undefined);
+function syncAppBadge(notificationCenter) {
+    if (notificationCenter?.unread > 0) {
+        navigator.setAppBadge?.(notificationCenter.unread).catch(() => undefined);
+    } else {
+        navigator.clearAppBadge?.().catch(() => undefined);
+    }
 }
 
 /**
- * Po návratu do aplikace smaže číslo na ikoně a načte data znovu, když jsou starší než nastavení.
+ * Po návratu do aplikace načte data znovu, když jsou starší než nastavení (s nimi i číslo na ikoně).
  */
 function onResume() {
     if (document.visibilityState !== 'visible' || !signedIn) {
         return;
     }
 
-    clearAppBadge();
     if (Date.now() - lastLoadedAt > refreshAfterMinutes * MINUTE_MS && navigator.onLine) {
         router.reload();
     }
@@ -82,13 +89,12 @@ export function initPwa(initialPage) {
         });
     }
 
-    if (signedIn) {
-        clearAppBadge();
-    }
+    syncAppBadge(initialPage.props.notificationCenter);
 
     router.on('success', (event) => {
         lastLoadedAt = Date.now();
         signedIn = Boolean(event.detail.page.props.auth);
     });
+    router.on('navigate', (event) => syncAppBadge(event.detail.page.props.notificationCenter));
     document.addEventListener('visibilitychange', onResume);
 }

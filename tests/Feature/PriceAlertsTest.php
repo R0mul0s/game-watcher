@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Upozornění na ceny — cílová cena, historické minimum, e-mail a telefon (etapa 6, R26).
+ * Upozornění na ceny — cílová cena, historické minimum, centrum upozornění a telefon (etapa 6, R26, R53).
  *
  * @author Roman Hlaváček
  *
@@ -10,11 +10,13 @@
 
 declare(strict_types=1);
 
+use App\Domain\Alerts\Actions\SendAlertEmails;
 use App\Domain\Alerts\Actions\SendPriceAlerts;
 use App\Domain\Currency\Actions\ImportExchangeRates;
 use App\Domain\Currency\ExchangeRates;
 use App\Domain\PlayStation\Actions\ConnectPlayStationProduct;
 use App\Domain\Pricing\Money;
+use App\Enums\EmailFrequency;
 use App\Enums\PriceScope;
 use App\Mail\PriceAlertMail;
 use App\Models\CurrentPrice;
@@ -22,6 +24,7 @@ use App\Models\PriceLow;
 use App\Models\PushSubscription;
 use App\Models\User;
 use App\Models\WatchlistItem;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
@@ -44,21 +47,39 @@ function setTarget(WatchlistItem $item, string $amount, string $currency = 'CZK'
     $item->update(['target_amount' => $amount, 'target_currency' => $currency]);
 }
 
-it('pošle e-mail, když nejlevnější nabídka (i klíče) klesne pod cílovou cenu', function (): void {
+/**
+ * Přidá účtu zařízení s odběrem Web Push.
+ */
+function addDevice(User $user, string $endpoint = 'https://fcm.googleapis.com/fcm/send/telefon'): void
+{
+    $subscription = browserSubscription($endpoint);
+    $user->pushSubscriptions()->create([
+        'endpoint' => $endpoint,
+        'endpoint_hash' => PushSubscription::hashEndpoint($endpoint),
+        'public_key' => $subscription['keys']['p256dh'],
+        'auth_token' => $subscription['keys']['auth'],
+        'content_encoding' => $subscription['content_encoding'],
+    ]);
+}
+
+it('zapíše do centra upozornění, když nejlevnější nabídka (i klíče) klesne pod cílovou cenu', function (): void {
     setTarget($this->item, '200.00');
 
     $result = app(SendPriceAlerts::class)->handle();
 
-    expect($result->alerts)->toBe(1)->and($result->emails)->toBe(1);
-    Mail::assertSent(PriceAlertMail::class, fn (PriceAlertMail $mail): bool => $mail->hasTo($this->user->email)
-        && plainSpaces($mail->subjectLine) === 'BIOMUTANT za 132 Kč'
-        && plainSpaces($mail->lines[0]['reason']) === 'pod cílovou cenou 200 Kč'
-        && $mail->lines[0]['detailUrl'] === route('games.show', 'biomutant'));
+    expect($result->alerts)->toBe(1);
+    $record = lastAlert($this->user);
+    expect(plainSpaces($record->headline))->toBe('BIOMUTANT za 132 Kč')
+        ->and(plainSpaces($record->reason))->toBe('pod cílovou cenou 200 Kč')
+        ->and($record->url)->toBe('/hry/biomutant')
+        ->and($record->shopUrl)->toBe('https://gg.deals/game/biomutant/');
 
+    // Stav „už upozorněno“ hned po zápisu — e-mail přijde až souhrnem (R53)
     $item = $this->item->fresh();
     expect($item?->notified_amount)->toBe('131.81')
         ->and($item?->notified_currency)->toBe('CZK')
         ->and($item?->notified_at)->not->toBeNull();
+    Mail::assertNothingSent();
 });
 
 it('s PS Plus upozorní na měsíční hru Essential jednou, bez PS Plus ne (R35)', function (bool $hasPlus, int $alerts): void {
@@ -71,9 +92,8 @@ it('s PS Plus upozorní na měsíční hru Essential jednou, bez PS Plus ne (R35
 
     expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe($alerts);
     if ($hasPlus) {
-        Mail::assertSent(PriceAlertMail::class, fn (PriceAlertMail $mail): bool => $mail->hasTo($user->email)
-            && $mail->lines[0]['reason'] === __('app.alerts.reason_plus_monthly')
-            && plainSpaces($mail->lines[0]['price']) === '0 Kč');
+        expect(lastAlert($user)->reason)->toBe(__('app.alerts.reason_plus_monthly'))
+            ->and(plainSpaces(lastAlert($user)->price))->toBe('0 Kč');
 
         // Podruhé už ne
         expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(0);
@@ -83,18 +103,18 @@ it('s PS Plus upozorní na měsíční hru Essential jednou, bez PS Plus ne (R35
     'bez PS Plus' => [false, 0],
 ]);
 
-it('stejnou cenu podruhé nepošle, nižší ano', function (): void {
+it('stejnou cenu podruhé nezapíše, nižší ano', function (): void {
     setTarget($this->item, '200.00');
     app(SendPriceAlerts::class)->handle();
     app(SendPriceAlerts::class)->handle();
 
-    Mail::assertSentCount(1);
+    expect(alertRecords($this->user))->toHaveCount(1);
 
     // Poslední upozornění bylo na vyšší cenu — teď je nižší
     $this->item->update(['notified_amount' => '150.00']);
     app(SendPriceAlerts::class)->handle();
 
-    Mail::assertSentCount(2);
+    expect(alertRecords($this->user))->toHaveCount(2);
 });
 
 it('cíl nad cenou neupozorní a stav posledního upozornění smaže', function (): void {
@@ -102,8 +122,8 @@ it('cíl nad cenou neupozorní a stav posledního upozornění smaže', function
     $this->item->update(['notified_amount' => '131.81', 'notified_currency' => 'CZK']);
 
     expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(0)
-        ->and($this->item->fresh()?->notified_amount)->toBeNull();
-    Mail::assertNothingSent();
+        ->and($this->item->fresh()?->notified_amount)->toBeNull()
+        ->and(alertRecords($this->user))->toBe([]);
 });
 
 it('cílovou cenu v jiné měně převede kurzem', function (): void {
@@ -118,7 +138,7 @@ it('bez cílové ceny upozorní na historické minimum obchodů s klíči', func
 
     app(SendPriceAlerts::class)->handle();
 
-    Mail::assertSent(PriceAlertMail::class, fn (PriceAlertMail $mail): bool => $mail->lines[0]['reason'] === 'historické minimum');
+    expect(lastAlert($this->user)->reason)->toBe('historické minimum');
 });
 
 it('historické minimum oficiálních obchodů jen ve slevě', function (): void {
@@ -140,54 +160,46 @@ it('hra hlídaná jen na PlayStationu nepočítá PC ani klíče', function (): 
     expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(0);
 });
 
-it('účet bez kanálu přeskočí a jeho stav nemění', function (): void {
+it('účtu bez e-mailu a zařízení upozornění zapíše do centra (R53)', function (): void {
     setTarget($this->item, '200.00');
-    $this->user->update(['notify_email' => false]);
+    $this->user->update(['email_frequency' => EmailFrequency::Off]);
 
-    expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(0)
-        ->and($this->item->fresh()?->notified_amount)->toBeNull();
+    expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(1)
+        ->and($this->item->fresh()?->notified_amount)->toBe('131.81')
+        ->and(alertRecords($this->user))->toHaveCount(1);
+
+    app(SendAlertEmails::class)->handle();
+    Mail::assertNothingSent();
 });
 
-it('pošle upozornění na zařízení a zrušený odběr smaže', function (): void {
+it('pošle upozornění na zařízení hned a zrušený odběr smaže', function (): void {
     enablePush();
     setTarget($this->item, '200.00');
-    $this->user->update(['notify_email' => false]);
-    $this->user->pushSubscriptions()->create([
-        ...collect(browserSubscription('https://fcm.googleapis.com/fcm/send/telefon'))->only(['endpoint', 'content_encoding'])->all(),
-        'endpoint_hash' => PushSubscription::hashEndpoint('https://fcm.googleapis.com/fcm/send/telefon'),
-        'public_key' => browserSubscription()['keys']['p256dh'],
-        'auth_token' => browserSubscription()['keys']['auth'],
-    ]);
+    addDevice($this->user);
     fakeApis(['fcm.googleapis.com/fcm/send/telefon' => Http::response('', 201)]);
 
     $result = app(SendPriceAlerts::class)->handle();
 
-    expect($result->pushes)->toBe(1)->and($result->emails)->toBe(0);
+    expect($result->pushes)->toBe(1);
     Http::assertSent(fn (Request $request): bool => $request->url() === 'https://fcm.googleapis.com/fcm/send/telefon'
         && $request->header('Topic') === ['game-'.$this->item->game_id]
         && str_starts_with($request->header('Authorization')[0], 'vapid t='));
     expect($this->item->fresh()?->notified_amount)->toBe('131.81');
 
-    // Push služba odběr zrušila — smaže se, upozornění zůstane nedoručené
+    // Push služba odběr zrušila — smaže se; upozornění zůstane v centru
     WatchlistItem::query()->update(['notified_amount' => null]);
     fakeApis(['fcm.googleapis.com/fcm/send/telefon' => Http::response('', 410)]);
 
-    expect(app(SendPriceAlerts::class)->handle()->undelivered)->toBe(1)
-        ->and(PushSubscription::query()->count())->toBe(0);
+    expect(app(SendPriceAlerts::class)->handle()->pushes)->toBe(0)
+        ->and(PushSubscription::query()->count())->toBe(0)
+        ->and(alertRecords($this->user))->toHaveCount(2);
 });
 
 it('víc her najednou pošle na zařízení jednou souhrnně', function (): void {
     enablePush();
     config(['games.alerts.max_push_messages' => 0]);
     setTarget($this->item, '200.00');
-    $subscription = browserSubscription();
-    $this->user->pushSubscriptions()->create([
-        'endpoint' => $subscription['endpoint'],
-        'endpoint_hash' => PushSubscription::hashEndpoint($subscription['endpoint']),
-        'public_key' => $subscription['keys']['p256dh'],
-        'auth_token' => $subscription['keys']['auth'],
-        'content_encoding' => 'aes128gcm',
-    ]);
+    addDevice($this->user, browserSubscription()['endpoint']);
     fakeApis(['fcm.googleapis.com/*' => Http::response('', 201)]);
 
     app(SendPriceAlerts::class)->handle();
@@ -196,35 +208,46 @@ it('víc her najednou pošle na zařízení jednou souhrnně', function (): void
         && $request->header('Topic') === ['summary']);
 });
 
-it('chyba SMTP upozornění neoznačí jako odeslané a cron vrátí 500', function (): void {
+it('chyba SMTP upozornění v centru nechá, e-mail zkusí další běh a cron vrátí 500', function (): void {
     setTarget($this->item, '200.00');
+    $this->user->update(['email_frequency' => EmailFrequency::Instant]);
     Mail::shouldReceive('to')->andThrow(new RuntimeException('SMTP neodpovídá'));
 
     $this->get('/cron/ceny?token=test-cron-token')
         ->assertStatus(500)
-        ->assertSeeText('upozornění — her: 1, e-mailů: 0, na zařízení: 0, nedoručeno: 1');
+        ->assertSeeText('upozornění — her: 1, na zařízení: 0')
+        ->assertSeeText('e-maily s upozorněními — odesláno: 0, nedoručeno: 1');
 
-    expect($this->item->fresh()?->notified_amount)->toBeNull();
+    expect($this->item->fresh()?->notified_amount)->toBe('131.81')
+        ->and($this->user->fresh()?->alert_email_sent_at)->toBeNull();
 });
 
-it('cron vypíše souhrn upozornění', function (): void {
+it('cron vypíše souhrn upozornění a ráno pošle e-mail', function (): void {
     setTarget($this->item, '200.00');
+    $this->travelTo(CarbonImmutable::parse('2026-10-15 07:05', 'Europe/Prague'));
 
     $this->get('/cron/ceny?token=test-cron-token')
         ->assertOk()
-        ->assertSeeText('upozornění — her: 1, e-mailů: 1, na zařízení: 0');
+        ->assertSeeText('upozornění — her: 1, na zařízení: 0')
+        ->assertSeeText('e-maily s upozorněními — odesláno: 1');
 });
 
 it('e-mail se vykreslí s hrou, cenou a odkazem do obchodu', function (): void {
     setTarget($this->item, '200.00');
+    $this->user->update(['email_frequency' => EmailFrequency::Instant]);
     app(SendPriceAlerts::class)->handle();
+    app(SendAlertEmails::class)->handle();
 
     Mail::assertSent(PriceAlertMail::class, function (PriceAlertMail $mail): bool {
         $html = $mail->render();
 
-        return str_contains($html, 'BIOMUTANT')
+        return $mail->hasTo($this->user->email)
+            && plainSpaces($mail->subjectLine) === 'BIOMUTANT za 132 Kč'
+            && $mail->lines[0]['detailUrl'] === route('games.show', 'biomutant')
+            && str_contains($html, 'BIOMUTANT')
             && str_contains($html, '132')
             && str_contains($html, 'https://gg.deals/game/biomutant/')
+            && str_contains($html, route('notifications.index'))
             && str_contains($html, route('settings.show'));
     });
 });

@@ -160,6 +160,21 @@ return [
         // vydání“ nejvýš tolik dní po vydání
         'release_alert_days' => 14,
         'first_sale_window_days' => 365,
+        // Ranní souhrn e-mailem (R53) — pošle ho první běh cronu od téhle hodiny
+        // (místní čas, display_timezone); cron má mít běh v tuhle hodinu
+        'digest_hour' => 7,
+    ],
+
+    /*
+    | Centrum upozornění (R53) — záznamy upozornění na hry, týdenních souhrnů
+    | a výpadků zdrojů. Starší než retention_days maže cron, stránka ukáže
+    | nejvýš max_listed nejnovějších.
+    */
+    'notifications' => [
+        'retention_days' => 30,
+        'max_listed' => 100,
+        // Nejvýš tolik záznamů označí jedno „Označit vše jako přečtené“
+        'max_mark_read' => 100,
     ],
 
     /*

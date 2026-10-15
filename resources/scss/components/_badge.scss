@@ -1,5 +1,6 @@
 // _badge.scss
-// Štítky — druh hry, obsah pro dospělé, čeština (GameBadges.vue), stav zdroje.
+// Štítky — druh hry, obsah pro dospělé, čeština (GameBadges.vue), stav zdroje,
+// nepřečtené upozornění.
 //
 // @author Roman Hlaváček
 // @created 2026-10-11
@@ -31,6 +32,13 @@
     &--language {
         border-color: var(--color-neon-cyan);
         color: var(--color-neon-cyan);
+    }
+
+    // Nepřečtený záznam v centru upozornění (R53)
+    &--accent {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        text-shadow: var(--text-glow-accent);
     }
 
     // Stav zdroje (Sources.vue, R29)

@@ -14,12 +14,10 @@ declare(strict_types=1);
 use App\Domain\Alerts\Actions\SendPriceAlerts;
 use App\Domain\Catalog\Actions\RefreshGameInfo;
 use App\Domain\Currency\Actions\ImportExchangeRates;
-use App\Mail\PriceAlertMail;
 use App\Models\CurrentPrice;
 use App\Models\Game;
 use App\Models\WatchlistItem;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\Mail;
 use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(function (): void {
@@ -34,7 +32,6 @@ beforeEach(function (): void {
     $this->game->update(['release_date' => '2026-10-20']);
     $this->item = WatchlistItem::query()->sole();
     $this->item->update(['release_notified_at' => null, 'first_sale_notified_at' => null]);
-    Mail::fake();
 });
 
 it('před vydáním nic nepošle, po vydání ve slevě upozorní na první slevu jednou', function (): void {
@@ -42,9 +39,9 @@ it('před vydáním nic nepošle, po vydání ve slevě upozorní na první slev
 
     $this->travelTo(CarbonImmutable::parse('2026-10-20 12:00', 'Europe/Prague'));
 
-    expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(1);
-    Mail::assertSent(PriceAlertMail::class, fn (PriceAlertMail $mail): bool => $mail->lines[0]['reason'] === 'první sleva od vydání'
-        && plainSpaces($mail->lines[0]['price']) === '608 Kč');
+    expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(1)
+        ->and(lastAlert($this->user)->reason)->toBe('první sleva od vydání')
+        ->and(plainSpaces(lastAlert($this->user)->price))->toBe('608 Kč');
 
     // Upozornění pokrylo i vydání — podruhé nic
     $item = $this->item->fresh();
@@ -58,9 +55,10 @@ it('vydaná hra bez slevy dostane „právě vyšlo“ s nejlevnější nabídko
     CurrentPrice::query()->update(['cut' => 0]);
     $this->travelTo(CarbonImmutable::parse('2026-10-21 08:00', 'Europe/Prague'));
 
-    expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(1);
-    Mail::assertSent(PriceAlertMail::class, fn (PriceAlertMail $mail): bool => plainSpaces($mail->subjectLine) === 'Právě vyšlo: BIOMUTANT za 132 Kč'
-        && $mail->lines[0]['reason'] === 'právě vyšlo');
+    expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(1)
+        ->and(plainSpaces(lastAlert($this->user)->headline))->toBe('Právě vyšlo: BIOMUTANT za 132 Kč')
+        ->and(lastAlert($this->user)->reason)->toBe('právě vyšlo')
+        ->and(lastAlert($this->user)->news)->toBeTrue();
 
     $item = $this->item->fresh();
     expect($item?->release_notified_at)->not->toBeNull()
@@ -68,8 +66,8 @@ it('vydaná hra bez slevy dostane „právě vyšlo“ s nejlevnější nabídko
 
     // První sleva přijde zvlášť, až nastane
     CurrentPrice::query()->where('shop_key', '!=', CurrentPrice::KEYSHOPS_KEY)->update(['cut' => 30]);
-    expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(1);
-    Mail::assertSent(PriceAlertMail::class, fn (PriceAlertMail $mail): bool => $mail->lines[0]['reason'] === 'první sleva od vydání');
+    expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(1)
+        ->and(lastAlert($this->user)->reason)->toBe('první sleva od vydání');
 });
 
 it('vydání starší než release_alert_days už neohlásí', function (): void {
@@ -83,8 +81,8 @@ it('upozornění na cenu má přednost a pokryje vydání i první slevu', funct
     $this->item->update(['target_amount' => '700.00', 'target_currency' => 'CZK']);
     $this->travelTo(CarbonImmutable::parse('2026-10-20 12:00', 'Europe/Prague'));
 
-    expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(1);
-    Mail::assertSent(PriceAlertMail::class, fn (PriceAlertMail $mail): bool => str_starts_with($mail->lines[0]['reason'], 'pod cílovou cenou'));
+    expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(1)
+        ->and(lastAlert($this->user)->reason)->toStartWith('pod cílovou cenou');
 
     $item = $this->item->fresh();
     expect($item?->notified_amount)->toBe('131.81')

@@ -10,6 +10,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\EmailFrequency;
 use App\Models\PushSubscription;
 use App\Models\User;
 use Illuminate\Http\Client\Request;
@@ -34,7 +35,8 @@ it('ukáže nastavení — bez klíčů VAPID bez upozornění na zařízení', 
         ->assertInertia(fn (Assert $page) => $page
             ->component('Settings')
             ->where('settings.email', 'roman@example.com')
-            ->where('settings.notifyEmail', true)
+            ->where('settings.emailFrequency', 'daily')
+            ->where('settings.emailFrequencies', ['daily', 'instant', 'off'])
             ->where('settings.hasPsPlus', false)
             ->where('push', null));
 
@@ -46,18 +48,39 @@ it('ukáže nastavení — bez klíčů VAPID bez upozornění na zařízení', 
             ->where('push.subscribeUrl', '/nastaveni/zarizeni'));
 });
 
-it('uloží e-mail, týdenní souhrn a PS Plus', function (): void {
+it('uloží frekvenci e-mailu, týdenní souhrn a PS Plus', function (): void {
     $user = user();
 
     $this->actingAs($user)
         ->from('/nastaveni')
-        ->put('/nastaveni', ['notify_email' => false, 'notify_weekly' => false, 'has_ps_plus' => true])
+        ->put('/nastaveni', ['email_frequency' => 'off', 'notify_weekly' => false, 'has_ps_plus' => true])
         ->assertRedirect('/nastaveni');
 
     $user->refresh();
-    expect($user->notify_email)->toBeFalse()
+    expect($user->email_frequency)->toBe(EmailFrequency::Off)
         ->and($user->notify_weekly)->toBeFalse()
         ->and($user->has_ps_plus)->toBeTrue();
+});
+
+it('po zapnutí e-mailu neposílá upozornění nastřádaná, dokud byl vypnutý (R53)', function (): void {
+    $user = user(['email_frequency' => EmailFrequency::Off]);
+    $settings = ['notify_weekly' => true, 'has_ps_plus' => false];
+
+    $this->actingAs($user)->put('/nastaveni', ['email_frequency' => 'daily', ...$settings]);
+    $enabledAt = $user->refresh()->alert_email_sent_at;
+    expect($enabledAt)->not->toBeNull();
+
+    // Změna mezi zapnutými volbami čas nemění
+    $this->travel(1)->hour();
+    $this->actingAs($user)->put('/nastaveni', ['email_frequency' => 'instant', ...$settings]);
+    expect($user->refresh()->alert_email_sent_at?->equalTo($enabledAt))->toBeTrue();
+});
+
+it('odmítne neznámou frekvenci e-mailu', function (): void {
+    $this->actingAs(user())
+        ->from('/nastaveni')
+        ->put('/nastaveni', ['email_frequency' => 'hourly', 'notify_weekly' => true, 'has_ps_plus' => false])
+        ->assertSessionHasErrors(['email_frequency' => __('app.validation.email_frequency')]);
 });
 
 it('uloží odběr zařízení k účtu a podruhé ho nezdvojí', function (): void {
@@ -135,10 +158,10 @@ it('pošle zkušební upozornění na vlastní zařízení', function (): void {
         ->assertNotFound();
 });
 
-it('nové účty mají e-mail zapnutý a PS Plus vypnuté', function (): void {
+it('nové účty mají ranní souhrn e-mailem a PS Plus vypnuté', function (): void {
     $user = User::query()->findOrFail(user()->id);
 
-    expect($user->notify_email)->toBeTrue()->and($user->has_ps_plus)->toBeFalse();
+    expect($user->email_frequency)->toBe(EmailFrequency::Daily)->and($user->has_ps_plus)->toBeFalse();
 });
 
 it('manifest aplikace a service worker jsou dostupné bez přihlášení', function (): void {

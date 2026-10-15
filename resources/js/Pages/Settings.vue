@@ -1,5 +1,5 @@
 <!--
-    Nastavení účtu — upozornění na ceny (etapa 6, R13, R26): e-mail, PS Plus
+    Nastavení účtu — upozornění na ceny (etapa 6, R13, R26): jak často chodí e-mail (R53), PS Plus
     a upozornění na tomto zařízení (Web Push); odkaz na stav zdrojů (R29). Odběr zařízení si stránka
     zapíná sama přes resources/js/lib/push.js.
 
@@ -22,7 +22,7 @@ const props = defineProps({
 
 const t = useTranslations();
 const form = useForm({
-    notify_email: props.settings.notifyEmail,
+    email_frequency: props.settings.emailFrequency,
     notify_weekly: props.settings.notifyWeekly,
     has_ps_plus: props.settings.hasPsPlus,
     has_game_pass: props.settings.hasGamePass,
@@ -124,14 +124,26 @@ function test() {
                 <h2 class="panel__title">{{ t('settings.alerts_title') }}</h2>
                 <p class="panel__text">{{ t('settings.alerts_text') }}</p>
 
+                <!-- Jak často chodí e-mail ze záznamů centra upozornění (R53) -->
+                <div class="field">
+                    <label for="settings-email-frequency" class="field__label">{{ t('settings.email', { email: settings.email }) }}</label>
+                    <select
+                        id="settings-email-frequency"
+                        v-model="form.email_frequency"
+                        class="field__input field__select"
+                        :aria-invalid="form.errors.email_frequency ? 'true' : undefined"
+                        :aria-describedby="form.errors.email_frequency ? 'settings-email-frequency-error' : 'settings-email-frequency-hint'"
+                    >
+                        <option v-for="frequency in settings.emailFrequencies" :key="frequency" :value="frequency">
+                            {{ t(`settings.email_options.${frequency}`) }}
+                        </option>
+                    </select>
+                    <p v-if="form.errors.email_frequency" id="settings-email-frequency-error" class="field__error">{{ form.errors.email_frequency }}</p>
+                    <p v-else id="settings-email-frequency-hint" class="field__hint">{{ t('settings.email_hint', { hour: settings.digestHour }) }}</p>
+                </div>
+                <!-- Týdenní souhrn jde do centra vždy, e-mailem jen se zapnutým e-mailem (R36, R53) -->
                 <label class="switch">
-                    <input v-model="form.notify_email" class="switch__input" type="checkbox" />
-                    <span class="switch__track" aria-hidden="true"></span>
-                    <span class="switch__label">{{ t('settings.email', { email: settings.email }) }}</span>
-                </label>
-                <!-- Týdenní souhrn jde jen e-mailem (R36) -->
-                <label class="switch">
-                    <input v-model="form.notify_weekly" class="switch__input" type="checkbox" :disabled="!form.notify_email" />
+                    <input v-model="form.notify_weekly" class="switch__input" type="checkbox" />
                     <span class="switch__track" aria-hidden="true"></span>
                     <span class="switch__label">{{ t('settings.weekly') }}</span>
                 </label>

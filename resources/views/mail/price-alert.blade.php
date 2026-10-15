@@ -1,6 +1,7 @@
 {{--
     E-mail s upozorněním na ceny sledovaných her (etapa 6, R26) — Markdown
-    komponenty Laravelu. Řádky chystá AlertPresenter, texty jsou v lang/cs/app.php.
+    komponenty Laravelu. Řádky chystá AlertPresenter ze záznamů centra upozornění
+    (R53), texty jsou v lang/cs/app.php.
 
     @author Roman Hlaváček
     @created 2026-10-12
@@ -14,8 +15,8 @@
 
 
 @endforeach
-<x-mail::button :url="$dashboardUrl">
-{{ __('app.alerts.open_app') }}
+<x-mail::button :url="$centerUrl">
+{{ __('app.alerts.open_center') }}
 </x-mail::button>
 
 {{ __('app.alerts.mail_footer') }} [{{ __('app.alerts.settings') }}]({{ $settingsUrl }})

@@ -110,16 +110,17 @@ Eloquent model                 ← perzistence
 | `app/Domain/Catalog` | katalog her — dotaz (`GameQuery`), hledání (`Actions/SearchGames`), výsledky hledání s filtry (`SearchResults`, `SearchFilters`, R30), obchody ve výsledcích (`Actions/DescribeAvailability`, R23), hledání podle odkazu z PS Store (`Actions/SearchByPlayStationLink`, R24), žánry a režimy ze Steamu (`Actions/RefreshGameDetails`, R25), převzetí a obnova hry (`Actions/ImportGame`, `Actions/RefreshGameInfo`, R34), data pro stránky (`GamePresenter`) |
 | `app/Domain/Watchlist` | osobní seznam sledovaných her (`Actions/WatchGame`, `Actions/UnwatchGame`), přehled s filtry (`WatchlistFilters`, `WatchlistView`, R21); upozornění v etapě 6 |
 | `app/Domain/Pricing/PriceChart.php` | graf vývoje ceny (R28) — denní řady z historie ITAD a vlastní `price_history` |
-| `app/Domain/Alerts` | upozornění na ceny (R26) — vyhodnocení (`PriceWatch`), texty (`AlertPresenter`), Web Push (`PushSender`, vzor z Počasí), rozeslání v cronu (`Actions/SendPriceAlerts`), týdenní souhrn (`Actions/SendWeeklyDigests`, R36) |
+| `app/Domain/Alerts` | upozornění na ceny (R26) — vyhodnocení (`PriceWatch`), texty (`AlertPresenter`), Web Push (`PushSender`, vzor z Počasí), zápis do centra a push v cronu (`Actions/SendPriceAlerts`), e-mail ze záznamů centra (`Actions/SendAlertEmails`, R53), týdenní souhrn (`Actions/SendWeeklyDigests`, R36) |
+| `app/Domain/Notifications` | centrum upozornění (R53) — zápis záznamu (`NotificationCenter`, `CenterNotification`), upozornění na hru v záznamu (`GameAlertRecord`), řádek stránky a cíl otevření (`NotificationPresenter`), výpadky zdrojů (`Actions/RecordSourceOutages`) |
 | `app/Domain/Metacritic` | Metascore z Metacritic pro hry mimo ITAD (R33) — odkaz (`MetacriticUrl`, jediné ověření hostitele), rozbor JSON-LD (`MetacriticGame`), stahování (`MetacriticClient`), obnova v cronu a při přidání (`Actions/RefreshMetascores`), odkaz od uživatele (`Actions/LinkMetacritic`) |
 | `app/Domain/Igdb` | nadcházející hry z IGDB (R46) — klient s tokenem aplikace z Twitche (`IgdbClient`), hra s vydáním po platformách (`IgdbGame`), obnova seznamu v cronu (`Actions/RefreshUpcomingReleases`) |
 | `app/Domain/Discover` | stránka Objevit — slevy z ITAD (`DiscoverDeals`, `DiscoverFilters`, R43), záložka Nadcházející (`UpcomingReleases`, `UpcomingFilters`) a sledování hry z ní se spárováním s ITAD (`Actions/WatchUpcomingRelease`, R46) |
 | `app/Domain/Steam` | Steam appdetails (R25) — žánry a režimy hry (`SteamClient`, `SteamAppDetails`) |
 | `app/Domain/PlayStation` | PlayStation Store (R20, R22) — odkaz z obchodu i ze stránky hry na playstation.com (`PlayStationUrl`, jediné místo ověření hostitele), rozbor stránky (`PlayStationPage`), stahování (`PlayStationClient`), produkt z odkazu (`Actions/FindPlayStationProduct`, R24), stránky her k výsledkům hledání (`Actions/FindPlayStationGamePages`, R24), připojení a odpojení produktu (`Actions/ConnectPlayStationProduct`, `Actions/DisconnectStoreListing`) |
 | `app/Domain/Pricing` | ceny — částka (`Money`), stažení (`Actions/RefreshPrices`), uložení (`StorePrices`), data pro stránky v měně účtu (`PriceBoard`) (R18); přímé zdroje v etapě 5 |
-| `app/Domain/Maintenance` | úklid volaný z cron URL (`PruneExpiredCache`) — hosting nemá scheduler |
+| `app/Domain/Maintenance` | úklid volaný z cron URL (`PruneExpiredCache`, `PruneNotifications`) — hosting nemá scheduler |
 | `app/Domain/Monitoring` | stav zdrojů (R29) — zápis a vyhodnocení (`SourceMonitor`, `SourceHealth`), rozhraní `SourceUnavailable` pro výjimky zdrojů, jejichž zprávu smí ukázat stránka stavu |
-| `app/Enums` | výčty (`PriceSource`, `PriceScope`, `PriceBasis`, `PlusTier`, `SearchSort`, `MonitoredSource`, `SourceState`) |
+| `app/Enums` | výčty (`PriceSource`, `PriceScope`, `PriceBasis`, `PlusTier`, `SearchSort`, `MonitoredSource`, `SourceState`, `NotificationKind`, `EmailFrequency`) |
 | `app/Http/Controllers` | tenké kontrolery |
 | `app/Http/Requests` | Form Requesty (včetně `LoginRequest`) |
 | `app/Console/Commands` | Artisan příkazy — jen obálka nad Action |

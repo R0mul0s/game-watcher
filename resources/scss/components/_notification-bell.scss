@@ -1,0 +1,104 @@
+// _notification-bell.scss
+// Zvonek v hlavičce (R53, NotificationBell.vue) — odkaz do centra upozornění s kolečkem
+// nepřečtených; velikostí sedí k přepínači měny vedle. Převzato z Agregátoru letáků.
+//
+// @author Roman Hlaváček
+// @created 2026-10-15
+
+@use '../abstracts/mixins' as *;
+
+.notification-bell {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: var(--control-size-small);
+    height: var(--control-size-small);
+    border: var(--border-width) solid transparent;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    transition:
+        color var(--duration-fast),
+        border-color var(--duration-fast);
+
+    &:hover {
+        border-color: var(--color-border);
+        color: var(--color-text);
+    }
+
+    @include neon-focus;
+
+    // Na stránce centra je zvonek „aktivní položkou“ navigace
+    &--active {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        box-shadow: var(--glow-accent);
+    }
+
+    // S nepřečtenými svítí a po načtení stránky párkrát zacinká — kolem úchytu nahoře;
+    // ne donekonečna a s omezeným pohybem vůbec
+    &--ringing {
+        color: var(--color-accent);
+    }
+
+    &--ringing &__icon {
+        filter: var(--svg-glow-accent);
+        transform-origin: 50% 10%;
+
+        @include with-motion {
+            animation: notification-bell-ring var(--bell-ring-duration) ease-in-out var(--bell-ring-delay) var(--bell-ring-iterations);
+        }
+    }
+
+    &__icon {
+        width: var(--icon-size);
+        height: var(--icon-size);
+        fill: none;
+        stroke: currentcolor;
+        stroke-width: var(--svg-stroke-icon);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    &__count {
+        position: absolute;
+        top: var(--notification-count-offset);
+        right: var(--notification-count-offset);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: var(--notification-count-size);
+        height: var(--notification-count-size);
+        padding: 0 var(--space-1);
+        border-radius: var(--radius-pill);
+        background: var(--color-neon-magenta);
+        box-shadow: var(--glow-magenta);
+        color: var(--color-on-accent);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-strong);
+        line-height: 1;
+    }
+}
+
+// Zacinkání: krátké kývání na začátku cyklu, zbytek klid — mezi zacinkáními je pauza
+@keyframes notification-bell-ring {
+    0%,
+    40%,
+    100% {
+        transform: rotate(0);
+    }
+
+    5%,
+    15%,
+    25% {
+        transform: rotate(var(--bell-ring-angle));
+    }
+
+    10%,
+    20%,
+    30% {
+        transform: rotate(calc(-1 * var(--bell-ring-angle)));
+    }
+}

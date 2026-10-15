@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 use App\Domain\Alerts\Actions\SendWeeklyDigests;
 use App\Domain\Currency\Actions\ImportExchangeRates;
+use App\Enums\EmailFrequency;
+use App\Enums\NotificationKind;
 use App\Mail\WeeklyDigestMail;
 use App\Models\Game;
 use Carbon\CarbonImmutable;
@@ -76,7 +78,20 @@ it('bez slev nic nepošle, den ale označí', function (): void {
     expect($this->user->fresh()?->weekly_digest_at)->not->toBeNull();
 });
 
-it('účtu s vypnutým souhrnem nebo e-mailem nic nepošle', function (array $settings): void {
+it('souhrn zapíše do centra upozornění jednou, i když e-mail selže (R53)', function (): void {
+    priceWeekAgo($this->game, '10.00');
+    $this->travelTo(CarbonImmutable::parse(DIGEST_MONDAY, 'Europe/Prague'));
+    Mail::shouldReceive('to')->andThrow(new RuntimeException('SMTP neodpovídá'));
+
+    expect(app(SendWeeklyDigests::class)->handle())->toBe([0, 1])
+        ->and(app(SendWeeklyDigests::class)->handle())->toBe([0, 1]);
+
+    $records = $this->user->notifications()->where('type', NotificationKind::WeeklyDigest->value)->get();
+    expect($records)->toHaveCount(1)
+        ->and($records->sole()->data['games'])->toBe(['BIOMUTANT']);
+});
+
+it('s vypnutým e-mailem souhrn jen zapíše do centra, s vypnutým souhrnem nic', function (array $settings, int $records): void {
     priceWeekAgo($this->game, '10.00');
     $this->user->update($settings);
     $this->travelTo(CarbonImmutable::parse(DIGEST_MONDAY, 'Europe/Prague'));
@@ -84,9 +99,10 @@ it('účtu s vypnutým souhrnem nebo e-mailem nic nepošle', function (array $se
     app(SendWeeklyDigests::class)->handle();
 
     Mail::assertNothingSent();
+    expect($this->user->notifications()->where('type', NotificationKind::WeeklyDigest->value)->count())->toBe($records);
 })->with([
-    'souhrn vypnutý' => [['notify_weekly' => false]],
-    'e-mail vypnutý' => [['notify_email' => false]],
+    'souhrn vypnutý' => [['notify_weekly' => false], 0],
+    'e-mail vypnutý' => [['email_frequency' => EmailFrequency::Off], 1],
 ]);
 
 it('cron vypíše řádek souhrnu', function (): void {

@@ -61,6 +61,12 @@ class HandleInertiaRequests extends Middleware
                 'options' => config('games.prices.display_currencies'),
                 'updateUrl' => route('settings.currency', absolute: false),
             ] : null,
+            // Zvonek v hlavičce (R53) — stejné číslo je na ikoně aplikace (lib/pwa.js)
+            'notificationCenter' => fn (): ?array => $user instanceof User ? [
+                'url' => route('notifications.index', absolute: false),
+                'unread' => $user->unreadNotifications()->count(),
+                'active' => $request->routeIs('notifications.*'),
+            ] : null,
             'navigation' => fn (): array => $user === null ? [] : array_map(
                 fn (string $routeName, string $labelKey): array => [
                     'url' => route($routeName, absolute: false),

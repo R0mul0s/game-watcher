@@ -37,7 +37,7 @@ enum AlertReason: string
     case Bundle = 'bundle';
 
     /**
-     * Upozornění na cenu (PriceWatch) — po doručení se pamatuje upozorněná
+     * Upozornění na cenu (PriceWatch) — po zápisu do centra se pamatuje upozorněná
      * cena; vydání a první sleva (ReleaseWatch, R41), Game Pass a bundly
      * (OfferWatch, R50, R51) mají vlastní stav.
      */

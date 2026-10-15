@@ -66,7 +66,7 @@ final class ReleaseWatch
     }
 
     /**
-     * Po doručeném upozornění na hru (jakémkoli) označí vydání a první slevu
+     * Po upozornění na hru (jakémkoli, zapsaném do centra) označí vydání a první slevu
      * jako oznámené, když už nastaly — uživatel cenu právě dostal.
      */
     public function markCovered(PriceAlert $alert, CarbonImmutable $now): void

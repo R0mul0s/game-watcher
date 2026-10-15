@@ -17,9 +17,10 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
 /**
- * Jeden e-mail za běh cronu se všemi hrami, které zlevnily (R26) nebo právě
- * vyšly (R41). Odesílá
- * se synchronně — nesmí implementovat ShouldQueue (hosting nemá frontu, R2).
+ * Jeden e-mail se všemi hrami, které od minulého e-mailu zlevnily (R26),
+ * vyšly (R41) nebo jsou v Game Passu či bundlu (R50, R51) — ze záznamů centra
+ * upozornění, ráno nebo hned podle účtu (R53). Odesílá se synchronně — nesmí
+ * implementovat ShouldQueue (hosting nemá frontu, R2).
  */
 class PriceAlertMail extends Mailable
 {
@@ -46,7 +47,7 @@ class PriceAlertMail extends Mailable
     {
         return new Content(markdown: 'mail.price-alert', with: [
             'lines' => $this->lines,
-            'dashboardUrl' => route('dashboard'),
+            'centerUrl' => route('notifications.index'),
             'settingsUrl' => route('settings.show'),
         ]);
     }

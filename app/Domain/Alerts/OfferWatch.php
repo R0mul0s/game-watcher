@@ -89,7 +89,7 @@ final class OfferWatch
     }
 
     /**
-     * Po doručení zapamatuje Game Pass nebo bundle; seznam bundlů zúží na
+     * Po zápisu do centra (R53) zapamatuje Game Pass nebo bundle; seznam bundlů zúží na
      * aktivní (prošlé ID by jen rostly).
      */
     public function markNotified(PriceAlert $alert, CarbonImmutable $now): void

@@ -12,17 +12,22 @@ declare(strict_types=1);
 
 namespace App\Domain\Alerts;
 
+use App\Domain\Notifications\GameAlertRecord;
 use App\Domain\Pricing\MoneyFormatter;
 use App\Enums\AlertReason;
 
 /**
- * Jedno místo, kde se z upozornění stává text (R26) — e-mail i zpráva na
- * telefon říkají totéž. Texty jsou v lang/cs/app.php (skupina alerts).
+ * Jedno místo, kde se z upozornění stává text (R26) — záznam v centru
+ * upozornění (R53), e-mail i zpráva na telefon říkají totéž. Texty jsou
+ * v lang/cs/app.php (skupina alerts).
  */
 final class AlertPresenter
 {
     /** Téma zprávy Web Push — nedoručená starší zpráva téže hry se nahradí (max. 32 znaků). */
     private const TOPIC_PREFIX = 'game-';
+
+    /** Téma souhrnné zprávy za víc her. */
+    public const SUMMARY_TOPIC = 'summary';
 
     /** Den konce nabídky v textu („27. 10.“). */
     private const DAY_FORMAT = 'j. n.';
@@ -30,79 +35,101 @@ final class AlertPresenter
     public function __construct(private readonly MoneyFormatter $money) {}
 
     /**
+     * Záznam do centra upozornění (R53) — všechny texty najednou, z něj se
+     * pak skládá zpráva na zařízení i řádek e-mailu.
+     */
+    public function record(PriceAlert $alert): GameAlertRecord
+    {
+        return new GameAlertRecord(
+            gameId: $alert->game->id,
+            game: $alert->game->title,
+            headline: $this->headline($alert),
+            body: $alert->reason === AlertReason::GamePass
+                ? $this->reason($alert)
+                : (string) __('app.alerts.push_body', ['reason' => $this->reason($alert), 'shop' => $alert->keyshops ? __('app.alerts.keyshops') : $alert->shop]),
+            // Game Pass a bundle bez ceny cenu nemají (R50, R51)
+            price: $alert->price === null ? '' : $this->money->format($alert->price),
+            shop: $this->where($alert),
+            reason: $this->reason($alert),
+            news: $alert->reason->isNews(),
+            url: route('games.show', $alert->game, absolute: false),
+            shopUrl: $alert->url,
+        );
+    }
+
+    /**
      * Řádek e-mailu.
      *
      * @return array{title: string, price: string, shop: string, reason: string, detailUrl: string, shopUrl: string|null}
      */
-    public function mailLine(PriceAlert $alert): array
+    public function mailLine(GameAlertRecord $record): array
     {
         return [
-            'title' => $alert->game->title,
-            // Game Pass a bundle bez ceny cenu nemají (R50, R51)
-            'price' => $alert->price === null ? '' : $this->money->format($alert->price),
-            'shop' => $this->where($alert),
-            'reason' => $this->reason($alert),
-            'detailUrl' => route('games.show', $alert->game),
-            'shopUrl' => $alert->url,
+            'title' => $record->game,
+            'price' => $record->price,
+            'shop' => $record->shop,
+            'reason' => $record->reason,
+            'detailUrl' => url($record->url),
+            'shopUrl' => $record->shopUrl,
         ];
     }
 
     /**
-     * Předmět e-mailu — u jedné hry hra a cena, jinak počet her; s vydanou
-     * hrou (R41) mezi nimi „novinky“ místo „zlevnilo“.
+     * Předmět e-mailu — u jedné hry hra a cena, jinak počet her; s novinkou
+     * (vydání R41, Game Pass, bundle) mezi nimi „novinky“ místo „zlevnilo“.
      *
-     * @param  list<PriceAlert>  $alerts
+     * @param  non-empty-list<GameAlertRecord>  $records
      */
-    public function mailSubject(array $alerts): string
+    public function mailSubject(array $records): string
     {
-        $news = array_filter($alerts, fn (PriceAlert $alert): bool => $alert->reason->isNews()) !== [];
-
-        if (count($alerts) === 1) {
-            return $this->headline($alerts[0]);
+        if (count($records) === 1) {
+            return $records[0]->headline;
         }
 
-        return trans_choice($news ? 'app.alerts.subject_news' : 'app.alerts.subject_many', count($alerts), ['count' => count($alerts)]);
+        $news = array_filter($records, fn (GameAlertRecord $record): bool => $record->news) !== [];
+
+        return trans_choice($news ? 'app.alerts.subject_news' : 'app.alerts.subject_many', count($records), ['count' => count($records)]);
     }
 
     /**
      * Zpráva na telefon pro service worker: { title, body, url, tag }.
      *
+     * @param  string  $url  kam vede klepnutí — otevření záznamu v centru
      * @return array{title: string, body: string, url: string, tag: string}
      */
-    public function push(PriceAlert $alert): array
+    public function push(GameAlertRecord $record, string $url): array
     {
         return [
-            'title' => $this->headline($alert),
-            'body' => $alert->reason === AlertReason::GamePass
-                ? $this->reason($alert)
-                : __('app.alerts.push_body', ['reason' => $this->reason($alert), 'shop' => $alert->keyshops ? __('app.alerts.keyshops') : $alert->shop]),
-            'url' => route('games.show', $alert->game, absolute: false),
-            'tag' => $this->topic($alert),
+            'title' => $record->headline,
+            'body' => $record->body,
+            'url' => $url,
+            'tag' => $this->topic($record),
         ];
     }
 
     /**
      * Souhrnná zpráva na telefon, když zlevnilo víc her najednou.
      *
-     * @param  list<PriceAlert>  $alerts
+     * @param  list<GameAlertRecord>  $records
+     * @param  string  $url  kam vede klepnutí — centrum upozornění
      * @return array{title: string, body: string, url: string, tag: string}
      */
-    public function pushSummary(array $alerts): array
+    public function pushSummary(array $records, string $url): array
     {
         return [
-            'title' => trans_choice('app.alerts.subject_many', count($alerts), ['count' => count($alerts)]),
-            'body' => implode(', ', array_map(fn (PriceAlert $alert): string => $alert->game->title, $alerts)),
-            'url' => route('dashboard', absolute: false),
-            'tag' => 'summary',
+            'title' => trans_choice('app.alerts.subject_many', count($records), ['count' => count($records)]),
+            'body' => implode(', ', array_map(fn (GameAlertRecord $record): string => $record->game, $records)),
+            'url' => $url,
+            'tag' => self::SUMMARY_TOPIC,
         ];
     }
 
     /**
      * Téma zprávy Web Push pro hru.
      */
-    public function topic(PriceAlert $alert): string
+    public function topic(GameAlertRecord $record): string
     {
-        return self::TOPIC_PREFIX.$alert->game->id;
+        return self::TOPIC_PREFIX.$record->gameId;
     }
 
     /**

@@ -20,19 +20,20 @@ use App\Domain\Alerts\PriceAlert;
 use App\Domain\Alerts\PriceWatch;
 use App\Domain\Alerts\PushSender;
 use App\Domain\Alerts\ReleaseWatch;
-use App\Mail\PriceAlertMail;
+use App\Domain\Notifications\GameAlertRecord;
+use App\Domain\Notifications\NotificationCenter;
+use App\Enums\NotificationKind;
 use App\Models\Game;
 use App\Models\User;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\Mail;
-use Throwable;
+use Illuminate\Support\Facades\DB;
 
 /**
- * Krok cron URL po stažení cen (R26) — synchronně, bez fronty (R2). Účet
- * bez kanálu (e-mail vypnutý, žádné zařízení) se přeskočí a jeho stav se
- * nemění — po zapnutí kanálu dostane upozornění na platné ceny. Upozornění
- * se označí jako odeslané, jen když ho doručil aspoň jeden kanál; jinak ho
- * zkusí další běh. Hra bez upozornění na cenu může dostat upozornění na
+ * Krok cron URL po stažení cen (R26) — synchronně, bez fronty (R2). Každé
+ * upozornění se zapíše do centra upozornění (R53) a hned se označí jako
+ * odeslané — centrum doručí vždy, i účtu bez e-mailu a zařízení. Na zařízení
+ * jde zpráva hned; e-mail skládá ze záznamů centra až SendAlertEmails (ráno,
+ * nebo hned podle účtu). Hra bez upozornění na cenu může dostat upozornění na
  * vydání nebo první slevu (ReleaseWatch, R41), a když ani to, na Game Pass
  * nebo bundle (OfferWatch, R50, R51) — za běh nejvýš jedno na hru.
  */
@@ -44,10 +45,11 @@ final class SendPriceAlerts
         private readonly PushSender $pushSender,
         private readonly ReleaseWatch $releaseWatch,
         private readonly OfferWatch $offerWatch,
+        private readonly NotificationCenter $center,
     ) {}
 
     /**
-     * Vyhodnotí a rozešle upozornění všech účtů.
+     * Vyhodnotí upozornění všech účtů, zapíše je do centra a pošle na zařízení.
      */
     public function handle(): AlertRunResult
     {
@@ -55,31 +57,40 @@ final class SendPriceAlerts
         $users = User::query()->with('pushSubscriptions')->orderBy('id')->get();
 
         foreach ($users as $user) {
-            $push = PushSender::isEnabled() && $user->pushSubscriptions->isNotEmpty();
-            if (! $user->notify_email && ! $push) {
-                continue;
-            }
-
             $alerts = $this->evaluate($user);
             if ($alerts === []) {
                 continue;
             }
 
-            $emailed = $user->notify_email && $this->email($user, $alerts);
-            $pushed = $push ? $this->push($user, $alerts) : 0;
-
+            // Záznamy a stav „už upozorněno“ spolu — pád mezi nimi by upozornění zdvojil
+            $records = DB::transaction(fn (): array => $this->record($user, $alerts));
             $result->alerts += count($alerts);
-            $result->emails += $emailed ? 1 : 0;
-            $result->pushes += $pushed;
 
-            if ($emailed || $pushed > 0) {
-                $this->markNotified($alerts);
-            } else {
-                $result->undelivered += count($alerts);
+            if (PushSender::isEnabled() && $user->pushSubscriptions->isNotEmpty()) {
+                $result->pushes += $this->push($user, $records);
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Zapíše upozornění do centra a označí je jako odeslaná.
+     *
+     * @param  list<PriceAlert>  $alerts
+     * @return array<string, GameAlertRecord> záznamy podle ID v centru
+     */
+    private function record(User $user, array $alerts): array
+    {
+        $records = [];
+        foreach ($alerts as $alert) {
+            $record = $this->presenter->record($alert);
+            $records[$this->center->record($user, NotificationKind::GameAlert, $record->toArray())] = $record;
+        }
+
+        $this->markNotified($alerts);
+
+        return $records;
     }
 
     /**
@@ -129,39 +140,26 @@ final class SendPriceAlerts
     }
 
     /**
-     * Jeden e-mail se všemi hrami; chybu SMTP zapíše do logu.
-     *
-     * @param  list<PriceAlert>  $alerts
-     */
-    private function email(User $user, array $alerts): bool
-    {
-        try {
-            Mail::to($user)->send(new PriceAlertMail(
-                $this->presenter->mailSubject($alerts),
-                array_map($this->presenter->mailLine(...), $alerts),
-            ));
-        } catch (Throwable $e) {
-            report($e);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Zprávy na všechna zařízení účtu — po hrách, nebo jedna souhrnná, když
-     * jich zlevnilo víc než alerts.max_push_messages. Vrátí počet doručených.
+     * jich zlevnilo víc než alerts.max_push_messages. Klepnutí otevře záznam
+     * v centru (a tím ho přečte). Vrátí počet doručených; nedoručená zpráva
+     * se neopakuje, záznam v centru zůstává (R53).
      *
-     * @param  list<PriceAlert>  $alerts
+     * @param  array<string, GameAlertRecord>  $records  záznamy podle ID v centru
      */
-    private function push(User $user, array $alerts): int
+    private function push(User $user, array $records): int
     {
-        // Počet zlevněných her jako číslo na ikoně aplikace (R37)
-        $badge = ['badge' => count($alerts)];
-        $messages = count($alerts) > (int) config('games.alerts.max_push_messages')
-            ? [['payload' => [...$this->presenter->pushSummary($alerts), ...$badge], 'topic' => 'summary']]
-            : array_map(fn (PriceAlert $alert): array => ['payload' => [...$this->presenter->push($alert), ...$badge], 'topic' => $this->presenter->topic($alert)], $alerts);
+        // Počet nepřečtených záznamů centra jako číslo na ikoně aplikace (R37, R53)
+        $badge = ['badge' => $this->center->unreadCount($user)];
+        $messages = count($records) > (int) config('games.alerts.max_push_messages')
+            ? [[
+                'payload' => [...$this->presenter->pushSummary(array_values($records), route('notifications.index', absolute: false)), ...$badge],
+                'topic' => AlertPresenter::SUMMARY_TOPIC,
+            ]]
+            : array_map(fn (string $id, GameAlertRecord $record): array => [
+                'payload' => [...$this->presenter->push($record, route('notifications.open', $id, absolute: false)), ...$badge],
+                'topic' => $this->presenter->topic($record),
+            ], array_keys($records), $records);
 
         $sent = 0;
         foreach ($user->pushSubscriptions as $subscription) {

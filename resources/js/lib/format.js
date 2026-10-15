@@ -132,6 +132,40 @@ export function formatDateInZone(iso, locale, timeZone) {
     return cachedFormatter(Intl.DateTimeFormat, locale, { day: 'numeric', month: 'numeric', year: 'numeric', timeZone }).format(new Date(iso));
 }
 
+/**
+ * Čas z ISO 8601 v zadané zóně („14:05") — záznam v centru upozornění.
+ *
+ * @param {string} iso
+ * @param {string} locale
+ * @param {string} timeZone
+ * @returns {string}
+ */
+export function formatTimeInZone(iso, locale, timeZone) {
+    return cachedFormatter(Intl.DateTimeFormat, locale, { hour: '2-digit', minute: '2-digit', timeZone }).format(new Date(iso));
+}
+
+/**
+ * Den v zadané zóně jako klíč Y-m-d — seskupení po dnech (kanadský zápis je ISO).
+ *
+ * @param {string|number|Date} value
+ * @param {string} timeZone
+ * @returns {string}
+ */
+export function localDayKey(value, timeZone) {
+    return cachedFormatter(Intl.DateTimeFormat, 'en-CA', { timeZone }).format(new Date(value));
+}
+
+/**
+ * Den v týdnu s datem („čtvrtek 15. 10.") — den Y-m-d jako UTC jako formatDate.
+ *
+ * @param {string} value Y-m-d
+ * @param {string} locale
+ * @returns {string}
+ */
+export function formatWeekdayDay(value, locale) {
+    return cachedFormatter(Intl.DateTimeFormat, locale, { weekday: 'long', day: 'numeric', month: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`));
+}
+
 /** Desetinná místa hodnocení hvězdičkami („4,6" na kartě, „4,55" na detailu). */
 export const RATING_DIGITS_SHORT = 1;
 export const RATING_DIGITS_FULL = 2;

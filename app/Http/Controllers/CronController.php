@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Domain\Alerts\Actions\SendAlertEmails;
 use App\Domain\Alerts\Actions\SendPriceAlerts;
 use App\Domain\Alerts\Actions\SendWeeklyDigests;
 use App\Domain\Catalog\Actions\RefreshGameDetails;
@@ -22,9 +23,11 @@ use App\Domain\Igdb\Actions\RefreshUpcomingReleases;
 use App\Domain\Igdb\Exceptions\IgdbUnavailable;
 use App\Domain\Itad\Exceptions\ItadUnavailable;
 use App\Domain\Maintenance\PruneExpiredCache;
+use App\Domain\Maintenance\PruneNotifications;
 use App\Domain\Metacritic\Actions\RefreshMetascores;
 use App\Domain\Monitoring\ParserCanary;
 use App\Domain\Monitoring\SourceMonitor;
+use App\Domain\Notifications\Actions\RecordSourceOutages;
 use App\Domain\Pricing\Actions\RefreshBundles;
 use App\Domain\Pricing\Actions\RefreshPrices;
 use App\Domain\Pricing\Actions\RefreshSubscriptions;
@@ -72,8 +75,11 @@ class CronController extends Controller
         RefreshPlaytimes $refreshPlaytimes,
         RefreshUpcomingReleases $refreshUpcomingReleases,
         SendPriceAlerts $sendPriceAlerts,
+        SendAlertEmails $sendAlertEmails,
         SendWeeklyDigests $sendWeeklyDigests,
         ParserCanary $parserCanary,
+        RecordSourceOutages $recordSourceOutages,
+        PruneNotifications $pruneNotifications,
         PruneExpiredCache $pruneExpiredCache,
     ): Response {
         $lock = Cache::lock(self::LOCK_KEY, (int) config('games.cron.lock_seconds'));
@@ -202,22 +208,26 @@ class CronController extends Controller
 
                     return __('app.cron.upcoming', ['count' => $count]);
                 }),
-                // Upozornění až po cenách (R26) — porovnávají čerstvé ceny. Nedoručené
-                // upozornění (chyba SMTP i push) označí běh jako chybný, zkusí ho další běh
-                $this->attempt('alerts', [MonitoredSource::Alerts], $failedSteps, function () use ($sendPriceAlerts, &$failedSteps): string {
+                // Upozornění až po cenách (R26) — porovnávají čerstvé ceny; zapíšou se
+                // do centra (R53) a jdou hned na zařízení
+                $this->attempt('alerts', [MonitoredSource::Alerts], $failedSteps, function () use ($sendPriceAlerts): string {
                     $result = $sendPriceAlerts->handle();
-                    if ($result->undelivered > 0) {
-                        $failedSteps[] = 'alerts';
-                        $this->monitor->failed(MonitoredSource::Alerts, (string) __('app.monitoring.alerts_undelivered', ['count' => $result->undelivered]));
+                    $this->monitor->succeeded(MonitoredSource::Alerts, $result->alerts);
+
+                    return __('app.cron.alerts', ['alerts' => $result->alerts, 'pushes' => $result->pushes]);
+                }),
+                // E-mail ze záznamů centra (R53) — ranní souhrn, nebo hned podle účtu.
+                // Nedoručený e-mail označí běh jako chybný, zkusí ho další běh
+                $this->attempt('emails', [MonitoredSource::AlertEmails], $failedSteps, function () use ($sendAlertEmails, &$failedSteps): string {
+                    [$sent, $failed] = $sendAlertEmails->handle();
+                    if ($failed > 0) {
+                        $failedSteps[] = 'emails';
+                        $this->monitor->failed(MonitoredSource::AlertEmails, (string) __('app.monitoring.emails_undelivered', ['count' => $failed]));
                     } else {
-                        $this->monitor->succeeded(MonitoredSource::Alerts, $result->alerts);
+                        $this->monitor->succeeded(MonitoredSource::AlertEmails, $sent);
                     }
 
-                    return __('app.cron.alerts', [
-                        'alerts' => $result->alerts,
-                        'emails' => $result->emails,
-                        'pushes' => $result->pushes,
-                    ]).($result->undelivered > 0 ? __('app.cron.alerts_undelivered', ['count' => $result->undelivered]) : '');
+                    return __('app.cron.emails', ['count' => $sent]).($failed > 0 ? __('app.cron.undelivered', ['count' => $failed]) : '');
                 }),
                 // Týdenní souhrn (R36) — jen v den souhrnu, jinak nic nedělá
                 $this->attempt('weekly', [MonitoredSource::WeeklyDigest], $failedSteps, function () use ($sendWeeklyDigests, &$failedSteps): string {
@@ -229,7 +239,7 @@ class CronController extends Controller
                         $this->monitor->succeeded(MonitoredSource::WeeklyDigest, $sent);
                     }
 
-                    return __('app.cron.weekly', ['count' => $sent]).($failed > 0 ? __('app.cron.alerts_undelivered', ['count' => $failed]) : '');
+                    return __('app.cron.weekly', ['count' => $sent]).($failed > 0 ? __('app.cron.undelivered', ['count' => $failed]) : '');
                 }),
                 // Kontrola parserů (R48) — jednou denně; zjištění je výpadek zdroje
                 // „Kontrola parserů“ (stav zdrojů, /health/zdroje), běh cronu neoznačí
@@ -248,6 +258,12 @@ class CronController extends Controller
 
                     return __('app.cron.canary', ['count' => $checked]);
                 }),
+                // Centrum upozornění (R53) — výpadek a obnova zdrojů jen při změně
+                // (stav zdrojů z tohoto běhu), úklid starých záznamů
+                $this->attempt('notifications', [], $failedSteps, fn (): string => __('app.cron.notifications', [
+                    'sources' => $recordSourceOutages->handle(),
+                    'pruned' => $pruneNotifications->handle(),
+                ])),
                 $this->attempt('cache', [], $failedSteps, fn (): string => __('app.cron.cache_pruned', ['count' => $pruneExpiredCache->handle()])),
             ];
 

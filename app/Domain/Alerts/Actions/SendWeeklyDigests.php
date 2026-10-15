@@ -12,9 +12,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Alerts\Actions;
 
+use App\Domain\Notifications\NotificationCenter;
 use App\Domain\Pricing\MoneyFormatter;
 use App\Domain\Watchlist\DailyDeals;
 use App\Domain\Watchlist\PriceDrop;
+use App\Enums\EmailFrequency;
+use App\Enums\NotificationKind;
 use App\Enums\Platform;
 use App\Mail\WeeklyDigestMail;
 use App\Models\User;
@@ -25,23 +28,26 @@ use Illuminate\Support\Facades\Mail;
 use Throwable;
 
 /**
- * Krok cron URL (R36): v den games.alerts.weekly_digest_day pošle každému účtu
- * se zapnutým e-mailem a souhrnem jeden e-mail s hrami, které za posledních
- * weekly_digest_days dní zlevnily (stejný výpočet jako slevy dne — DailyDeals).
- * Odejde jednou za den souhrnu (první běh cronu, `weekly_digest_at`); bez
- * slev se nic neposílá, jen se den označí jako vyřízený. Chyba SMTP souhrn
- * neoznačí — zkusí ho další běh téhož dne. Synchronně, bez fronty (R2).
+ * Krok cron URL (R36): v den games.alerts.weekly_digest_day zapíše každému
+ * účtu se zapnutým souhrnem do centra upozornění (R53) hry, které za
+ * posledních weekly_digest_days dní zlevnily (stejný výpočet jako slevy
+ * dne — DailyDeals), a účtu s e-mailem je pošle i e-mailem. Proběhne jednou
+ * za den souhrnu (první běh cronu, `weekly_digest_at`); bez slev se nic
+ * nezapíše ani neposílá, jen se den označí jako vyřízený. Chyba SMTP souhrn
+ * neoznačí — e-mail zkusí další běh téhož dne, záznam v centru se nezdvojí.
+ * Synchronně, bez fronty (R2).
  */
 final class SendWeeklyDigests
 {
     public function __construct(
         private readonly DailyDeals $dailyDeals,
         private readonly MoneyFormatter $money,
+        private readonly NotificationCenter $center,
     ) {}
 
     /**
-     * Rozešle souhrny; vrátí počet odeslaných a nedoručených e-mailů. Mimo den
-     * souhrnu nedělá nic.
+     * Zapíše a rozešle souhrny; vrátí počet odeslaných a nedoručených e-mailů.
+     * Mimo den souhrnu nedělá nic.
      *
      * @return array{0: int, 1: int}
      */
@@ -53,7 +59,6 @@ final class SendWeeklyDigests
         }
 
         $users = User::query()
-            ->where('notify_email', true)
             ->where('notify_weekly', true)
             ->where(fn (Builder $query) => $query->whereNull('weekly_digest_at')->orWhere('weekly_digest_at', '<', $today->utc()))
             ->orderBy('id')
@@ -63,17 +68,36 @@ final class SendWeeklyDigests
         $failed = 0;
         foreach ($users as $user) {
             $drops = $this->drops($user);
-            if ($drops !== [] && ! $this->send($user, $drops)) {
-                $failed++;
-
-                continue;
+            if ($drops !== [] && ! $this->recordedSince($user, $today)) {
+                $this->center->record($user, NotificationKind::WeeklyDigest, [
+                    'games' => array_map(fn (PriceDrop $drop): string => $drop->game->title, $drops),
+                ]);
             }
 
-            $sent += $drops === [] ? 0 : 1;
+            if ($drops !== [] && $user->email_frequency !== EmailFrequency::Off) {
+                if (! $this->send($user, $drops)) {
+                    $failed++;
+
+                    continue;
+                }
+                $sent++;
+            }
+
             $user->update(['weekly_digest_at' => CarbonImmutable::now()]);
         }
 
         return [$sent, $failed];
+    }
+
+    /**
+     * Má účet dnešní souhrn už v centru? (Předchozí běh ho zapsal, e-mail selhal.)
+     */
+    private function recordedSince(User $user, CarbonImmutable $today): bool
+    {
+        return $user->notifications()
+            ->where('type', NotificationKind::WeeklyDigest->value)
+            ->where('created_at', '>=', $today->utc())
+            ->exists();
     }
 
     /**

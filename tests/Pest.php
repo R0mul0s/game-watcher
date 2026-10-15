@@ -10,12 +10,15 @@
 
 declare(strict_types=1);
 
+use App\Domain\Notifications\GameAlertRecord;
 use App\Domain\Watchlist\Actions\WatchGame;
+use App\Enums\NotificationKind;
 use App\Models\User;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Http\Client\Request;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Http;
 use Minishlink\WebPush\VAPID;
 use Tests\TestCase;
@@ -267,6 +270,35 @@ function watcherOf(array $itadIds, array $attributes = []): User
     }
 
     return $user;
+}
+
+/**
+ * Upozornění na hry v centru účtu (R53), od nejstaršího.
+ *
+ * @return list<GameAlertRecord>
+ */
+function alertRecords(User $user): array
+{
+    return $user->notifications()
+        ->reorder()
+        ->where('type', NotificationKind::GameAlert->value)
+        ->orderBy('created_at')
+        ->get()
+        ->map(fn (DatabaseNotification $notification): ?GameAlertRecord => GameAlertRecord::fromArray($notification->data))
+        ->filter()
+        ->values()
+        ->all();
+}
+
+/**
+ * Poslední upozornění na hru v centru účtu.
+ */
+function lastAlert(User $user): GameAlertRecord
+{
+    $records = alertRecords($user);
+    expect($records)->not->toBeEmpty();
+
+    return $records[array_key_last($records)];
 }
 
 /**
