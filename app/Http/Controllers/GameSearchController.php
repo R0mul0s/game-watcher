@@ -16,6 +16,7 @@ use App\Domain\Catalog\Actions\SearchByPlayStationLink;
 use App\Domain\Catalog\Actions\SearchGames;
 use App\Domain\Catalog\SearchResults;
 use App\Domain\Itad\Exceptions\ItadUnavailable;
+use App\Domain\Monitoring\SlowRequestLog;
 use App\Domain\PlayStation\Exceptions\PlayStationProductNotFound;
 use App\Domain\PlayStation\Exceptions\PlayStationUnavailable;
 use App\Http\Requests\GameSearchRequest;
@@ -37,6 +38,7 @@ class GameSearchController extends Controller
         SearchGames $searchGames,
         SearchByPlayStationLink $searchByPlayStationLink,
         SearchResults $searchResults,
+        SlowRequestLog $slowLog,
     ): Response {
         $query = $request->gameQuery();
         $playstationUrl = $request->playStationUrl();
@@ -49,18 +51,23 @@ class GameSearchController extends Controller
         $playstationError = null;
 
         try {
-            $games = [];
-            if ($playstationUrl !== null) {
-                // Odkaz z PS Store nebo playstation.com — hledá se podle názvu produktu (R24)
-                $byLink = $searchByPlayStationLink->handle($playstationUrl);
-                $playstation = $byLink['product'];
-                $games = $byLink['games'];
-            } elseif ($query !== null) {
-                $games = $searchGames->handle($query, $filters->limit());
-            }
+            // Pomalé hledání zapíše časy volání zdrojů do logu (R56)
+            [$playstation, $found, $results] = $slowLog->measure(sprintf('hledání „%s“', (string) $request->queryText()), function () use (
+                $playstationUrl, $query, $searchByPlayStationLink, $searchGames, $searchResults, $filters, $user,
+            ): array {
+                $product = null;
+                $games = [];
+                if ($playstationUrl !== null) {
+                    // Odkaz z PS Store nebo playstation.com — hledá se podle názvu produktu (R24)
+                    $byLink = $searchByPlayStationLink->handle($playstationUrl);
+                    $product = $byLink['product'];
+                    $games = $byLink['games'];
+                } elseif ($query !== null) {
+                    $games = $searchGames->handle($query, $filters->limit());
+                }
 
-            $found = count($games);
-            $results = $searchResults->build($games, $user instanceof User ? $user : null, $filters);
+                return [$product, count($games), $searchResults->build($games, $user instanceof User ? $user : null, $filters)];
+            });
         } catch (ItadUnavailable) {
             // Podrobnosti zalogoval klient; uživatel jen uvidí, že hledání teď nejde
             $unavailable = true;

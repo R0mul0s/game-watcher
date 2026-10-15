@@ -64,7 +64,8 @@ it('vydaná hra bez slevy dostane „právě vyšlo“ s nejlevnější nabídko
     expect($item?->release_notified_at)->not->toBeNull()
         ->and($item?->first_sale_notified_at)->toBeNull();
 
-    // První sleva přijde zvlášť, až nastane
+    // První sleva přijde zvlášť, až nastane (další běh cronu — pozdější záznam)
+    $this->travel(4)->hours();
     CurrentPrice::query()->where('shop_key', '!=', CurrentPrice::KEYSHOPS_KEY)->update(['cut' => 30]);
     expect(app(SendPriceAlerts::class)->handle()->alerts)->toBe(1)
         ->and(lastAlert($this->user)->reason)->toBe('první sleva od vydání');

@@ -235,6 +235,30 @@ it('hru se stránkou na playstation.com označí ve výsledcích jako PlayStatio
     Http::assertNotSent(fn (Request $request): bool => str_contains($request->url(), 'digital-deluxe-upgrade'));
 });
 
+it('přesměrování na jinou stránku hry (edice → hra) bere jako hru na PlayStationu a uloží do cache', function (): void {
+    // Jako horizon-zero-dawn-complete-edition → horizon-zero-dawn (zjištěno 15. 10. 2026)
+    fakeApis(['www.playstation.com/cs-cz/games/control-resonant/' => Http::response('', 301, ['Location' => 'https://www.playstation.com/cs-cz/games/control/'])]);
+    $user = user();
+
+    $this->actingAs($user)
+        ->get('/hry/pridat?q=control+resonant')
+        ->assertInertia(fn (Assert $page) => $page->where('results.0.onPlayStation', true));
+
+    // Výsledek je v cache — další hledání se na stránku neptá
+    fakeApis(['www.playstation.com/*' => Http::response('', 503)]);
+    $this->actingAs($user)
+        ->get('/hry/pridat?q=control+resonant')
+        ->assertInertia(fn (Assert $page) => $page->where('results.0.onPlayStation', true));
+});
+
+it('přesměrování mimo stránky her hru jako PlayStation neoznačí', function (): void {
+    fakeApis(['www.playstation.com/cs-cz/games/control-resonant/' => Http::response('', 301, ['Location' => 'https://www.playstation.com/cs-cz/'])]);
+
+    $this->actingAs(user())
+        ->get('/hry/pridat?q=control+resonant')
+        ->assertInertia(fn (Assert $page) => $page->where('results.0.onPlayStation', false));
+});
+
 it('hru bez stránky na playstation.com a s obchody pro PC jako PlayStation neoznačí', function (): void {
     $this->actingAs(user())
         ->get('/hry/pridat?q=control+resonant')

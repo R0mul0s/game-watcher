@@ -181,6 +181,20 @@ it('stránku bez dat obchodu bere jako změnu formátu — ceny nesmaže (R29)',
         ->and(CurrentPrice::query()->where('source', PriceSource::PlayStation->value)->exists())->toBeTrue();
 });
 
+it('stránku bez dat nebo bez odpovědi zkusí po pauze ještě jednou', function (): void {
+    $this->actingAs($this->user)->post('/hry/control-resonant/obchody', ['url' => 'https://store.playstation.com/cs-cz/product/'.PSN_CONTROL_RESONANT]);
+    // Jako na produkci 13. a 15. 10. 2026: jedna stránka bez dat, další pokus v pořádku
+    fakeApis(['store.playstation.com/cs-cz/product/'.PSN_CONTROL_RESONANT => Http::sequence()
+        ->push('<html><body><div id="root"></div></body></html>')
+        ->push(psnFixture('product-control-resonant')),
+    ]);
+
+    $result = app(RefreshPrices::class)->watched();
+
+    expect($result->failed)->toBe([])
+        ->and($result->updatedBy(PriceSource::PlayStation))->toBe(1);
+});
+
 it('výpadek PlayStation Store v cronu ostatní zdroje nezastaví', function (): void {
     $this->actingAs($this->user)->post('/hry/control-resonant/obchody', ['url' => 'https://store.playstation.com/cs-cz/product/'.PSN_CONTROL_RESONANT]);
     fakeApis(['store.playstation.com/*' => Http::response('Access Denied', 403)]);

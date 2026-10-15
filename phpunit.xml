@@ -37,6 +37,7 @@
         <env name="GAMES_CRON_TOKEN" value="test-cron-token"/>
         <!-- Testy nečekají mezi stránkami PS Store -->
         <env name="GAMES_PLAYSTATION_DELAY_MS" value="0"/>
+        <env name="GAMES_PLAYSTATION_RETRY_DELAY_MS" value="0"/>
         <env name="GAMES_STEAM_DELAY_MS" value="0"/>
         <env name="GAMES_METACRITIC_DELAY_MS" value="0"/>
         <env name="MAIL_MAILER" value="array"/>

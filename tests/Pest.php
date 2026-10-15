@@ -232,7 +232,8 @@ function fakeApis(array $overrides = []): void
         'api.igdb.com/v4/games' => Http::response(jsonFixture('igdb/games-upcoming')),
     ];
 
-    Http::swap(new HttpFactory);
+    // S dispečerem událostí jako skutečný klient — log pomalých požadavků je poslouchá
+    Http::swap(new HttpFactory(app('events')));
     Http::preventStrayRequests();
     // Přepsání napřed (vyhrává první shoda); výchozí podvrh se stejným klíčem by
     // v poli přepsal hodnotu přepsání, proto se vynechá

@@ -18,6 +18,7 @@ use Illuminate\Http\Client\Pool;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Sleep;
 
 /**
  * Česká verze stránek (ceny v CZK). Akamai PS Store odmítá klienty bez hlaviček
@@ -29,17 +30,25 @@ final class PlayStationClient
     /** ID konceptu v meta značce stránky hry na www.playstation.com (R24). */
     private const GAME_PAGE_CONCEPT_META_PATTERN = '~<meta\s+name="conceptId"\s+content="(\d{1,12})"~';
 
+    private const MICROSECONDS_PER_MILLISECOND = 1000;
+
     /**
      * Produkt s cenami; null, když ho obchod nezná (404 nebo stránka bez produktu).
+     * Výpadek zkusí po pauze ještě jednou — PS Store občas jednu stránku vrátí
+     * bez dat obchodu nebo nestihne odpovědět a další běh je zase v pořádku;
+     * jeden takový produkt by jinak označil celý běh cronu jako chybný.
      *
      * @throws PlayStationUnavailable
      */
     public function product(string $productId): ?PlayStationProduct
     {
-        $path = 'product/'.$productId;
-        $html = $this->page($path);
+        try {
+            return $this->fetchProduct($productId);
+        } catch (PlayStationUnavailable) {
+            Sleep::usleep((int) config('games.sources.playstation.retry_delay_ms') * self::MICROSECONDS_PER_MILLISECOND);
 
-        return $html === null ? null : $this->parse($path, $html)->product($productId);
+            return $this->fetchProduct($productId);
+        }
     }
 
     /**
@@ -84,9 +93,11 @@ final class PlayStationClient
 
     /**
      * Existují stránky her na www.playstation.com (R24)? Dotazy HEAD běží
-     * souběžně (games.sources.playstation.game_page_concurrency) — jen stavový
-     * kód, bez stahování stránky. true = 200, false = 404, null = nezjištěno
-     * (výpadek, jiný kód) — výpadek hledání nezastaví.
+     * souběžně (games.sources.playstation.game_page_concurrency) s krátkým
+     * časovým limitem — jen stavový kód, bez stahování stránky. true = 200
+     * nebo přesměrování na jinou stránku hry (edice → hlavní stránka hry),
+     * false = 404, null = nezjištěno (výpadek, jiný kód) — výpadek hledání
+     * nezastaví.
      *
      * @param  list<string>  $slugs
      * @return array<string, bool|null>
@@ -100,7 +111,7 @@ final class PlayStationClient
         $responses = Http::pool(function (Pool $pool) use ($slugs): void {
             foreach ($slugs as $slug) {
                 $pool->as($slug)
-                    ->timeout((int) config('games.sources.playstation.timeout_seconds'))
+                    ->timeout((int) config('games.sources.playstation.game_page_timeout_seconds'))
                     ->withHeaders(['User-Agent' => (string) config('games.sources.playstation.user_agent')])
                     ->withOptions(['allow_redirects' => false])
                     ->head($this->gamePageUrl($slug));
@@ -113,11 +124,23 @@ final class PlayStationClient
             $exists[$slug] = match (true) {
                 $response instanceof Response && $response->ok() => true,
                 $response instanceof Response && $response->notFound() => false,
+                $response instanceof Response && $response->redirect() => $this->isGamePageUrl($response->header('Location')) ? true : null,
                 default => null,
             };
         }
 
         return $exists;
+    }
+
+    /**
+     * Vede přesměrování na stránku hry na www.playstation.com (i relativně)?
+     */
+    private function isGamePageUrl(string $location): bool
+    {
+        $siteUrl = rtrim((string) config('games.sources.playstation.site_url'), '/');
+        $path = str_starts_with($location, '/') ? $location : (str_starts_with($location, $siteUrl.'/') ? substr($location, strlen($siteUrl)) : '');
+
+        return preg_match('~^/'.preg_quote((string) config('games.sources.playstation.locale'), '~').'/games/[a-z0-9-]+/?$~', $path) === 1;
     }
 
     /**
@@ -134,6 +157,19 @@ final class PlayStationClient
     public function productUrl(string $productId): string
     {
         return $this->baseUrl().'/product/'.$productId;
+    }
+
+    /**
+     * Jeden pokus o stránku produktu.
+     *
+     * @throws PlayStationUnavailable
+     */
+    private function fetchProduct(string $productId): ?PlayStationProduct
+    {
+        $path = 'product/'.$productId;
+        $html = $this->page($path);
+
+        return $html === null ? null : $this->parse($path, $html)->product($productId);
     }
 
     /**

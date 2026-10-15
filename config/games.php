@@ -59,6 +59,9 @@ return [
         // výpadek je úspěch starší než 30 h (den + jeden vynechaný běh cronu a rezerva)
         'canary_interval_minutes' => 1380,
         'canary_max_age_minutes' => 1800,
+        // Hledání hry delší než tolik sekund zapíše do logu časy volání zdrojů
+        // (DNS, spojení, TLS, IPv4/IPv6) — na hostingu bývá řádově pomalejší než lokálně
+        'slow_request_seconds' => 3,
         // Referenční hry: dlouho v prodeji, s úplnými údaji — když parser u nich
         // údaj nenajde, změnil se formát zdroje (nebo hra zmizela, pak vyměnit)
         'canary' => [
@@ -331,10 +334,16 @@ return [
             'banner_width' => 600,
             // Pauza mezi stránkami — šetrnost k obchodu (CODING_GUIDELINES, sekce 3)
             'request_delay_ms' => (int) env('GAMES_PLAYSTATION_DELAY_MS', 500),
+            // Stránka produktu bez dat nebo bez odpovědi se po téhle pauze zkusí
+            // ještě jednou — PS Store tak občas odpoví u jednoho produktu z běhu
+            'retry_delay_ms' => (int) env('GAMES_PLAYSTATION_RETRY_DELAY_MS', 3000),
             // Je hra z hledání na PlayStationu? Ověřuje se existence stránky hry
             // na www.playstation.com dotazem HEAD (R24) — nejvýš tolik souběžně;
             // výsledek drží cache týden (stránky her se nemění)
             'game_page_concurrency' => 4,
+            // Krátký limit — jde jen o doplňkový údaj a jeden zaseknutý dotaz by
+            // jinak zdržel celé hledání až o timeout_seconds
+            'game_page_timeout_seconds' => 4,
             'game_page_cache_seconds' => 604800,
             // Akamai obchodu odmítá klienty bez hlaviček běžného prohlížeče (R7)
             'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
