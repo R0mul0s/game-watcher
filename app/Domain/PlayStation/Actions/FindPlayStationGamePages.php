@@ -43,14 +43,7 @@ final class FindPlayStationGamePages
      */
     public function handle(array $games): array
     {
-        $slugs = [];
-        foreach ($games as $game) {
-            $slug = $game->type === self::GAME_TYPE ? PlayStationUrl::gamePageSlug($game->title) : null;
-            if ($slug !== null) {
-                $slugs[$game->id] = $slug;
-            }
-        }
-
+        $slugs = $this->slugs($games);
         $exists = $this->exists(array_values(array_unique($slugs)));
 
         $pages = [];
@@ -61,6 +54,59 @@ final class FindPlayStationGamePages
         }
 
         return $pages;
+    }
+
+    /**
+     * Jen z cache, bez dotazů na playstation.com (R56) — stránky her, které
+     * cache zná, a ITAD ID her, u kterých se to teprve musí zjistit.
+     *
+     * @param  list<ItadGame>  $games
+     * @return array{0: array<string, string>, 1: list<string>}
+     */
+    public function cached(array $games): array
+    {
+        $pages = [];
+        $pending = [];
+        foreach ($this->slugs($games) as $itadId => $slug) {
+            $known = $this->fromCache($slug);
+            if ($known === null) {
+                $pending[] = $itadId;
+            } elseif ($known) {
+                $pages[$itadId] = $this->client->gamePageUrl($slug);
+            }
+        }
+
+        return [$pages, $pending];
+    }
+
+    /**
+     * Adresa stránky podle ITAD ID — jen hry (ne DLC ani balíčky) s názvem,
+     * ze kterého jde adresa složit.
+     *
+     * @param  list<ItadGame>  $games
+     * @return array<string, string>
+     */
+    private function slugs(array $games): array
+    {
+        $slugs = [];
+        foreach ($games as $game) {
+            $slug = $game->type === self::GAME_TYPE ? PlayStationUrl::gamePageSlug($game->title) : null;
+            if ($slug !== null) {
+                $slugs[$game->id] = $slug;
+            }
+        }
+
+        return $slugs;
+    }
+
+    /**
+     * Existence stránky z cache; null = cache neví.
+     */
+    private function fromCache(string $slug): ?bool
+    {
+        $cached = Cache::get(self::CACHE_PREFIX.$slug);
+
+        return is_array($cached) && is_bool($cached['exists'] ?? null) ? $cached['exists'] : null;
     }
 
     /**
@@ -75,11 +121,11 @@ final class FindPlayStationGamePages
         $exists = [];
         $unknown = [];
         foreach ($slugs as $slug) {
-            $cached = Cache::get(self::CACHE_PREFIX.$slug);
-            if (is_array($cached) && is_bool($cached['exists'] ?? null)) {
-                $exists[$slug] = $cached['exists'];
-            } else {
+            $known = $this->fromCache($slug);
+            if ($known === null) {
                 $unknown[] = $slug;
+            } else {
+                $exists[$slug] = $known;
             }
         }
 

@@ -196,7 +196,8 @@ it('produkt z odkazu podruhé vezme z cache', function (): void {
     $user = user();
     $url = urlencode('https://store.playstation.com/cs-cz/product/'.PSN_SAROS);
 
-    $this->actingAs($user)->get('/hry/pridat?q='.$url);
+    $this->actingAs($user)->get('/hry/pridat?q='.$url)
+        ->assertInertia(fn (Assert $page) => $page->loadDeferredProps(fn (Assert $reload) => $reload->has('playstationPages')));
     $this->actingAs($user)->get('/hry/pridat?q='.$url);
 
     // Kurzy ČNB (beforeEach), stránka produktu, search, lookup názvu, ceny
@@ -220,19 +221,44 @@ it('stránka hry bez odkazu do obchodu najde produkt přes koncept v meta značc
 it('hru se stránkou na playstation.com označí ve výsledcích jako PlayStation', function (): void {
     fakeApis(['www.playstation.com/cs-cz/games/control-resonant/' => Http::response(psnFixture('game-page-until-dawn'))]);
 
-    $this->actingAs(user())
+    $user = user();
+
+    // Výsledky hned, stránka na playstation.com až odloženě (R56)
+    $this->actingAs($user)
+        ->get('/hry/pridat?q=control+resonant')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('results.0.onPlayStation', false)
+            ->where('results.0.playstationPending', true)
+            // DLC se na playstation.com neověřuje
+            ->where('results.2.type', 'dlc')
+            ->where('results.2.playstationPending', false)
+            ->missing('playstationPages')
+            ->loadDeferredProps(fn (Assert $reload) => $reload
+                ->where('playstationPages.'.CONTROL_RESONANT_ID, 'https://www.playstation.com/cs-cz/games/control-resonant/')));
+
+    Http::assertSent(fn (Request $request): bool => $request->method() === 'HEAD'
+        && $request->url() === 'https://www.playstation.com/cs-cz/games/control-resonant/');
+    Http::assertNotSent(fn (Request $request): bool => str_contains($request->url(), 'digital-deluxe-upgrade'));
+
+    // Podruhé z cache rovnou ve výsledcích
+    $this->actingAs($user)
         ->get('/hry/pridat?q=control+resonant')
         ->assertInertia(fn (Assert $page) => $page
             ->where('results.0.onPlayStation', true)
             ->where('results.0.offerPlayStation', true)
             ->where('results.0.playstationUrl', 'https://www.playstation.com/cs-cz/games/control-resonant/')
-            // DLC se na playstation.com neověřuje
-            ->where('results.2.type', 'dlc')
-            ->where('results.2.playstationUrl', null));
+            ->where('results.0.playstationPending', false));
+});
 
-    Http::assertSent(fn (Request $request): bool => $request->method() === 'HEAD'
-        && $request->url() === 'https://www.playstation.com/cs-cz/games/control-resonant/');
-    Http::assertNotSent(fn (Request $request): bool => str_contains($request->url(), 'digital-deluxe-upgrade'));
+it('s filtrem PlayStation zjistí stránky her hned — podle nich filtruje', function (): void {
+    fakeApis(['www.playstation.com/cs-cz/games/control-resonant/' => Http::response(psnFixture('game-page-until-dawn'))]);
+
+    $this->actingAs(user())
+        ->get('/hry/pridat?q=control+resonant&platform=playstation')
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('results.0.onPlayStation', true)
+            ->where('results.0.playstationPending', false)
+            ->where('playstationPages', null));
 });
 
 it('přesměrování na jinou stránku hry (edice → hra) bere jako hru na PlayStationu a uloží do cache', function (): void {
@@ -242,7 +268,8 @@ it('přesměrování na jinou stránku hry (edice → hra) bere jako hru na Play
 
     $this->actingAs($user)
         ->get('/hry/pridat?q=control+resonant')
-        ->assertInertia(fn (Assert $page) => $page->where('results.0.onPlayStation', true));
+        ->assertInertia(fn (Assert $page) => $page->loadDeferredProps(fn (Assert $reload) => $reload
+            ->where('playstationPages.'.CONTROL_RESONANT_ID, 'https://www.playstation.com/cs-cz/games/control-resonant/')));
 
     // Výsledek je v cache — další hledání se na stránku neptá
     fakeApis(['www.playstation.com/*' => Http::response('', 503)]);
@@ -256,7 +283,8 @@ it('přesměrování mimo stránky her hru jako PlayStation neoznačí', functio
 
     $this->actingAs(user())
         ->get('/hry/pridat?q=control+resonant')
-        ->assertInertia(fn (Assert $page) => $page->where('results.0.onPlayStation', false));
+        ->assertInertia(fn (Assert $page) => $page->loadDeferredProps(fn (Assert $reload) => $reload
+            ->where('playstationPages.'.CONTROL_RESONANT_ID, null)));
 });
 
 it('hru bez stránky na playstation.com a s obchody pro PC jako PlayStation neoznačí', function (): void {
@@ -265,7 +293,8 @@ it('hru bez stránky na playstation.com a s obchody pro PC jako PlayStation neoz
         ->assertInertia(fn (Assert $page) => $page
             ->where('results.0.onPlayStation', false)
             ->where('results.0.offerPlayStation', false)
-            ->where('results.0.playstationUrl', null));
+            ->where('results.0.playstationUrl', null)
+            ->loadDeferredProps(fn (Assert $reload) => $reload->where('playstationPages.'.CONTROL_RESONANT_ID, null)));
 });
 
 it('výpadek playstation.com hledání nezastaví a neuloží se do cache', function (): void {
@@ -275,12 +304,17 @@ it('výpadek playstation.com hledání nezastaví a neuloží se do cache', func
     $this->actingAs($user)
         ->get('/hry/pridat?q=control+resonant')
         ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page->where('results.0.onPlayStation', false));
+        ->assertInertia(fn (Assert $page) => $page->loadDeferredProps(fn (Assert $reload) => $reload
+            ->where('playstationPages.'.CONTROL_RESONANT_ID, null)));
 
+    // Nezjištěné se do cache neuložilo — další hledání se zeptá znovu
     fakeApis(['www.playstation.com/cs-cz/games/control-resonant/' => Http::response(psnFixture('game-page-until-dawn'))]);
     $this->actingAs($user)
         ->get('/hry/pridat?q=control+resonant')
-        ->assertInertia(fn (Assert $page) => $page->where('results.0.onPlayStation', true));
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('results.0.playstationPending', true)
+            ->loadDeferredProps(fn (Assert $reload) => $reload
+                ->where('playstationPages.'.CONTROL_RESONANT_ID, 'https://www.playstation.com/cs-cz/games/control-resonant/')));
 });
 
 it('„Jen na PS“ se stránkou hry na playstation.com připojí produkt rovnou', function (): void {

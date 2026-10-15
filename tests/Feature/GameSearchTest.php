@@ -91,11 +91,13 @@ it('u výsledků vyznačí hry z katalogu a ty, které uživatel sleduje', funct
 it('stejné hledání podruhé vezme z cache', function (): void {
     $user = user();
 
-    $this->actingAs($user)->get('/hry/pridat?q=Control+Resonant');
-    $this->actingAs($user)->get('/hry/pridat?q=control+resonant');
+    $this->actingAs($user)->get('/hry/pridat?q=Control+Resonant')
+        ->assertInertia(fn (Assert $page) => $page->loadDeferredProps(fn (Assert $reload) => $reload->has('playstationPages')));
+    $this->actingAs($user)->get('/hry/pridat?q=control+resonant')
+        ->assertInertia(fn (Assert $page) => $page->where('playstationPages', null));
 
     // Hledání podle názvu = search + lookup přesného názvu (R22) + ceny
-    // pro obchody (R23) + stránky dvou her na playstation.com (R24); podruhé nic
+    // pro obchody (R23) + odloženě stránky dvou her na playstation.com (R24, R56); podruhé nic
     Http::assertSentCount(5);
 });
 

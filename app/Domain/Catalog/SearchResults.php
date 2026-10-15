@@ -26,7 +26,8 @@ use App\Models\User;
  * U výsledků vyznačí, co uživatel už sleduje, kde se hra prodává (R23, R24),
  * a vybere a seřadí je podle filtrů (R30). Obchody a stránky PS se zjišťují
  * pro všechny výsledky hledání — filtr pak jen vybírá, takže změna filtru
- * jde z cache a ITAD ani playstation.com znovu nevolá.
+ * jde z cache a ITAD ani playstation.com znovu nevolá. Stránky PS, které cache
+ * nezná, se zjišťují odloženě (R56), kromě filtru PlayStation, který je potřebuje.
  */
 final class SearchResults
 {
@@ -47,7 +48,11 @@ final class SearchResults
     {
         $itadIds = array_map(fn (ItadGame $game): string => $game->id, $games);
         $availability = $this->describeAvailability->handle($itadIds);
-        $playstationPages = $this->findGamePages->handle($games);
+        // playstation.com odpovídá z hostingu pomalu (R56) — bez filtru PlayStation
+        // jen z cache, zbytek dotáhne stránka odloženě (playStationPages())
+        [$playstationPages, $pending] = $filters->platform === Platform::PlayStation
+            ? [$this->findGamePages->handle($games), []]
+            : $this->findGamePages->cached($games);
         $currency = $user?->displayCurrency() ?? (string) config('games.prices.default_currency');
 
         $inCatalog = Game::query()
@@ -78,6 +83,9 @@ final class SearchResults
                 $currency,
             );
 
+            // Stránka na playstation.com se teprve zjišťuje — připojený PS Store ji nepotřebuje
+            $result['playstationPending'] = in_array($game->id, $pending, true) && $catalogGame?->storeListings->isNotEmpty() !== true;
+
             if ($this->matchesPlatform($result, $gameAvailability, $filters->platform)) {
                 $entries[] = ['result' => $result, 'price' => $this->price($gameAvailability, $currency)];
             }
@@ -89,6 +97,23 @@ final class SearchResults
         }
 
         return array_map(fn (array $entry): array => $entry['result'], $entries);
+    }
+
+    /**
+     * Stránky na playstation.com pro výsledky, u kterých je build() nechal
+     * nezjištěné (playstationPending) — odložený prop stránky hledání (R56).
+     * Adresa stránky, nebo null, když hra stránku nemá nebo se to nepovedlo zjistit.
+     *
+     * @param  list<ItadGame>  $games  výsledky hledání v ITAD
+     * @param  list<array<string, mixed>>  $results  výsledky z build()
+     * @return array<string, string|null>
+     */
+    public function playStationPages(array $games, array $results): array
+    {
+        $pending = array_column(array_filter($results, fn (array $result): bool => $result['playstationPending'] === true), 'itadId');
+        $pages = $this->findGamePages->handle(array_values(array_filter($games, fn (ItadGame $game): bool => in_array($game->id, $pending, true))));
+
+        return array_combine($pending, array_map(fn (mixed $itadId): ?string => $pages[(string) $itadId] ?? null, $pending));
     }
 
     /**

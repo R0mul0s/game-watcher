@@ -5,7 +5,8 @@
     cenu (R23). Hru jde sledovat všude, nebo jen na PlayStationu; s odkazem
     z PS Store se hledá podle názvu produktu a produkt se při přidání
     připojí (R24). Výsledky jde filtrovat podle druhu a platformy, řadit podle
-    ceny a načíst jich víc; hledá i podle odkazu na ITAD (R30).
+    ceny a načíst jich víc; hledá i podle odkazu na ITAD (R30). Stránky her na
+    playstation.com, které server ještě nezná, se doplní až po zobrazení (R56).
 
     @author Roman Hlaváček
     @created 2026-10-11
@@ -16,12 +17,14 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { formatPrice } from '@/lib/format';
 import { useTranslations } from '@/lib/i18n';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
     query: { type: String, default: '' },
     searched: { type: Boolean, default: false },
     results: { type: Array, default: () => [] },
+    /** Odložený prop (R56): stránky na playstation.com pro výsledky s playstationPending { itadId: url|null }. */
+    playstationPages: { type: Object, default: null },
     found: { type: Number, default: 0 },
     canShowMore: { type: Boolean, default: false },
     filters: { type: Object, required: true },
@@ -38,6 +41,21 @@ const form = useForm({ q: props.query });
 
 /** ITAD ID hry, která se právě přidává — tlačítka se do odpovědi zablokují. */
 const adding = ref(null);
+
+/**
+ * Výsledky s doplněnými stránkami na playstation.com, které server zjistil
+ * až po zobrazení (R56) — stejné pravidlo jako GamePresenter::searchResult():
+ * hra se stránkou je na PlayStationu a nabídne „Jen na PS“ s jejím odkazem.
+ */
+const shownResults = computed(() =>
+    props.results.map((game) => {
+        const pageUrl = game.playstationPending ? props.playstationPages?.[game.itadId] : null;
+
+        return pageUrl
+            ? { ...game, onPlayStation: true, offerPlayStation: true, playstationUrl: game.playstationUrl ?? pageUrl }
+            : game;
+    }),
+);
 
 /** Hodnota platformy „jen PlayStation“ (enum Platform). */
 const PLAYSTATION = 'playstation';
@@ -216,7 +234,7 @@ function watch(game, platform = null) {
             <p v-else-if="!results.length" class="search-results__empty">{{ t('search.no_filtered_results') }}</p>
 
             <ul v-else class="search-results__list">
-                <li v-for="game in results" :key="game.itadId" class="search-result">
+                <li v-for="game in shownResults" :key="game.itadId" class="search-result">
                     <img v-if="game.thumbnailUrl" :src="game.thumbnailUrl" alt="" class="search-result__image" loading="lazy" />
                     <span v-else class="search-result__image search-result__image--empty" aria-hidden="true"></span>
                     <span class="search-result__body">

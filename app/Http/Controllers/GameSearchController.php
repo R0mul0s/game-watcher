@@ -44,15 +44,15 @@ class GameSearchController extends Controller
         $playstationUrl = $request->playStationUrl();
         $filters = $request->searchFilters();
         $user = $request->user();
+        $games = [];
         $results = [];
-        $found = 0;
         $unavailable = false;
         $playstation = null;
         $playstationError = null;
 
         try {
             // Pomalé hledání zapíše časy volání zdrojů do logu (R56)
-            [$playstation, $found, $results] = $slowLog->measure(sprintf('hledání „%s“', (string) $request->queryText()), function () use (
+            [$playstation, $games, $results] = $slowLog->measure(sprintf('hledání „%s“', (string) $request->queryText()), function () use (
                 $playstationUrl, $query, $searchByPlayStationLink, $searchGames, $searchResults, $filters, $user,
             ): array {
                 $product = null;
@@ -66,7 +66,7 @@ class GameSearchController extends Controller
                     $games = $searchGames->handle($query, $filters->limit());
                 }
 
-                return [$product, count($games), $searchResults->build($games, $user instanceof User ? $user : null, $filters)];
+                return [$product, $games, $searchResults->build($games, $user instanceof User ? $user : null, $filters)];
             });
         } catch (ItadUnavailable) {
             // Podrobnosti zalogoval klient; uživatel jen uvidí, že hledání teď nejde
@@ -77,11 +77,20 @@ class GameSearchController extends Controller
             $playstationError = __('app.listings.unavailable');
         }
 
+        $found = count($games);
+        $pending = array_filter($results, fn (array $result): bool => $result['playstationPending'] === true) !== [];
+
         return Inertia::render('Games/Search', [
             // I odkaz sdílený z jiné aplikace (R37) — pole hledání ho ukáže
             'query' => $request->queryText(),
             'searched' => $query !== null,
             'results' => $results,
+            // Stránky na playstation.com, které cache nezná — dotáhnou se po
+            // zobrazení výsledků (z hostingu odpovídají i 4 s, R56)
+            'playstationPages' => $pending ? Inertia::defer(fn (): array => $slowLog->measure(
+                sprintf('ověření PlayStationu pro „%s“', (string) $request->queryText()),
+                fn (): array => $searchResults->playStationPages($games, $results),
+            )) : null,
             // Kolik našel ITAD před filtry — „žádná hra filtrům“ vs. „nic jsme nenašli“
             'found' => $found,
             // Plný počet výsledků naznačuje, že ITAD má víc (R30)
